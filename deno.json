@@ -1,0 +1,10 @@
+{
+  "lock": false,
+  "tasks": {
+    "pub": "deno run -A ./index.ts"
+  },
+  "imports": {},
+  "exclude": [
+    "private"
+  ]
+}

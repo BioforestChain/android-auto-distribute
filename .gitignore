@@ -1,0 +1,9 @@
+node_modules
+dist
+private
+apk
+.DS_Store
+.env
+
+/app.ts
+/src/.*.ts
