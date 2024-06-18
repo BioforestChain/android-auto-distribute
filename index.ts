@@ -1,6 +1,7 @@
 import { APP_METADATA } from "./app.ts";
 
 import { pub_xiami } from "./src/xiaomi.ts";
+import { pub_oppo } from "./src/oppo/oppo.ts";
 
 const doStart = async (args = Deno.args) => {
   // 请勿随意更改发包顺序，发包只需要更改publish.json里的版本
@@ -26,6 +27,9 @@ const doStart = async (args = Deno.args) => {
     switch (target) {
       case "xiaomi":
         await pub_xiami();
+        break;
+      case "oppo":
+        await pub_oppo();
         break;
     }
   }

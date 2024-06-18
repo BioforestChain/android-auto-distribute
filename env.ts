@@ -1,4 +1,4 @@
-import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
+import { load } from "jsr:@std/dotenv";
 
 const env = await load();
 
@@ -44,8 +44,8 @@ export const huawei = {
 };
 
 export const oppo = {
-  access_secret: env["oppo.access_secret"],
-  access_key: env["oppo.access_key"],
+  client_id: env["oppoClientId"],
+  client_secret: env["oppoClientSecret"],
 };
 
 export const vivo = {
