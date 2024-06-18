@@ -1,4 +1,4 @@
-import { crypto } from "jsr:@std/crypto";
+import { DigestAlgorithm, crypto } from "jsr:@std/crypto";
 import { encodeHex } from "jsr:@std/encoding/hex";
 import { Buffer } from "node:buffer";
 import nodeCrypto from "node:crypto";
@@ -12,9 +12,9 @@ export const decoder = new TextDecoder("utf-8");
  * @param filePath
  * @returns
  */
-export async function digestFileMD5(file: File) {
+export async function digestFileAlgorithm(file: File, algorithm: DigestAlgorithm = "MD5") {
   const readableStream = file.stream();
-  const fileHashBuffer = await crypto.subtle.digest("MD5", readableStream);
+  const fileHashBuffer = await crypto.subtle.digest(algorithm, readableStream);
   return encodeHex(fileHashBuffer);
 }
 
@@ -23,9 +23,9 @@ export async function digestFileMD5(file: File) {
  * @param text
  * @returns
  */
-export async function digestStringMD5(text: string) {
+export async function digestStringAlgorithm(text: string, algorithm: DigestAlgorithm = "MD5") {
   const messageBuffer = encoder.encode(text);
-  const hashBuffer = await crypto.subtle.digest("MD5", messageBuffer);
+  const hashBuffer = await crypto.subtle.digest(algorithm, messageBuffer);
   return encodeHex(hashBuffer);
 }
 

@@ -1,6 +1,5 @@
 // https://oop-openapi-cn.heytapmobi.com/developer/v1/token
 import { createHmac } from "node:crypto";
-import fs from "node:fs/promises";
 import { parseArgs } from "jsr:@std/cli/parse-args";
 import { oppo } from "../../env.ts";
 import { APP_METADATA, RESOURCES } from "../../app.ts";

@@ -2,6 +2,7 @@ import { APP_METADATA } from "./app.ts";
 
 import { pub_xiami } from "./src/xiaomi.ts";
 import { pub_oppo } from "./src/oppo/oppo.ts";
+import { pub_huawei } from "./src/huawei/huawei.ts";
 
 const doStart = async (args = Deno.args) => {
   // 请勿随意更改发包顺序，发包只需要更改publish.json里的版本
@@ -30,6 +31,9 @@ const doStart = async (args = Deno.args) => {
         break;
       case "oppo":
         await pub_oppo();
+        break;
+      case "huawei":
+        await pub_huawei();
         break;
     }
   }

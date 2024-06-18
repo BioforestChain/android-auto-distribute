@@ -39,8 +39,8 @@ export const baidu = {
 };
 
 export const huawei = {
-  access_secret: env["huawei_access_secret"],
-  access_key: env["huawei_access_key"],
+  client_id: env["huawei_client_id"],
+  client_secret: env["huawei_client_secret"],
 };
 
 export const oppo = {

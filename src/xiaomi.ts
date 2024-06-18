@@ -2,8 +2,8 @@ import { step } from "jsr:@sylc/step-spinner";
 import { APP_METADATA, RESOURCES } from "../app.ts";
 import { xiaomi } from "../env.ts";
 import {
-  digestFileMD5,
-  digestStringMD5,
+  digestFileAlgorithm,
+  digestStringAlgorithm,
   encryptContent,
 } from "./helper/crypto.ts";
 
@@ -47,9 +47,9 @@ async function createSig() {
   const signalList: { name: string; hash: string }[] = [];
   for (const [key, value] of Object.entries(pushRequestData)) {
     if (value instanceof File) {
-      signalList.push({ name: key, hash: await digestFileMD5(value) });
+      signalList.push({ name: key, hash: await digestFileAlgorithm(value) });
     } else {
-      signalList.push({ name: key, hash: await digestStringMD5(value) });
+      signalList.push({ name: key, hash: await digestStringAlgorithm(value) });
     }
   }
   return {
