@@ -9,46 +9,46 @@ export const xiaomi = {
 };
 
 export const key360 = {
-  email: env["key360.email"],
-  password: env["key360.password"],
+  email: env["key360_email"],
+  password: env["key360_password"],
 };
 
 export const samsung = {
-  email: env["samsung.email"],
-  password: env["samsung.password"],
+  email: env["samsung_email"],
+  password: env["samsung_password"],
 };
 
 export const ali = {
-  email: env["ali.email"],
-  password: env["ali.password"],
+  email: env["ali_email"],
+  password: env["ali_password"],
 };
 
 export const google = {
-  email: env["google.email"],
-  password: env["google.password"],
+  email: env["google_email"],
+  password: env["google_password"],
 };
 
 export const tencent = {
-  email: env["tencent.email"],
-  password: env["tencent.password"],
+  email: env["tencent_email"],
+  password: env["tencent_password"],
 };
 
 export const baidu = {
-  email: env["baidu.email"],
-  password: env["baidu.password"],
+  email: env["baidu_email"],
+  password: env["baidu_password"],
 };
 
 export const huawei = {
-  access_secret: env["huawei.access_secret"],
-  access_key: env["huawei.access_key"],
+  access_secret: env["huawei_access_secret"],
+  access_key: env["huawei_access_key"],
 };
 
 export const oppo = {
-  client_id: env["oppoClientId"],
-  client_secret: env["oppoClientSecret"],
+  client_id: env["oppo_client_id"],
+  client_secret: env["oppo_client_secret"],
 };
 
 export const vivo = {
-  access_secret: env["vivo.access_secret"],
-  access_key: env["vivo.access_key"],
+  access_secret: env["vivo_access_secret"],
+  access_key: env["vivo_access_key"],
 };

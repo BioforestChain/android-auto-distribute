@@ -1,3 +1,4 @@
+import { step } from "jsr:@sylc/step-spinner";
 import { APP_METADATA, RESOURCES } from "../app.ts";
 import { xiaomi } from "../env.ts";
 import {
@@ -69,6 +70,7 @@ async function digitalSignature() {
   pushRequestData.SIG = sig;
 }
 
+/**开始发布 */
 function pushAppStore() {
   const formData = new FormData();
   for (const [key, value] of Object.entries(pushRequestData)) {
@@ -81,13 +83,18 @@ function pushAppStore() {
 }
 
 export async function pub_xiami() {
+  const signal = step("开始签名...").start();
   await digitalSignature();
+  signal.succeed("签名完成！");
+  const publish = step("开始发布...").start();
   const response = await pushAppStore();
   const resJson = await response.json();
   if (resJson.result === 0) {
-    console.log(`%c${resJson.message}`, "color: blue");
+    publish.succeed(resJson.message);
+    // console.log(`%c${resJson.message}`, "color: blue");
   } else {
-    console.log(`%c${resJson.message}`, "color: red");
+    publish.fail(resJson.message);
+    // console.log(`%c${resJson.message}`, "color: red");
   }
 }
 
