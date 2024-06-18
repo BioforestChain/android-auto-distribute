@@ -1,5 +1,7 @@
 import { crypto } from "jsr:@std/crypto";
 import { encodeHex } from "jsr:@std/encoding/hex";
+import { Buffer } from "node:buffer";
+import nodeCrypto from "node:crypto";
 import { whichSync } from "./whichCommond.ts";
 
 const encoder = new TextEncoder();
@@ -27,40 +29,67 @@ export async function digestStringMD5(text: string) {
   return encodeHex(hashBuffer);
 }
 
+// 公钥加密内容
+export const encryptContent = async (
+  content: string,
+  publicKeyPath: string
+) => {
+  const pemPublicKey = await getPublicKey(publicKeyPath);
+  const encryptGroupSize = 1024 / 11 - 11;
+  let sig = "";
+  for (let i = 0; i < content.length; ) {
+    const remain = content.length - i;
+    const segSize = remain > encryptGroupSize ? encryptGroupSize : remain;
+    const segment = content.substring(i, i + segSize);
+    // 必须是这个填充方式 web crypto 还不支持
+    const r1 = nodeCrypto.publicEncrypt(
+      { key: pemPublicKey, padding: nodeCrypto.constants.RSA_PKCS1_PADDING },
+      Buffer.from(segment)
+    );
+    const r2 = hexEncode(r1);
+    sig += r2;
+    i = i + segSize;
+  }
+  return sig;
+};
+
 // 设置参数
-const KEY_ALGORITHM = "RSA-OAEP";
+const KEY_ALGORITHM = "RSA-OAEP"; // "RSASSA-PKCS1-v1_5";
+// 小米给的密钥长度
+const KEYSIZE = 1024;
+// 1024位RSA密钥：加密后输出长度为128字节（1024位）
+const ENCYPT_SIZE = 128;
+// 每次能加密
+const ENCRYPT_GROUP_SIZE = KEYSIZE / 8 - 2 * 32 - 2;
 
 // 公钥加密
 export async function encryptByPublicKey(str: string, publicKeyPath: string) {
-  const publicKey = await getPublicKey(publicKeyPath);
-  const ENCRYPT_GROUP_SIZE = await getKeyLength(publicKey);
+  // 先把cer转换为公钥
+  const pemPublicKey = await getPublicKey(publicKeyPath);
+  // 再把导入公钥变成cryptpKey
+  const cryptoKey = await getCryptoKey(pemPublicKey);
   const data = encoder.encode(str);
-  let baos = new Uint8Array(); // 预留足够空间
+  // 计算需要多大字节
+  const estimatedEncryptedLength =
+    Math.ceil(data.length / ENCRYPT_GROUP_SIZE) * ENCYPT_SIZE;
+  const baos = new Uint8Array(estimatedEncryptedLength);
   let idx = 0;
   let baosIdx = 0;
-
   while (idx < data.length) {
     const remain = data.length - idx;
-    const segsize = remain > ENCRYPT_GROUP_SIZE ? ENCRYPT_GROUP_SIZE : remain;
-    const segment = data.subarray(idx, idx + segsize);
-    const encryptedSegment = new Uint8Array(
-      await crypto.subtle.encrypt(
-        {
-          name: KEY_ALGORITHM,
-        },
-        publicKey,
-        segment
-      )
-    );
-    const newResult = new Uint8Array(baos.length + encryptedSegment.length);
-    newResult.set(baos);
-    newResult.set(encryptedSegment, baos.length);
-    baos = newResult;
+    const segSize = remain > ENCRYPT_GROUP_SIZE ? ENCRYPT_GROUP_SIZE : remain;
+    const segment = data.subarray(idx, idx + segSize);
+    const encryptedSegment = new Uint8Array();
+    await crypto.subtle.encrypt({ name: KEY_ALGORITHM }, cryptoKey, segment);
+    baos.set(encryptedSegment, baosIdx);
     baosIdx += encryptedSegment.length;
-    idx += segsize;
+    idx += segSize;
   }
 
-  return hexEncode(baos.subarray(0, baosIdx)); // 对加密后的数据进行hex编码
+  // 删除多余的
+  const finalArray = baos.subarray(0, baosIdx);
+
+  return hexEncode(finalArray);
 }
 
 // hexEncode 方法
@@ -69,6 +98,7 @@ function hexEncode(uint8Array: Uint8Array): string {
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
 }
+
 /**
  * 从cer证书中提取公钥
  * @param publicKeyPath
@@ -85,8 +115,12 @@ async function getPublicKey(publicKeyPath: string) {
     stderr: "piped",
   });
   const process = npm_cmd.output();
-  const publicKeyCer = new TextDecoder().decode((await process).stdout);
-  const publicKeyBuffer = pemToBinary(publicKeyCer);
+  const publicKeyPem = new TextDecoder().decode((await process).stdout);
+  return publicKeyPem;
+}
+
+async function getCryptoKey(publicKeyPem: string) {
+  const publicKeyBuffer = pemToBinary(publicKeyPem);
   return await crypto.subtle.importKey(
     "spki",
     publicKeyBuffer,

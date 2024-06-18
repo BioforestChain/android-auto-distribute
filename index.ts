@@ -1,5 +1,5 @@
-import picocolors from "npm:picocolors";
 import { APP_METADATA } from "./app.ts";
+
 import { pub_xiami } from "./src/xiaomi.ts";
 
 const doStart = async (args = Deno.args) => {
@@ -19,11 +19,9 @@ const doStart = async (args = Deno.args) => {
       : args;
   for (const target of targets) {
     console.log(
-      picocolors.blue(
-        `Start publishing v${APP_METADATA.version} to  ${picocolors.cyan(
-          target
-        )}:`
-      )
+      `%cStart publishing v${APP_METADATA.version} to  %c${target}:`,
+      "color: blue",
+      "color: cyan"
     );
     switch (target) {
       case "xiaomi":

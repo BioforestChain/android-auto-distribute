@@ -3,32 +3,34 @@ import { xiaomi } from "../env.ts";
 import {
   digestFileMD5,
   digestStringMD5,
-  encryptByPublicKey,
+  encryptContent,
 } from "./helper/crypto.ts";
 
 // 通过应用包名查询小米应用商店内本账户推送的最新应用详情，用于判断是否需要进行应用推送
 // const QUERY_API = "https://api.developer.xiaomi.com/devupload/dev/query";
 // 查询小米应用商店的应用分类，获取到分类后在category填上分类ID
 //curl --location --request POST 'https://api.developer.xiaomi.com/devupload/dev/category'
+
+const appInfo: AppInfo = {
+  appName: APP_METADATA.appName,
+  packageName: APP_METADATA.packageName,
+  category: "5 128", // app类别
+  keyWords: APP_METADATA.keyWords,
+  desc: APP_METADATA.desc,
+  brief: APP_METADATA.brief,
+  privacyUrl: APP_METADATA.privacyUrl,
+};
+
 const RequestData: RequestData = {
   userName: xiaomi.email,
+  appInfo: appInfo,
   synchroType: 1, // 更新类型：0=新增，1=更新包，2=内容更新
-  appInfo: {
-    appName: APP_METADATA.appName,
-    packageName: APP_METADATA.packageName,
-    category: "5 128", // app类别
-    keyWords: APP_METADATA.keyWords,
-    desc: APP_METADATA.desc,
-    brief: APP_METADATA.brief,
-    privacyUrl: APP_METADATA.privacyUrl,
-  },
 };
 
 /**发布参数 */
 const pushRequestData: PushRequest = {
   RequestData: JSON.stringify(RequestData),
   apk: RESOURCES.apk,
-  SIG: "",
   icon: RESOURCES.icon,
   screenshot_1: RESOURCES.screenshot_1,
   screenshot_2: RESOURCES.screenshot_2,
@@ -60,7 +62,7 @@ async function createSig() {
 async function digitalSignature() {
   const data = await createSig();
   //将 JSON 字符串编码为二进制数据
-  const sig = await encryptByPublicKey(
+  const sig = await encryptContent(
     JSON.stringify(data),
     xiaomi.public_key_path
   );
@@ -68,20 +70,25 @@ async function digitalSignature() {
 }
 
 function pushAppStore() {
+  const formData = new FormData();
+  for (const [key, value] of Object.entries(pushRequestData)) {
+    formData.append(key, value);
+  }
   return fetch("https://api.developer.xiaomi.com/devupload/dev/push", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(pushRequestData),
+    body: formData,
   });
 }
 
 export async function pub_xiami() {
   await digitalSignature();
-  console.log("xxx=>", pushRequestData.RequestData);
   const response = await pushAppStore();
-  console.log("xxx=>", await response.json());
+  const resJson = await response.json();
+  if (resJson.result === 0) {
+    console.log(`%c${resJson.message}`, "color: blue");
+  } else {
+    console.log(`%c${resJson.message}`, "color: red");
+  }
 }
 
 //#region type
@@ -124,7 +131,7 @@ interface AppInfo {
 
 interface PushRequest {
   RequestData: string; // 必选，json字符串，具体字段信息见下
-  SIG: string; // 必选，加密字符串，具体拼接加密方式见下
+  SIG?: string; // 必选，加密字符串，具体拼接加密方式见下
   apk?: File; // 可选，Apk包，上传类型为新增和更新时必传
   secondApk?: File; // 可选，secondApk包，双包发布时必传
   icon: File; // 必选，应用图标
