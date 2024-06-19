@@ -43,10 +43,39 @@ export function hexEncode(uint8Array: Uint8Array): string {
 
 /**
  * 从cer证书中提取公钥
+ * @param privateKeyPath
+ * @returns {Promise<string>}
+ */
+export async function cerToPemPKS8(privateKeyPath: string): Promise<string> {
+  const openssl = whichSync("openssl");
+  if (!openssl) {
+    throw new Error("OpenSSL not found in your PATH");
+  }
+
+  const cwd = privateKeyPath.slice(0, privateKeyPath.lastIndexOf("/") + 1);
+  const filename = privateKeyPath.slice(privateKeyPath.lastIndexOf("/") + 1);
+  // pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in private_key.pem
+  const process = await new Deno.Command(openssl, {
+    cwd,
+    args: ["pkcs8", "-topk8", "-inform", "PEM", "-nocrypt", "-in", filename],
+    stdout: "piped",
+    stderr: "piped",
+  }).output();
+
+  if (process.stderr.length > 0) {
+    throw new Error(decoder.decode(process.stderr));
+  }
+
+  const publicKeyPem = decoder.decode(process.stdout);
+  return publicKeyPem;
+}
+
+/**
+ * 从cer证书中提取公钥
  * @param publicKeyPath
  * @returns {Promise<string>}
  */
-export async function cerToPem(publicKeyPath: string): Promise<string> {
+export async function cerToPemX509(publicKeyPath: string): Promise<string> {
   const openssl = whichSync("openssl");
   if (!openssl) {
     throw new Error("OpenSSL not found in your PATH");
@@ -69,6 +98,24 @@ export async function cerToPem(publicKeyPath: string): Promise<string> {
   const publicKeyPem = decoder.decode(process.stdout);
   return publicKeyPem;
 }
+/**工具方法：将PEM文件内容转换为ArrayBuffer */
+export const pemToBinary = (pem: string) => {
+  const pemContents = pem
+    .replace(/-----BEGIN PUBLIC KEY-----/, "")
+    .replace(/-----END PUBLIC KEY-----/, "")
+    .replace(/-----BEGIN PRIVATE KEY-----/, "")
+    .replace(/-----END PRIVATE KEY-----/, "")
+    .replace(/\s+/g, "");
+  const binary = atob(pemContents);
+  const arrayBuffer = new ArrayBuffer(binary.length);
+  const uint8Array = new Uint8Array(arrayBuffer);
+
+  for (let i = 0; i < binary.length; i++) {
+    uint8Array[i] = binary.charCodeAt(i);
+  }
+
+  return arrayBuffer;
+};
 
 // 计算密钥长度
 export async function getKeyLength(publicKey: CryptoKey): Promise<number> {

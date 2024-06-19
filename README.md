@@ -30,6 +30,8 @@ android 自动发布脚本。
 
 > 当然您也可以放到任何位置，只需要修改 `env.ts` 里的对应参数。
 
+> tips: [samsung 地址](https://developer.samsung.com/galaxy-store/galaxy-store-developer-api/create-an-access-token.html)
+
 ## update
 
 命令后面跟上特定平台进行发布。

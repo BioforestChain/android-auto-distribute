@@ -1,4 +1,4 @@
-import { cerToPem, encoder, hexEncode } from "./crypto.ts";
+import { cerToPemX509, encoder, hexEncode, pemToBinary } from "./crypto.ts";
 
 export class RSAOPEP {
   // 设置参数
@@ -13,7 +13,7 @@ export class RSAOPEP {
   // 公钥加密
   async encryptByPublicKey(str: string, publicKeyPath: string) {
     // 先把cer转换为公钥
-    const pemPublicKey = await cerToPem(publicKeyPath);
+    const pemPublicKey = await cerToPemX509(publicKeyPath);
     // 再把导入公钥变成cryptpKey
     const cryptoKey = await this.getCryptoKey(pemPublicKey);
     const data = encoder.encode(str);
@@ -45,7 +45,7 @@ export class RSAOPEP {
     return hexEncode(finalArray);
   }
   async getCryptoKey(publicKeyPem: string) {
-    const publicKeyBuffer = this.pemToBinary(publicKeyPem);
+    const publicKeyBuffer = pemToBinary(publicKeyPem);
     return await crypto.subtle.importKey(
       "spki",
       publicKeyBuffer,
@@ -53,23 +53,6 @@ export class RSAOPEP {
       true,
       ["encrypt"]
     );
-  }
-
-  /**工具方法：将PEM文件内容转换为ArrayBuffer */
-  pemToBinary(pem: string) {
-    const pemContents = pem
-      .replace(/-----BEGIN PUBLIC KEY-----/, "")
-      .replace(/-----END PUBLIC KEY-----/, "")
-      .replace(/\s+/g, "");
-    const binary = atob(pemContents);
-    const arrayBuffer = new ArrayBuffer(binary.length);
-    const uint8Array = new Uint8Array(arrayBuffer);
-
-    for (let i = 0; i < binary.length; i++) {
-      uint8Array[i] = binary.charCodeAt(i);
-    }
-
-    return arrayBuffer;
   }
 }
 

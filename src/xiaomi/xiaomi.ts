@@ -4,7 +4,7 @@ import nodeCrypto from "node:crypto";
 import { APP_METADATA, RESOURCES } from "../../app.ts";
 import { xiaomi } from "../../env.ts";
 import {
-  cerToPem,
+  cerToPemX509,
   digestFileAlgorithm,
   digestStringAlgorithm,
   hexEncode,
@@ -105,7 +105,7 @@ export const encryptContent = async (
   content: string,
   publicKeyPath: string
 ) => {
-  const pemPublicKey = await cerToPem(publicKeyPath);
+  const pemPublicKey = await cerToPemX509(publicKeyPath);
   const encryptGroupSize = 1024 / 11 - 11;
   let sig = "";
   for (let i = 0; i < content.length; ) {

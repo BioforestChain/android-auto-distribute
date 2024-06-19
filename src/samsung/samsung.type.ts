@@ -1,16 +1,16 @@
-export interface AccessTokenSuccessResult {
+export interface $AccessTokenSuccessResult {
   ok: boolean;
   createdItem: {
     accessToken: string;
   };
 }
 
-export interface AccessTokenItem {
+export interface $AccessTokenItem {
   access_token: string | null;
   exp: number;
 }
 
-export interface AppContentList {
+export interface $AppContentList {
   contentName: string;
   contentId: string;
   contentStatus: string;
@@ -19,16 +19,16 @@ export interface AppContentList {
   modifyDate: string;
 }
 
-export interface CreateSessionSuccessResult {
+export interface $CreateSessionSuccessResult {
   url: string;
   sessionId: string;
 }
 
-export interface HeadersMap {
+export interface $HeadersMap {
   [key: string]: string;
 }
 
-export interface FileUploadSuccessResult {
+export interface $FileUploadSuccessResult {
   fileKey: string;
   fileName: string;
   fileSize: string;
@@ -36,7 +36,7 @@ export interface FileUploadSuccessResult {
   errorMsg: null;
 }
 
-export interface ContentUpdateItem {
+export interface $ContentUpdateItem {
   contentId: string;
   appTitle: string;
   icon: string | null;
@@ -48,12 +48,12 @@ export interface ContentUpdateItem {
   publicationType: string;
   reviewFilename: string | null;
   reviewFilekey: string | null;
-  binaryList: FileBinaryItem[];
-  screenshots: ScreenshotsItem[];
-  addLanguage: AddLanguageItem[];
+  binaryList: $FileBinaryItem[];
+  screenshots: $ScreenshotsItem[];
+  addLanguage: $AddLanguageItem[];
 }
 
-export interface FileBinaryItem {
+export interface $FileBinaryItem {
   fileName: string;
   binarySeq: string | null;
   versionCode: string | null;
@@ -67,16 +67,16 @@ export interface FileBinaryItem {
   filekey: string | null;
 }
 
-export interface ScreenshotsItem {
+export interface $ScreenshotsItem {
   screenshotPath: string;
   screenshotKey: string | null;
   reuseYn: boolean;
 }
 
-export interface AddLanguageItem {
+export interface $AddLanguageItem {
   languagecode: string;
   appTitle: string;
   description: string;
   newFeature: string | null;
-  screenshots: ScreenshotsItem[];
+  screenshots: $ScreenshotsItem[];
 }
