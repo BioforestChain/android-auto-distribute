@@ -55,9 +55,9 @@ export interface ContentUpdateItem {
 
 export interface FileBinaryItem {
   fileName: string;
-  binarySeq: string;
-  versionCode: string;
-  versionName: string;
+  binarySeq: string | null;
+  versionCode: string | null;
+  versionName: string | null;
   packageName: string;
   nativePlatforms: string | null;
   apiminSdkVersion: string | null;

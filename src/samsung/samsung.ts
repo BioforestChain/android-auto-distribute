@@ -147,7 +147,7 @@ const fetchAppInfo = async () => {
   }
 
   const appContentList = contentList.filter(
-    (v) => v.contentName === "DWeb Browser" // APP_METADATA.appName
+    (v) => v.contentName === APP_METADATA.appName
   );
 
   if (Array.isArray(appContentList) && appContentList.length > 0) {
@@ -252,9 +252,12 @@ const updateAppInfo = async () => {
   const oldBinaryItem = appInfo.binaryList[appInfo.binaryList.length - 1];
   const binaryItem: FileBinaryItem = {
     ...oldBinaryItem,
-    binarySeq: "" + (parseInt(oldBinaryItem.binarySeq) + 1),
-    versionCode: "" + (parseInt(oldBinaryItem.versionCode) + 1),
+    // binarySeq: "" + (parseInt(oldBinaryItem.binarySeq) + 1),
+    // versionCode: "" + (parseInt(oldBinaryItem.versionCode) + 1),
     versionName: APP_METADATA.version,
+    binarySeq: null,
+    versionCode: null,
+    // versionName: null,
     fileName: uploadObj.fileName,
     filekey: uploadObj.fileKey,
   };
@@ -269,22 +272,23 @@ const updateAppInfo = async () => {
     // ...appInfo,
     // contentStatus: "FOR_SALE",
     contentId: appInfo.contentId,
+    defaultLanguageCode: appInfo.defaultLanguageCode,
     binaryList: binaryList,
-    reviewFilename: uploadObj.fileName,
-    reviewFilekey: uploadObj.fileKey,
+    // reviewFilename: uploadObj.fileName,
+    // reviewFilekey: uploadObj.fileKey,
     newFeature: APP_METADATA.updateDesc,
-    // screenshots: appInfo.screenshots.map((v) => {
-    //   v.reuseYn = true;
-    //   return v;
-    // }),
-    // addLanguage: appInfo.addLanguage.map((v) => {
-    //   v.newFeature = APP_METADATA.updateDesc;
-    //   v.screenshots = v.screenshots.map((value) => {
-    //     value.reuseYn = true;
-    //     return value;
-    //   });
-    //   return v;
-    // }),
+    screenshots: appInfo.screenshots.map((v) => {
+      v.reuseYn = true;
+      return v;
+    }),
+    addLanguage: appInfo.addLanguage.map((v) => {
+      v.newFeature = APP_METADATA.updateDesc;
+      v.screenshots = v.screenshots.map((value) => {
+        value.reuseYn = true;
+        return value;
+      });
+      return v;
+    }),
   };
 
   console.log(updateAppInfo);
