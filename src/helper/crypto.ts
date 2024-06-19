@@ -1,7 +1,5 @@
 import { DigestAlgorithm, crypto } from "jsr:@std/crypto";
 import { encodeHex } from "jsr:@std/encoding/hex";
-import { Buffer } from "node:buffer";
-import nodeCrypto from "node:crypto";
 import { whichSync } from "./whichCommond.ts";
 
 export { encodeHex };
@@ -13,7 +11,10 @@ export const decoder = new TextDecoder("utf-8");
  * @param filePath
  * @returns
  */
-export async function digestFileAlgorithm(file: File, algorithm: DigestAlgorithm = "MD5") {
+export async function digestFileAlgorithm(
+  file: File,
+  algorithm: DigestAlgorithm = "MD5"
+) {
   const readableStream = file.stream();
   const fileHashBuffer = await crypto.subtle.digest(algorithm, readableStream);
   return encodeHex(fileHashBuffer);
@@ -24,35 +25,14 @@ export async function digestFileAlgorithm(file: File, algorithm: DigestAlgorithm
  * @param text
  * @returns
  */
-export async function digestStringAlgorithm(text: string, algorithm: DigestAlgorithm = "MD5") {
+export async function digestStringAlgorithm(
+  text: string,
+  algorithm: DigestAlgorithm = "MD5"
+) {
   const messageBuffer = encoder.encode(text);
   const hashBuffer = await crypto.subtle.digest(algorithm, messageBuffer);
   return encodeHex(hashBuffer);
 }
-
-// 公钥加密内容
-export const encryptContent = async (
-  content: string,
-  publicKeyPath: string
-) => {
-  const pemPublicKey = await cerToPem(publicKeyPath);
-  const encryptGroupSize = 1024 / 11 - 11;
-  let sig = "";
-  for (let i = 0; i < content.length; ) {
-    const remain = content.length - i;
-    const segSize = remain > encryptGroupSize ? encryptGroupSize : remain;
-    const segment = content.substring(i, i + segSize);
-    // 必须是这个填充方式 web crypto 还不支持
-    const r1 = nodeCrypto.publicEncrypt(
-      { key: pemPublicKey, padding: nodeCrypto.constants.RSA_PKCS1_PADDING },
-      Buffer.from(segment)
-    );
-    const r2 = hexEncode(r1);
-    sig += r2;
-    i = i + segSize;
-  }
-  return sig;
-};
 
 // hexEncode 方法
 export function hexEncode(uint8Array: Uint8Array): string {

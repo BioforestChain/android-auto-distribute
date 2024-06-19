@@ -3,8 +3,8 @@ import { load } from "jsr:@std/dotenv";
 const env = await load();
 
 export const xiaomi = {
-  email: env["xiaomiEmail"],
-  password: env["xiaomiPassword"],
+  email: env["xiaomi_email"],
+  password: env["xiaomi_password"],
   public_key_path: "./private/xiaomi/dev.api.public.cer",
 };
 
@@ -16,7 +16,8 @@ export const key360 = {
 export const samsung = {
   email: env["samsung_email"],
   password: env["samsung_password"],
-  service_account_id: env["samsung_service_account_id"]
+  service_account_id: env["samsung_service_account_id"],
+  private_key_path: "./private/samsung/privateKey.txt",
 };
 
 export const ali = {

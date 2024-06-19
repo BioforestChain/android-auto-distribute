@@ -26,7 +26,7 @@ export interface $AppInfo {
   packageName: string; // 包名
   publisherName?: string; // 开发者名称，不传默认使用开发者站注册的名称
   versionName?: string; // 版本名，默认使用apk中的VersionName
-  category: string; // 应用分类(为从appstore拉取的类型id) 新增synchroType=0时必选
+  category?: string; // 应用分类(为从appstore拉取的类型id) 新增synchroType=0时必选
   keyWords: string; // 应用搜索关键字，空格分隔，新增时必选
   desc: string; // 应用介绍，新增时必选
   updateDesc?: string; // 更新说明，当为更新应用时必选
