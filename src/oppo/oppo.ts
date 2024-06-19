@@ -1,8 +1,7 @@
 // https://oop-openapi-cn.heytapmobi.com/developer/v1/token
 import { createHmac } from "node:crypto";
-import { parseArgs } from "jsr:@std/cli/parse-args";
-import { oppo } from "../../env.ts";
 import { APP_METADATA, RESOURCES } from "../../app.ts";
+import { oppo } from "../../env.ts";
 import { formatDate } from "../helper/date.ts";
 import type {
   AccessTokenSuccessResult,
@@ -29,7 +28,7 @@ const calSign = (data: Map<string, string>) => {
   // 进行HmacSHA256计算
   const hmac = createHmac("sha256", oppo.client_secret);
   hmac.update(signStr);
-  return hmac.digest("hex") as string;
+  return hmac.digest("hex");
 };
 
 // 查询已上传应用信息
@@ -165,11 +164,7 @@ const uploadApkFile = async () => {
       const data = new FormData();
       data.append("type", "apk");
       data.append("sign", result.data.sign);
-      data.append(
-        "file",
-        new Blob([RESOURCES.apk]),
-        RESOURCES.apk_name
-      );
+      data.append("file", new Blob([RESOURCES.apk]), RESOURCES.apk_name);
 
       const response = await fetch(result.data.upload_url, {
         method: "POST",
@@ -287,11 +282,10 @@ export const pub_oppo = async () => {
 
     if (result.errno === 0) {
       setTimeout(async () => {
-        await fetchTaskState("" + (parseInt(appInfo.version_code) + 1))
+        await fetchTaskState("" + (parseInt(appInfo.version_code) + 1));
       }, 20000);
     } else {
       console.error("uploadApk", result);
     }
   }
 };
-

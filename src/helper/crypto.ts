@@ -4,6 +4,7 @@ import { Buffer } from "node:buffer";
 import nodeCrypto from "node:crypto";
 import { whichSync } from "./whichCommond.ts";
 
+export { encodeHex };
 export const encoder = new TextEncoder();
 export const decoder = new TextDecoder("utf-8");
 

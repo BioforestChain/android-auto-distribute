@@ -1,4 +1,4 @@
-import { encoder } from "./crypto.ts";
+import { encoder, hexEncode } from "./crypto.ts";
 
 export class HMAC {
   cryptoKey: CryptoKey;
@@ -6,43 +6,32 @@ export class HMAC {
   constructor(cryptoKey: CryptoKey) {
     this.cryptoKey = cryptoKey;
   }
-  /**导入key */
-  static async importKey(key: string) {
+  /**
+   * 导入key
+   * 注意看密钥要求的是什么格式
+   */
+  static async importKey(secretKey: string) {
+    const secretBytes = encoder.encode(secretKey);
     return await crypto.subtle.importKey(
-      "jwk", //can be "jwk" or "raw"
-      {
-        //this is an example jwk key, "raw" would be an ArrayBuffer
-        kty: "oct",
-        k: key,
-        alg: "HS256",
-        ext: true,
-      },
+      "raw", //can be "jwk" or "raw"
+      secretBytes,
       {
         name: "HMAC",
         hash: { name: "SHA-256" }, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
         //length: 256, //optional, if you want your key length to differ from the hash function's block length
       },
-      false, //whether the key is extractable (i.e. can be used in exportKey)
+      false, //密钥是否可提取
       ["sign", "verify"] //can be any combination of "sign" and "verify"
     );
   }
 
-  sign(data: string) {
+  async sign(data: string) {
     const bufferData = encoder.encode(data);
-    crypto.subtle
-      .sign(
-        {
-          name: "HMAC",
-        },
-        this.cryptoKey, //from generateKey or importKey above
-        bufferData
-      )
-      .then(function (signature) {
-        //returns an ArrayBuffer containing the signature
-        console.log(new Uint8Array(signature));
-      })
-      .catch(function (err) {
-        console.error(err);
-      });
+    const buffer = await crypto.subtle.sign(
+      "HMAC",
+      this.cryptoKey, //from generateKey or importKey above
+      bufferData
+    );
+    return hexEncode(new Uint8Array(buffer));
   }
 }

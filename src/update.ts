@@ -1,12 +1,14 @@
-import { APP_METADATA } from "./app.ts";
+import { APP_METADATA } from "../app.ts";
 
-import { pub_xiami } from "./src/xiaomi.ts";
-import { pub_oppo } from "./src/oppo/oppo.ts";
-import { pub_huawei } from "./src/huawei/huawei.ts";
-import { pub_samsung } from "./src/samsung/samsung.ts";
+import { pub_huawei } from "./huawei/huawei.ts";
+import { pub_oppo } from "./oppo/oppo.ts";
+import { pub_samsung } from "./samsung/samsung.ts";
+import { pub_vivo } from "./vivo/vivo.ts";
+import { pub_xiami } from "./xiaomi/xiaomi.ts";
 
-const doStart = async (args = Deno.args) => {
-  // 请勿随意更改发包顺序，发包只需要更改publish.json里的版本
+/// 🌸更新apk到各大应用商城 deno task pub
+
+const doUpdate = async (args = Deno.args) => {
   const targets =
     args.length === 0
       ? [
@@ -39,10 +41,12 @@ const doStart = async (args = Deno.args) => {
       case "samsung":
         await pub_samsung();
         break;
+      case "vivo":
+        await pub_vivo();
     }
   }
 };
 
 if (import.meta.main) {
-  doStart();
+  doUpdate();
 }
