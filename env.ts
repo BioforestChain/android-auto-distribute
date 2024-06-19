@@ -16,6 +16,7 @@ export const key360 = {
 export const samsung = {
   email: env["samsung_email"],
   password: env["samsung_password"],
+  service_account_id: env["samsung_service_account_id"]
 };
 
 export const ali = {
