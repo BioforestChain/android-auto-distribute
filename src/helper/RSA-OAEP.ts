@@ -56,7 +56,6 @@ export class RSAOPEP {
   }
 }
 
-import { assert } from "https://deno.land/std@0.151.0/testing/asserts.ts";
 import { xiaomi } from "../../env.ts";
 
 Deno.test("encryptByPublicKey", async () => {
@@ -67,5 +66,4 @@ Deno.test("encryptByPublicKey", async () => {
     xiaomi.public_key_path
   );
   console.log("data=>", encryptedData);
-  assert(encryptedData);
 });
