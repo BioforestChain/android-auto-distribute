@@ -25,11 +25,6 @@ export const ali = {
   password: env["ali_password"],
 };
 
-export const google = {
-  email: env["google_email"],
-  password: env["google_password"],
-};
-
 export const tencent = {
   email: env["tencent_email"],
   password: env["tencent_password"],
