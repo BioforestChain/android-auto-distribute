@@ -1,4 +1,5 @@
 import { APP_METADATA } from "../app.ts";
+import { pub_google } from "./google/google.ts";
 
 import { pub_huawei } from "./huawei/huawei.ts";
 import { pub_oppo } from "./oppo/oppo.ts";
@@ -43,6 +44,10 @@ const doUpdate = async (args = Deno.args) => {
         break;
       case "vivo":
         await pub_vivo();
+        break;
+      case "google":
+        await pub_google();
+        break;
     }
   }
 };
