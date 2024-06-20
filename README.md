@@ -26,6 +26,8 @@ android 自动发布脚本。
 │   │   └── privateKey.txt
 │   ├── xiaomi
 │   │   └── dev.api.public.cer
+│   ├── google
+│   │   └── xxxxxxx-xxxxx.json
 ```
 
 > 当然您也可以放到任何位置，只需要修改 `env.ts` 里的对应参数。
