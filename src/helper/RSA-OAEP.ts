@@ -1,4 +1,4 @@
-import { cerToPemX509, encoder, hexEncode, pemToBinary } from "./crypto.ts";
+import { cerToPemX509, encodeHex, encoder, pemToBinary } from "./crypto.ts";
 
 export class RSAOPEP {
   // 设置参数
@@ -42,7 +42,7 @@ export class RSAOPEP {
     // 删除多余的
     const finalArray = baos.subarray(0, baosIdx);
 
-    return hexEncode(finalArray);
+    return encodeHex(finalArray);
   }
   async getCryptoKey(publicKeyPem: string) {
     const publicKeyBuffer = pemToBinary(publicKeyPem);

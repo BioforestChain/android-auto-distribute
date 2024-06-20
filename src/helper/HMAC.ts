@@ -1,4 +1,4 @@
-import { encoder, hexEncode } from "./crypto.ts";
+import { encodeHex, encoder } from "./crypto.ts";
 
 export class HMAC {
   cryptoKey: CryptoKey;
@@ -32,6 +32,6 @@ export class HMAC {
       this.cryptoKey, //from generateKey or importKey above
       bufferData
     );
-    return hexEncode(new Uint8Array(buffer));
+    return encodeHex(new Uint8Array(buffer));
   }
 }

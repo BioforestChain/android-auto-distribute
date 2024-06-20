@@ -7,7 +7,7 @@ import {
   cerToPemX509,
   digestFileAlgorithm,
   digestStringAlgorithm,
-  hexEncode,
+  encodeHex,
 } from "../helper/crypto.ts";
 import { $AppInfo, $PushRequest, $RequestData } from "./xiaomi.type.ts";
 
@@ -117,7 +117,7 @@ export const encryptContent = async (
       { key: pemPublicKey, padding: nodeCrypto.constants.RSA_PKCS1_PADDING },
       Buffer.from(segment)
     );
-    const r2 = hexEncode(r1);
+    const r2 = encodeHex(r1);
     sig += r2;
     i = i + segSize;
   }

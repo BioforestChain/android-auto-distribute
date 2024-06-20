@@ -1,8 +1,6 @@
 import { DigestAlgorithm, crypto } from "jsr:@std/crypto";
-import { encodeHex } from "jsr:@std/encoding/hex";
 import { whichSync } from "./whichCommond.ts";
 
-export { encodeHex };
 export const encoder = new TextEncoder();
 export const decoder = new TextDecoder("utf-8");
 
@@ -34,8 +32,19 @@ export async function digestStringAlgorithm(
   return encodeHex(hashBuffer);
 }
 
-// hexEncode 方法
-export function hexEncode(uint8Array: Uint8Array): string {
+/**
+ *
+ * @param uint8Array
+ * @returns
+ * @example assertEquals(encodeHex("abc"), "616263");
+ */
+export function encodeHex(bytes: Uint8Array | ArrayBuffer): string {
+  let uint8Array;
+  if (bytes instanceof ArrayBuffer) {
+    uint8Array = new Uint8Array(bytes);
+  } else {
+    uint8Array = bytes;
+  }
   return Array.from(uint8Array)
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
@@ -117,7 +126,23 @@ export const pemToBinary = (pem: string) => {
   return arrayBuffer;
 };
 
-// 计算密钥长度
+/**工具函数：编码为Base64Url */
+export const base64UrlEncode = (obj: object) => {
+  return btoa(JSON.stringify(obj))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+};
+
+/**工具函数：解码为Base64Url */
+export const base64UrlDecode = (encodedSignature: string) => {
+  return Uint8Array.from(
+    atob(encodedSignature.replace(/-/g, "+").replace(/_/g, "/")),
+    (c) => c.charCodeAt(0)
+  );
+};
+
+/**工具函数：计算密钥长度 */
 export async function getKeyLength(publicKey: CryptoKey): Promise<number> {
   const publicKeyData = await crypto.subtle.exportKey("spki", publicKey);
 
