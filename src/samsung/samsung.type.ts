@@ -171,6 +171,14 @@ export interface $ContentUpdateItem {
   YouTubeURL: string;
 }
 
+export interface $ContentUpdateRes {
+  contentId: string;
+  errorCode: string | null;
+  contentStatus: string;
+  httpStatus: string;
+  errorMsg: string | null;
+}
+
 /**
  * binary列表信息。在输入为空字符串时忽略（既不添加也不删除内容），在输入为空分发时移除所有内容。
  * 查看binaryList参数。

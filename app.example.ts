@@ -35,5 +35,4 @@ export const RESOURCES = {
     await readFile("./private/image/3.png"),
     await readFile("./private/image/4.png"),
   ],
-  screenshotNames: ["1.png", "2.png", "3.png", "4.png"],
 };

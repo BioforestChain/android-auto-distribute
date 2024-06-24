@@ -26,6 +26,7 @@ Deno.test("查看应用详情（contentInfo）", async () => {
   const samsungFactory = new Samsung();
   const appInfo = await samsungFactory.fetchAppInfo();
   console.log("appInfo=>", appInfo);
+  console.log("当前应用状态：", appInfo.contentStatus);
 });
 
 Deno.test("发布测试:", async () => {

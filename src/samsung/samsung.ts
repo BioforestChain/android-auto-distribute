@@ -7,6 +7,7 @@ import {
   $AppContent,
   $Binaryinfo,
   $ContentUpdateItem,
+  $ContentUpdateRes,
   $CreateSessionSuccessResult,
   $FileUploadSuccessResult,
 } from "./samsung.type.ts";
@@ -39,7 +40,7 @@ export class Samsung {
     if (res.ok) {
       sign.succeed("三星分发成功");
     } else {
-      sign.fail(`pub_samsung ${res.statusText}: ${await res.text()}`);
+      sign.fail(`pub_samsung ${res.statusText}`);
     }
     return res;
   };
@@ -158,21 +159,28 @@ export class Samsung {
       binaryList: binaryList,
       newFeature: APP_METADATA.updateDesc,
       screenshots: screenshots,
+      addLanguage: null,
+      sellCountryList: null,
+      usExportLaws: true,
     };
-
+    console.log(updateParams);
     const res = await this.samsungFetch(
       `${this.BASE_URL}/seller/contentUpdate`,
       JSON.stringify(updateParams),
       "POST",
       "include"
     );
-    
-    if(res.ok) {
-      update.succeed("samsung 更新应用信息成功");
+    const updateRes: $ContentUpdateRes = await res.json();
+    if (updateRes.errorMsg == null) {
+      update.succeed(
+        `samsung 更新应用信息成功:${updateRes.httpStatus} [${updateRes.contentStatus}]`
+      );
     } else {
-      update.fail("samsung 更新应用信息失败");
+      update.fail(
+        `samsung 更新应用信息失败:${updateRes.errorCode} [${updateRes.errorMsg}]`
+      );
     }
-    return appInfo.contentId;
+    return updateRes.contentId;
   };
 
   /**构建参数 */
@@ -180,7 +188,10 @@ export class Samsung {
     isUpdateScreenshots = false,
     isUpdateApk = false
   ) {
+    const infoSign = step("正在获取app状态...").start();
     const appInfo = await this.fetchAppInfo();
+    // 请注意，内容状态为“FOR_SALE”，它将在注册二进制文件后发生变化。
+    infoSign.succeed(`获取状态成功：${appInfo.contentStatus}`);
     let binaryList = null;
     // 是否针对apk进行更新
     if (isUpdateApk) {
@@ -206,27 +217,21 @@ export class Samsung {
     // 是否更新应用截图
     let screenshots = null;
     if (isUpdateScreenshots) {
-      screenshots = appInfo.screenshots.map(async (v, index) => {
-        const sign = step(
-          `正在更新 ${v.screenshotPath.name} [${index}]...`
-        ).start();
+      screenshots = appInfo.screenshots;
+      for (const [index, file] of RESOURCES.screenshots.entries()) {
+        const v = screenshots[index];
+        const sign = step(`正在更新 ${file.name} [${index}]...`).start();
 
-        const screenshot = await this.uploadFile(RESOURCES.screenshots[index]);
-        sign.succeed(`上传 ${RESOURCES.screenshots[index].name} 成功`);
+        const screenshot = await this.uploadFile(file);
+        sign.succeed(`上传 ${file.name} 成功`);
         v.screenshotKey = screenshot.fileKey;
         v.reuseYn = false;
-        return v;
-      });
-    } else {
-      screenshots = appInfo.screenshots.map((v) => {
-        v.reuseYn = true;
-        return v;
-      });
+      }
     }
     return {
       appInfo,
-      binaryList,
-      screenshots,
+      binaryList: binaryList,
+      screenshots: screenshots,
     };
   }
   /**工具方法：fetch */
@@ -289,5 +294,5 @@ export class Samsung {
   };
 }
 
-const samsungFactory = new Samsung();
-export const pub_samsung = samsungFactory.pub_samsung;
+const _samsung = new Samsung();
+export const pub_samsung = _samsung.pub_samsung;
