@@ -23,16 +23,11 @@ export class Samsung {
   rsass = new RSASSA(samsung.private_key_path);
 
   /**🌈发布包 */
-  pub_samsung = async (
-    isUpdateScreenshots = false,
-    isUpdateApk = false,
-    isUpdateLanguage = false
-  ) => {
+  pub_samsung = async (isUpdateScreenshots = false, isUpdateApk = false) => {
     // 获取每次的请求头
     const contentId = await this.updateAppInfo(
       isUpdateScreenshots,
-      isUpdateApk,
-      isUpdateLanguage
+      isUpdateApk
     );
     const sign = step("正在发布...").start();
     const res = await this.samsungFetch(
@@ -44,8 +39,9 @@ export class Samsung {
     if (res.ok) {
       sign.succeed("三星分发成功");
     } else {
-      sign.fail(`pub_samsung ${res.statusText}`);
+      sign.fail(`pub_samsung ${res.statusText}: ${await res.text()}`);
     }
+    return res;
   };
 
   // 工具方法：获取jwt
@@ -122,21 +118,22 @@ export class Samsung {
   };
 
   /**工具方法：上传apk */
-  uploadApk = async () => {
+  uploadFile = async (file: File) => {
+    const signSession = step("正在获取上传地址...").start();
     const sessionItem = await this.createUploadSessionId();
-    const sign = step("正在上传APK...").start();
+    if (!sessionItem.url) {
+      signSession.fail("获取上传地址！");
+      throw new Error(sessionItem.url);
+    }
+    signSession.succeed(
+      `获取成功=>${sessionItem.url}[${sessionItem.sessionId}]`
+    );
     const formData = new FormData();
     // 必需的。要上传的文件，例如二进制文件、图像（图标、封面图像或屏幕截图）或 zip 文件（游戏行业年龄评级证书或应用审核所需的其他参考信息）以及文件类型。
-    formData.append("file", RESOURCES.apk);
-    // 必需的。要上传的文件，例如二进制文件、图像（图标、封面图像或屏幕截图）或 zip 文件（游戏行业年龄评级证书或应用审核所需的其他参考信息）以及文件类型。
+    formData.append("file", file);
     formData.append("sessionId", sessionItem.sessionId);
     const res = await this.samsungFetch(sessionItem.url, formData);
-    if (!res.ok) {
-      sign.fail(`samsung ${res.status}:${res.statusText}`);
-      throw Error(res.statusText);
-    }
     const result: $FileUploadSuccessResult = await res.json();
-    sign.succeed("samsung 上传APK成功");
     return result;
   };
 
@@ -144,19 +141,14 @@ export class Samsung {
    * 工具方法：应用程序提交并在 Galaxy Store 中出售后，修改应用程序信息，包括图像、图标和二进制文件
    * @returns
    */
-  updateAppInfo = async (
-    isUpdateScreenshots = false,
-    isUpdateApk = false,
-    isUpdateLanguage = false
-  ) => {
-    const { appInfo, binaryList, screenshots, addLanguage } =
-      await this.generateParams(
-        isUpdateScreenshots,
-        isUpdateApk,
-        isUpdateLanguage
-      );
+  updateAppInfo = async (isUpdateScreenshots = false, isUpdateApk = false) => {
+    const { appInfo, binaryList, screenshots } = await this.generateParams(
+      isUpdateScreenshots,
+      isUpdateApk
+    );
     // 构建上传需要的数据
     const updateParams = {
+      packageName: APP_METADATA.packageName,
       contentId: appInfo.contentId,
       appTitle: appInfo.appTitle,
       defaultLanguageCode: appInfo.defaultLanguageCode,
@@ -165,62 +157,70 @@ export class Samsung {
       binaryList: binaryList,
       newFeature: APP_METADATA.updateDesc,
       screenshots: screenshots,
-      addLanguage: addLanguage,
+      addLanguage: null,
       sellCountryList: null,
     };
 
     console.log(updateParams);
-    const res = await this.samsungFetch(
+    const initialResponse = await this.samsungFetch(
       `${this.BASE_URL}/seller/contentUpdate`,
       JSON.stringify(updateParams)
     );
-    console.log("res=>", res.status, res.statusText, res.headers);
-    const result = await res.json();
-    console.log("contentUpdate=>", result);
+    if (initialResponse.status === 302) {
+      const redirectUrl = initialResponse.headers.get("Location"); // 取得重定向 URL
+      if (redirectUrl == undefined) {
+        throw Error("not found redirectUrl");
+      }
+      const response = await this.samsungFetch(
+        `${this.BASE_URL}${redirectUrl}`,
+        JSON.stringify(updateParams)
+      );
+      const result = await response.text();
+      console.log(result);
+    }
+    const result = await initialResponse.text();
+    console.log("内容更新结果=>", result);
     return appInfo.contentId;
   };
 
   /**构建参数 */
   private async generateParams(
     isUpdateScreenshots = false,
-    isUpdateApk = false,
-    isUpdateLanguage = false
+    isUpdateApk = false
   ) {
     const appInfo = await this.fetchAppInfo();
     let binaryList = null;
     // 是否针对apk进行更新
     if (isUpdateApk) {
-      const uploadObj = await this.uploadApk();
+      const sign = step("正在上传APK...").start();
+      const apk = await this.uploadFile(RESOURCES.apk);
+      sign.succeed(`samsung 上传APK成功:${apk.fileName} ${apk.fileSize}`);
       const oldBinaryItem = appInfo.binaryList[appInfo.binaryList.length - 1];
       const binaryItem: $Binaryinfo = {
         ...oldBinaryItem,
         versionName: APP_METADATA.version,
-        filename: uploadObj.fileName,
-        filekey: uploadObj.fileKey,
+        fileName: apk.fileName,
+        filekey: apk.fileKey,
       };
       // 这里只能放10个版本信息，因此默认去掉旧的
       binaryList = appInfo.binaryList;
       if (appInfo.binaryList.length >= 10) {
         binaryList.shift();
-        binaryList.push(binaryItem);
       }
+      binaryList.push(binaryItem);
     }
     // 是否更新应用截图
     let screenshots = null;
     if (isUpdateScreenshots) {
-      screenshots = appInfo.screenshots.map((v) => {
-        v.reuseYn = true;
-        return v;
-      });
-    }
-    let addLanguage = null;
-    if (isUpdateLanguage) {
-      addLanguage = appInfo.addLanguage.map((v) => {
-        v.newFeature = APP_METADATA.updateDesc;
-        v.screenshots = v.screenshots.map((value) => {
-          value.reuseYn = true;
-          return value;
-        });
+      screenshots = appInfo.screenshots.map(async (v, index) => {
+        const sign = step(
+          `正在更新 ${v.screenshotPath.name} [${index}]...`
+        ).start();
+
+        const screenshot = await this.uploadFile(RESOURCES.screenshots[index]);
+        sign.succeed(`上传 ${RESOURCES.screenshots[index].name} 成功`);
+        v.screenshotKey = screenshot.fileKey;
+        v.reuseYn = false;
         return v;
       });
     }
@@ -228,7 +228,6 @@ export class Samsung {
       appInfo,
       binaryList,
       screenshots,
-      addLanguage,
     };
   }
   /**工具方法：fetch */
@@ -236,11 +235,16 @@ export class Samsung {
     const headers = await this.generateHeaders(data instanceof FormData);
     return fetch(url, {
       method: method,
+      redirect: "manual",
       headers,
       body: data,
     });
   }
-  /**更新app信息到应用商店 */
+  /**更新app信息到应用商店
+   * FOR_SALE:分发状态
+   * SUSPENDED: 暂停应用程序的分发
+   * TERMINATED：让处于暂停状态的app终止
+   * */
   updateAppState = async () => {
     const appInfo = await this.fetchAppInfo();
     const res = await this.samsungFetch(

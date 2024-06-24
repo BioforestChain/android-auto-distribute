@@ -110,19 +110,13 @@ export const uploadIcon = () => {
 
 /**工具函数：上传截屏页面 */
 export const uploadScreenshot = async () => {
-  const uploadList = [
-    "screenshot_1",
-    "screenshot_2",
-    "screenshot_3",
-    "screenshot_4",
-  ];
   let serialnumbers = "";
-  for (const name in uploadList) {
+  for (const screenshot of RESOURCES.screenshots) {
     const serialnumber = (
       await warpUpload(
-        `loading ${name}...`,
+        `loading ${screenshot.name}...`,
         MethodType.uploadScreenshot,
-        RESOURCES.icon
+        screenshot
       )
     ).serialnumber;
     serialnumbers += `,${serialnumber}`;

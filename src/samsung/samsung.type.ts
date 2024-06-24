@@ -180,7 +180,7 @@ export interface $Binaryinfo {
   apiminSdkVersion: number; // 支持的最小API级别或操作系统版本
   binarySeq: number; // 在更改现有二进制数据时需要，从contentInfo响应中复制此值，此值在Seller Portal中不可见
   filekey: string; // 新注册或更换二进制文件时需要，与上传文件相关联的fileKey。在请求中，你必须创建会话ID然后上传文件以获取fileKey
-  filename: string; // 二进制文件的名称
+  fileName: string; // 二进制文件的名称
   gms: boolean; // 如果更新binaryList，则需要。应用是否提供谷歌服务（如Google Maps™、Gmail™和Talk）
   // Y: 应用提供一个或多个谷歌服务
   // N: 应用不提供任何谷歌服务

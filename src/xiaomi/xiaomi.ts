@@ -39,10 +39,10 @@ export async function pub_xiami() {
     RequestData: JSON.stringify(RequestData),
     apk: RESOURCES.apk,
     icon: RESOURCES.icon,
-    screenshot_1: RESOURCES.screenshot_1,
-    screenshot_2: RESOURCES.screenshot_2,
-    screenshot_3: RESOURCES.screenshot_3,
-    screenshot_4: RESOURCES.screenshot_4,
+    screenshot_1: RESOURCES.screenshots[0],
+    screenshot_2: RESOURCES.screenshots[1],
+    screenshot_3: RESOURCES.screenshots[2],
+    screenshot_4: RESOURCES.screenshots[3],
   };
   const signal = step("开始签名...").start();
   pushRequestData.SIG = await digitalSignature(pushRequestData);
