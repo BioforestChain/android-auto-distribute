@@ -142,6 +142,7 @@ export class Samsung {
    * @returns
    */
   updateAppInfo = async (isUpdateScreenshots = false, isUpdateApk = false) => {
+    const update = step("更新应用信息...").start();
     const { appInfo, binaryList, screenshots } = await this.generateParams(
       isUpdateScreenshots,
       isUpdateApk
@@ -157,29 +158,20 @@ export class Samsung {
       binaryList: binaryList,
       newFeature: APP_METADATA.updateDesc,
       screenshots: screenshots,
-      addLanguage: null,
-      sellCountryList: null,
     };
 
-    console.log(updateParams);
-    const initialResponse = await this.samsungFetch(
+    const res = await this.samsungFetch(
       `${this.BASE_URL}/seller/contentUpdate`,
-      JSON.stringify(updateParams)
+      JSON.stringify(updateParams),
+      "POST",
+      "include"
     );
-    if (initialResponse.status === 302) {
-      const redirectUrl = initialResponse.headers.get("Location"); // 取得重定向 URL
-      if (redirectUrl == undefined) {
-        throw Error("not found redirectUrl");
-      }
-      const response = await this.samsungFetch(
-        `${this.BASE_URL}${redirectUrl}`,
-        JSON.stringify(updateParams)
-      );
-      const result = await response.text();
-      console.log(result);
+    
+    if(res.ok) {
+      update.succeed("samsung 更新应用信息成功");
+    } else {
+      update.fail("samsung 更新应用信息失败");
     }
-    const result = await initialResponse.text();
-    console.log("内容更新结果=>", result);
     return appInfo.contentId;
   };
 
@@ -198,7 +190,9 @@ export class Samsung {
       const oldBinaryItem = appInfo.binaryList[appInfo.binaryList.length - 1];
       const binaryItem: $Binaryinfo = {
         ...oldBinaryItem,
+        binarySeq: "" + (parseInt(oldBinaryItem.binarySeq) + 1),
         versionName: APP_METADATA.version,
+        versionCode: "" + (parseInt(oldBinaryItem.versionCode) + 1),
         fileName: apk.fileName,
         filekey: apk.fileKey,
       };
@@ -223,6 +217,11 @@ export class Samsung {
         v.reuseYn = false;
         return v;
       });
+    } else {
+      screenshots = appInfo.screenshots.map((v) => {
+        v.reuseYn = true;
+        return v;
+      });
     }
     return {
       appInfo,
@@ -231,12 +230,17 @@ export class Samsung {
     };
   }
   /**工具方法：fetch */
-  private async samsungFetch(url: string, data?: BodyInit, method = "POST") {
+  private async samsungFetch(
+    url: string,
+    data?: BodyInit,
+    method = "POST",
+    credentials: RequestCredentials = "same-origin"
+  ) {
     const headers = await this.generateHeaders(data instanceof FormData);
     return fetch(url, {
       method: method,
-      redirect: "manual",
       headers,
+      credentials,
       body: data,
     });
   }
