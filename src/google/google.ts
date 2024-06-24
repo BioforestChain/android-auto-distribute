@@ -1,7 +1,6 @@
 import { androidpublisher_v3, google } from "npm:googleapis";
 import { EditOptions } from "./google.type.ts";
 import { APP_METADATA, RESOURCES } from "../../app.ts";
-import fs from "node:fs";
 
 const androidPublisher: androidpublisher_v3.Androidpublisher =
   google.androidpublisher("v3");
@@ -57,12 +56,15 @@ const uploadToPlayStore = async (options: EditOptions) => {
 
   await addReleaseToTrack(appEditId, options, bundle.versionCode);
 
-  const res = await androidPublisher.edits.commit({
-    auth: options.auth,
-    editId: appEditId,
-    packageName: options.applicationId,
-    changesNotSentForReview: options.changesNotSentForReview,
-  });
+  const res = await androidPublisher.edits.commit(
+    {
+      auth: options.auth,
+      editId: appEditId,
+      packageName: options.applicationId,
+      changesNotSentForReview: options.changesNotSentForReview,
+    },
+    null
+  );
 
   if (res.data.id) {
     return res.data.id;
