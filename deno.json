@@ -7,5 +7,12 @@
   "imports": {},
   "exclude": [
     "private"
-  ]
+  ],
+  "compilerOptions": {
+    "lib": [
+      "deno.window",
+      "dom",
+      "exnext"
+    ]
+  }
 }
