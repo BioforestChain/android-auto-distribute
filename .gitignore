@@ -7,3 +7,6 @@ apk
 
 /app.ts
 /src/.*.ts
+
+cookies.json
+localStorage.json
