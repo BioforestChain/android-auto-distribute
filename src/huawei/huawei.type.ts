@@ -106,7 +106,7 @@ interface CommonUrlInfo {
   objectId: string;
   url: string;
   method: string;
-  headers: Map<string, string>;
+  headers: Record<string, string>;
 }
 
 export interface FileInfo {

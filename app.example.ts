@@ -21,12 +21,17 @@ export const APP_METADATA = {
   desc: "",
 };
 
+export const UpdateHandle = {
+  apk: false, /// 是否更新apk
+  screenshots: false, /// 是否更新screenshots
+  icon: false, /// 是否更新icon  // 使用频率低还没写
+};
+
 /**静态文件资源地址 */
 export const RESOURCES = {
   apk: await readFile(
-    `./apk/android_v${APP_METADATA.version}/xxx_arm64_v${APP_METADATA.version}.apk`
+    `./apk/android_v${APP_METADATA.version}/xx_arm64_v${APP_METADATA.version}.apk`
   ),
-  apk_name: `xxx_arm64_v${APP_METADATA.version}.apk`,
   icon: await readFile("./private/image/xxx.png"),
   iconName: "logo.png",
   screenshots: [
@@ -35,4 +40,6 @@ export const RESOURCES = {
     await readFile("./private/image/3.png"),
     await readFile("./private/image/4.png"),
   ],
+  executablePath:
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", // 本地chrome 浏览器地址
 };

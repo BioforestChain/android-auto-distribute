@@ -7,8 +7,8 @@ import {
   AppIdSuccessResult,
   AppInfoSuccessResult,
   ResponseBaseResult,
-  UploadUrlInfoSuccessResult,
   UpdateAppInfoSuccessResult,
+  UploadUrlInfoSuccessResult,
 } from "./huawei.type.ts";
 
 const BASE_URL = "https://connect-api.cloud.huawei.com";
@@ -146,7 +146,7 @@ const getUploadUrl = async () => {
   const params = new URLSearchParams();
   const file = RESOURCES.apk;
   params.append("appId", appId);
-  params.append("fileName", RESOURCES.apk_name);
+  params.append("fileName", RESOURCES.apk.name);
   params.append("contentLength", "" + file.size);
   params.append("sha256", await digestFileAlgorithm(file, "SHA-256"));
 
@@ -229,7 +229,7 @@ const updateAppInfo = async () => {
         lang: "zh-CN",
         fileType: 5,
         files: {
-          fileName: RESOURCES.apk_name,
+          fileName: RESOURCES.apk.name,
           fileDestUrl: objectId,
         },
       }),

@@ -1,4 +1,5 @@
 import { APP_METADATA } from "../app.ts";
+import { pub_360 } from "./360/360.ts";
 import { pub_ali } from "./ali/ali.ts";
 import { pub_google } from "./google/google.ts";
 
@@ -9,6 +10,18 @@ import { pub_vivo } from "./vivo/vivo.ts";
 import { pub_xiami } from "./xiaomi/xiaomi.ts";
 
 /// 🌸更新apk到各大应用商城 deno task pub
+
+const pubFunctions = {
+  xiaomi: pub_xiami,
+  vivo: pub_vivo,
+  oppo: pub_oppo,
+  huawei: pub_huawei,
+  samsung: pub_samsung,
+  google: pub_google,
+  ali: pub_ali,
+  360: pub_360,
+  // 添加其他平台和对应的发布函数
+};
 
 const doUpdate = async (args = Deno.args) => {
   const targets =
@@ -22,36 +35,22 @@ const doUpdate = async (args = Deno.args) => {
           "samsung",
           "google",
           "360",
+          "huawei",
+          "ali",
         ]
       : args;
+
   for (const target of targets) {
     console.log(
       `%cStart publishing v${APP_METADATA.version} to  %c${target}:`,
       "color: blue",
       "color: cyan"
     );
-    switch (target) {
-      case "xiaomi":
-        await pub_xiami();
-        break;
-      case "oppo":
-        await pub_oppo();
-        break;
-      case "huawei":
-        await pub_huawei();
-        break;
-      case "samsung":
-        await pub_samsung();
-        break;
-      case "vivo":
-        await pub_vivo();
-        break;
-      case "google":
-        await pub_google();
-        break;
-      case "ali":
-        await pub_ali();
-        break;
+    const pubFunction = pubFunctions[target as keyof typeof pubFunctions];
+    if (pubFunction) {
+      await pubFunction();
+    } else {
+      console.warn(`No publishing function found for ${target}`);
     }
   }
 };

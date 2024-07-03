@@ -1,10 +1,16 @@
 import { step } from "jsr:@sylc/step-spinner";
-import { APP_METADATA } from "../../app.ts";
+import { APP_METADATA, RESOURCES, UpdateHandle } from "../../app.ts";
 import { Page } from "../../deps.ts";
 import { ali } from "../../env.ts";
-import { decoder, encoder } from "../helper/crypto.ts";
+import { loadLoginInfo, saveLoginInfo } from "../helper/cookie.ts";
 import { fileExists } from "../helper/file.ts";
-import { createPage } from "../helper/puppeteer.ts";
+import {
+  clearAndEnter,
+  createPage,
+  delay,
+  navClick,
+  postInputFile,
+} from "../helper/puppeteer.ts";
 
 /**
  * 主入口
@@ -18,8 +24,7 @@ export const pub_ali = async () => {
   });
   browserSign.succeed("打开成功");
   if (await fileExists("./src/ali/cookies.json")) {
-    await reloadLogin(page); // 如果登陆过了，直接加载登陆信息
-    // TODO 如果信息过期了，需要重新执行 loginInSave
+    await loadLoginInfo(page, "ali"); // 如果登陆过了，直接加载登陆信息
   } else {
     await loginInSave(page); // 没有登陆过，登陆一下
   }
@@ -60,6 +65,10 @@ export const pub_ali = async () => {
   editUpdate?.click();
   await page.waitForNavigation({ waitUntil: "networkidle2" });
 
+  UpdateHandle.apk && (await updateApk(page));
+
+  UpdateHandle.screenshots && (await updateScreenshots(page));
+
   const input = clearAndEnter(page);
   /// 填入app名称
   await input("#appNameInput", APP_METADATA.appName);
@@ -72,6 +81,51 @@ export const pub_ali = async () => {
   /// 隐私政策地址
   await input("#privacyPolicyUrlInput", APP_METADATA.privacyUrl);
   /// TODO 这里再添加是否需要更新app图片 用户审核没问题后，自己点击提交审核
+};
+
+const updateApk = async (page: Page) => {
+  const sign = step("正在上传APK...").start();
+  const res = await postInputFile(
+    page,
+    'div.apk-btn-box input[id="fileupload"]',
+    RESOURCES.apk
+  );
+  if (!res) {
+    sign.fail("上传apk失败！");
+  }
+  /// 等待进度条状态出现
+  await page.waitForSelector("span#versionName", {
+    timeout: 0,
+  });
+  /// 等待上传完成
+  (async () => {
+    while (true) {
+      const versionName = await page.$eval(
+        "span#versionName",
+        (el) => el.textContent
+      );
+      if (versionName === APP_METADATA.version) {
+        sign.succeed("上传应用文件成功");
+        break;
+      }
+      await delay(1000);
+    }
+  })();
+};
+
+/** 上传截屏 */
+const updateScreenshots = async (page: Page) => {
+  const sign = step("正在上传截图...").start();
+  await Promise.all(
+    RESOURCES.screenshots.map(async (file, index) => {
+      const res = await postInputFile(page, `input#shot${index + 1}`, file);
+      if (!res) {
+        sign.fail("上传截图失败！");
+      }
+      return res;
+    })
+  );
+  sign.succeed("截屏上传成功！");
 };
 
 /**
@@ -104,77 +158,6 @@ const loginInSave = async (page: Page) => {
     timeout: 0, // 设置不超时
   });
   loginSign.succeed("登陆成功！");
-
-  const signCookie = step("正在保存登陆信息...");
-  // 登录成功后，获取所有cookies
-  const cookies = await page.cookies();
-
-  // 将cookies保存到文件中
-  await Deno.writeFile(
-    "./src/ali/cookies.json",
-    encoder.encode(JSON.stringify(cookies, null, 2))
-  );
-  const localStorageData = await page.evaluate(() => {
-    const json: { [key: string]: string | null } = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key) json[key] = localStorage.getItem(key);
-    }
-    return json;
-  });
-  await Deno.writeFile(
-    "./src/ali/localStorage.json",
-    encoder.encode(JSON.stringify(localStorageData, null, 2))
-  );
-  signCookie.succeed("登陆信息保存成功！");
+  // 保存登陆信息
+  await saveLoginInfo(page, "ali");
 };
-
-/**重新加载登陆信息 */
-const reloadLogin = async (page: Page) => {
-  const cookiesString = decoder.decode(
-    await Deno.readFile("./src/ali/cookies.json")
-  );
-  const cookies = JSON.parse(cookiesString);
-  // 设置之前保存的cookies
-  await page.setCookie(...cookies);
-  const localStorageData = JSON.parse(
-    decoder.decode(await Deno.readFile("./src/ali/localStorage.json"))
-  );
-  // 在页面加载后设置localStorage数据
-  await page.evaluate((data) => {
-    for (const key in data) {
-      localStorage.setItem(key, data[key]);
-    }
-  }, localStorageData);
-
-  // 刷新页面，让localStorage生效
-  await page.reload({
-    waitUntil: "networkidle0",
-  });
-};
-
-/**
- * 模拟点击，触发导航并等待新页面加载完成
- * @param page
- * @returns
- */
-const navClick = (page: Page) => {
-  return (select: string) => {
-    return Promise.all([
-      page.waitForNavigation({ waitUntil: "networkidle2" }),
-      page.click(select),
-    ]);
-  };
-};
-
-/**清空并输入数据 */
-const clearAndEnter = (page: Page) => {
-  return async (selector: string, data: string) => {
-    await page.evaluate((selector) => {
-      (document.querySelector(selector) as HTMLInputElement).value = "";
-    }, selector);
-    await page.type(selector, data);
-  };
-};
-
-// 清空input内容

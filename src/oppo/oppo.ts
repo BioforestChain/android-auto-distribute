@@ -17,12 +17,12 @@ const BASE_URL = "https://oop-openapi-cn.heytapmobi.com";
 let ACCESS_TOKEN: AccessTokenSuccessResult | null = null;
 
 // 签名排序
-const calSign = (data: Map<string, string>) => {
+const calSign = (data: Record<string, string>) => {
   // 将键存储在数组中并排序
-  const keysArr: string[] = Array.from(data.keys()).sort();
+  const keysArr: string[] = Array.from(Object.keys(data)).sort();
 
   // 拼接参数
-  const signArr = keysArr.map((key) => `${key}=${data.get(key)}`);
+  const signArr = keysArr.map((key) => `${key}=${data[key]}`);
   const signStr = signArr.join("&");
 
   // 进行HmacSHA256计算
@@ -38,11 +38,11 @@ const queryAppInfo = async () => {
   if (access_token === null) {
     return null;
   }
-  const data: Map<string, string> = new Map();
-  data.set("access_token", access_token);
-  data.set("timestamp", Math.floor(Date.now() / 1000).toString());
-  data.set("pkg_name", APP_METADATA.packageName);
-  data.set("api_sign", calSign(data));
+  const data: Record<string, string> = {};
+  data["access_token"] = access_token;
+  data["timestamp"] = Math.floor(Date.now() / 1000).toString();
+  data["pkg_name"] = APP_METADATA.packageName;
+  data["api_sign"] = calSign(data);
 
   const urlParams = new URLSearchParams(data);
 
@@ -76,12 +76,12 @@ const fetchTaskState = async (version_code: string) => {
     return;
   }
 
-  const data = new Map<string, string>();
-  data.set("access_token", access_token);
-  data.set("timestamp", Math.floor(Date.now() / 1000).toString());
-  data.set("pkg_name", APP_METADATA.packageName);
-  data.set("version_code", version_code);
-  data.set("api_sign", calSign(data));
+  const data: Record<string, string> = {};
+  data["access_token"] = access_token;
+  data["timestamp"] = Math.floor(Date.now() / 1000).toString();
+  data["pkg_name"] = APP_METADATA.packageName;
+  data["version_code"] = version_code;
+  data["api_sign"] = calSign(data);
   const formEncoded = new URLSearchParams(data);
 
   const res = await fetch(`${BASE_URL}/resource/v1/app/task-state`, {
@@ -141,10 +141,10 @@ const uploadApkFile = async () => {
     return null;
   }
 
-  const data: Map<string, string> = new Map();
-  data.set("access_token", access_token);
-  data.set("timestamp", Math.floor(Date.now() / 1000).toString());
-  data.set("api_sign", calSign(data));
+  const data: Record<string, string> = {};
+  data["access_token"] = access_token;
+  data["timestamp"] = Math.floor(Date.now() / 1000).toString();
+  data["api_sign"] = calSign(data);
   const formEncoded = new URLSearchParams(data);
 
   const res = await fetch(
@@ -164,7 +164,7 @@ const uploadApkFile = async () => {
       const data = new FormData();
       data.append("type", "apk");
       data.append("sign", result.data.sign);
-      data.append("file", new Blob([RESOURCES.apk]), RESOURCES.apk_name);
+      data.append("file", RESOURCES.apk);
 
       const response = await fetch(result.data.upload_url, {
         method: "POST",
@@ -248,24 +248,25 @@ export const pub_oppo = async () => {
     adaptive_equipment: appInfo.adaptive_equipment,
   };
 
-  const data: Map<string, string> = new Map();
+  // deno-lint-ignore no-explicit-any
+  const data: Record<string, any> = {};
 
   for (const key in importantParams) {
     const value = importantParams[key as keyof ImportantParams];
 
     if (typeof value === "string") {
-      data.set(key, value);
+      data[key] = null;
     } else if (typeof value === "number") {
-      data.set(key, "" + value);
+      data[key] = "" + value;
     } else if (value === null) {
-      data.set(key, "null");
+      data[key] = null;
     } else {
-      data.set(key, JSON.stringify(value));
+      data[key] = JSON.stringify(value);
     }
   }
-  data.set("access_token", access_token);
-  data.set("timestamp", Math.floor(Date.now() / 1000).toString());
-  data.set("api_sign", calSign(data));
+  data["access_token"] = access_token;
+  data["timestamp"] = Math.floor(Date.now() / 1000).toString();
+  data["api_sign"] = calSign(data);
 
   const formEncoded = new URLSearchParams(data);
   const res = await fetch(`${BASE_URL}/resource/v1/app/upd`, {
