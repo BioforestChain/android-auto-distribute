@@ -1,5 +1,5 @@
 import { RESOURCES } from "../../app.ts";
-import { Frame, Page, puppeteer } from "../../deps.ts";
+import { ElementHandle, Frame, Page, puppeteer } from "../../deps.ts";
 // 等待函数
 export function delay(time: number) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -50,21 +50,50 @@ export const navClick = (page: Page) => {
 /**清空并输入数据 */
 export const clearAndEnter = (page: Page | Frame) => {
   return async (selector: string, data: string) => {
-    // 可以比对没有修改就不做更新
-    await page.evaluate((selector) => {
-      (document.querySelector(selector) as HTMLInputElement).value = "";
-    }, selector);
-    await page.type(selector, data);
+    await page.evaluate(
+      (selector, data) => {
+        const tag = document.querySelector(selector);
+        if (tag) {
+          if (tag instanceof HTMLTextAreaElement) {
+            tag.value = data;
+          } else if (tag instanceof HTMLInputElement) {
+            tag.value = data;
+          } else {
+            tag.textContent = data;
+          }
+        }
+      },
+      selector,
+      data
+    );
   };
+};
+
+/**移动元素到视口 */
+// deno-lint-ignore no-explicit-any
+export const scrollIntoView = (page: Page, el: ElementHandle<any>) => {
+  return page.evaluate((element) => {
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "center",
+    });
+  }, el);
 };
 
 /**封装了一层input文件上传 */
 export const postInputFile = async (
   page: Page,
-  selector: string,
+  // deno-lint-ignore no-explicit-any
+  selector: string | ElementHandle<any>,
   file: File
 ) => {
-  const input = await page.waitForSelector(selector);
+  let input;
+  if (typeof selector === "string") {
+    input = await page.waitForSelector(selector);
+  } else {
+    input = selector;
+  }
   if (input == null) {
     console.error(`not found ${selector}`);
     return false;
@@ -73,15 +102,20 @@ export const postInputFile = async (
   const fileContent = new Uint8Array(await file.arrayBuffer());
   // 使用 evaluate 方法将文件内容和名称传递给 input 元素
   await input.evaluate(
-    (el, { fileContent, fileName }) => {
+    (el, { fileContent, fileName, mime }) => {
       const byteArray = new Uint8Array(fileContent);
-      const file = new File([byteArray], fileName);
+      console.log("fileName=>", fileName, mime);
+      const file = new File([byteArray], fileName, { type: mime });
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
       (el as HTMLInputElement).files = dataTransfer.files;
       el.dispatchEvent(new Event("change", { bubbles: true }));
     },
-    { fileContent: Array.from(fileContent), fileName: file.name }
+    {
+      fileContent: Array.from(fileContent),
+      fileName: file.name,
+      mime: file.type,
+    }
   );
   return true;
 };

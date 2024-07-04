@@ -54,11 +54,14 @@ deno task pub xiaomi
 
 ```bash
 deno task pub [xiaomi]
+#支持参数 xiaomi vivo oppo huawei samsung google ali 360 baidu tencent
 ```
 
 ### 半自动化发布
 
 没有自动发布接口的平台需要用户输入手机验证码登陆。这时候会打开浏览器，并且帮助用户输入所有需要发布更新的信息。
+
+> 在半自动化发布的时候，会让用户审核填充无问题后，手动点击提交审核，这个还是得人工看一遍比较有底。
 
 ## query（还没写）
 

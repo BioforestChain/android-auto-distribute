@@ -3,9 +3,23 @@ export const readFile = async (filePath: string) => {
   const fileName = filePath.split("/").pop() || "default.txt"; // 提取文件名
 
   const file = new File([fileData], fileName, {
-    type: "application/octet-stream",
+    type: getMimeType(fileName),
   });
   return file;
+};
+
+// 函数用于根据文件扩展名自动设置 MIME 类型
+export const getMimeType = (fileName: string) => {
+  const extension = fileName.split(".").pop()?.toLowerCase();
+  switch (extension) {
+    case "jpg":
+    case "jpeg":
+      return "image/jpeg";
+    case "png":
+      return "image/png";
+    default:
+      return "application/octet-stream";
+  }
 };
 
 export async function fileExists(filePath: string): Promise<boolean> {
