@@ -46,7 +46,7 @@ export const pub_vivo = async (
   isUpdateIcon = false,
   isUpdateScreenshot = false
 ) => {
-  const fileMd5 = await digestFileAlgorithm(RESOURCES.apk);
+  const fileMd5 = await digestFileAlgorithm(RESOURCES.apk_64);
   // 获取app信息
   const info = await getAppMessage();
   // 获取上传到apk信息
@@ -98,9 +98,14 @@ const getAppMessage = async () => {
  * 工具函数应用Apk 文件上传
  */
 export const uploadApk = async (fileMd5: string) => {
-  return warpUpload("uploading APK...", MethodType.uploadApp, RESOURCES.apk, {
-    fileMd5: fileMd5,
-  });
+  return warpUpload(
+    "uploading APK...",
+    MethodType.uploadApp,
+    RESOURCES.apk_64,
+    {
+      fileMd5: fileMd5,
+    }
+  );
 };
 
 /**工具函数：上传icon */

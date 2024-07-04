@@ -1,6 +1,6 @@
 import { androidpublisher_v3, google } from "npm:googleapis";
-import { EditOptions } from "./google.type.ts";
 import { APP_METADATA, RESOURCES } from "../../app.ts";
+import { EditOptions } from "./google.type.ts";
 
 const androidPublisher: androidpublisher_v3.Androidpublisher =
   google.androidpublisher("v3");
@@ -34,7 +34,7 @@ const uploadBundle = async (appEditId: string, options: EditOptions) => {
     editId: appEditId,
     media: {
       mimeType: "application/octet-stream",
-      body: RESOURCES.aab,
+      body: RESOURCES.aab_64,
     },
   });
 

@@ -164,7 +164,7 @@ const uploadApkFile = async () => {
       const data = new FormData();
       data.append("type", "apk");
       data.append("sign", result.data.sign);
-      data.append("file", RESOURCES.apk);
+      data.append("file", RESOURCES.apk_64);
 
       const response = await fetch(result.data.upload_url, {
         method: "POST",

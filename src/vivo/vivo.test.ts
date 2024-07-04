@@ -11,7 +11,7 @@ Deno.test("vivo 查询详细信息", async () => {
 });
 
 Deno.test("vivo 上传APK文件", async () => {
-  const fileMd5 = await digestFileAlgorithm(RESOURCES.apk);
+  const fileMd5 = await digestFileAlgorithm(RESOURCES.apk_64);
   // 获取上传到apk信息
   const apkInfo = await uploadApk(fileMd5);
   console.log(apkInfo);

@@ -196,7 +196,7 @@ export class Samsung {
     // 是否针对apk进行更新
     if (isUpdateApk) {
       const sign = step("正在上传APK...").start();
-      const apk = await this.uploadFile(RESOURCES.apk);
+      const apk = await this.uploadFile(RESOURCES.apk_64);
       sign.succeed(`samsung 上传APK成功:${apk.fileName} ${apk.fileSize}`);
       const oldBinaryItem = appInfo.binaryList[appInfo.binaryList.length - 1];
       const binaryItem: $Binaryinfo = {

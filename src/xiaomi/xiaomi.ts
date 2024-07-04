@@ -37,7 +37,7 @@ export async function pub_xiami() {
   /**发布参数 */
   const pushRequestData: $PushRequest = {
     RequestData: JSON.stringify(RequestData),
-    apk: RESOURCES.apk,
+    apk: RESOURCES.apk_64,
     icon: RESOURCES.icon,
     screenshot_1: RESOURCES.screenshots[0],
     screenshot_2: RESOURCES.screenshots[1],

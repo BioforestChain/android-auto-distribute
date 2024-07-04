@@ -105,7 +105,7 @@ const updateApk = async (page: Page) => {
   const res = await postInputFile(
     page,
     'span#uploadapk_btn input[type="file"]',
-    RESOURCES.apk
+    RESOURCES.apk_64
   );
   if (!res) {
     sign.fail("上传apk失败！");

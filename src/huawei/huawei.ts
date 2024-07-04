@@ -144,9 +144,9 @@ const getUploadUrl = async () => {
   }
 
   const params = new URLSearchParams();
-  const file = RESOURCES.apk;
+  const file = RESOURCES.apk_64;
   params.append("appId", appId);
-  params.append("fileName", RESOURCES.apk.name);
+  params.append("fileName", RESOURCES.apk_64.name);
   params.append("contentLength", "" + file.size);
   params.append("sha256", await digestFileAlgorithm(file, "SHA-256"));
 
@@ -184,7 +184,7 @@ const uploadApk = async () => {
   const res = await fetch(urlInfo.url, {
     method: urlInfo.method,
     headers: urlInfo.headers,
-    body: RESOURCES.apk,
+    body: RESOURCES.apk_64,
   });
 
   if (res.ok) {
@@ -229,7 +229,7 @@ const updateAppInfo = async () => {
         lang: "zh-CN",
         fileType: 5,
         files: {
-          fileName: RESOURCES.apk.name,
+          fileName: RESOURCES.apk_64.name,
           fileDestUrl: objectId,
         },
       }),

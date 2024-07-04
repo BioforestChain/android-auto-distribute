@@ -56,6 +56,8 @@ export const clearAndEnter = (page: Page | Frame) => {
         if (tag) {
           if (tag instanceof HTMLTextAreaElement) {
             tag.value = data;
+            tag.dispatchEvent(new Event("input", { bubbles: true }));
+            tag.dispatchEvent(new Event("change", { bubbles: true }));
           } else if (tag instanceof HTMLInputElement) {
             tag.value = data;
           } else {
