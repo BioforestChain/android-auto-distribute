@@ -67,18 +67,22 @@ export const pub_tencent = async () => {
   await page.waitForSelector(updateDoec);
   await input(updateDoec, APP_METADATA.updateDesc);
 
+  /// 判断是否要上传apk包
   if (UpdateHandle.apk) {
-    const ifUpdate32 = RESOURCES.apk_32 ? 1 : 0;
     /// 看看是否要上传32位安装包
     if (RESOURCES.apk_32) {
       await updateApk(page, 0, RESOURCES.apk_32);
-    } else {
-      /// 以为着不需要上传32位的，帮用户关闭32位上传
-      const [dUpload] = await page.$x("//span[text()='不上传']");
+    }
+
+    /// 上传64位安装包
+    await updateApk(page, 1, RESOURCES.apk_64);
+
+    /// 不需要上传32位的，帮用户关闭32位上传
+    if (!RESOURCES.apk_32) {
+      const dUpload = await page.waitForXPath("//span[text()='不上传']");
+      console.log("dUpload=>", dUpload);
       if (dUpload) await dUpload.click();
     }
-    /// 上传64位安装包
-    await updateApk(page, ifUpdate32, RESOURCES.apk_64);
   }
 
   console.log("请审核无错误后，点击提交。");
@@ -86,6 +90,8 @@ export const pub_tencent = async () => {
 
 const updateApk = async (page: Page, index: number, file: File) => {
   const sign = step(`正在上传apk...`).start();
+  // 等待文件上传的 input 元素出现
+  await page.waitForSelector("input[type='file'][name='myInputFile']");
   const input = await page.evaluateHandle((index) => {
     const divs = Array.from(
       document.querySelectorAll("input[type='file'][name='myInputFile']")
@@ -95,6 +101,7 @@ const updateApk = async (page: Page, index: number, file: File) => {
   if (!input) {
     return sign.fail(`not found input!${index}`);
   }
+
   /// 上传apk
   const res = await postInputFile(page, input, file);
   if (!res) {
@@ -136,7 +143,6 @@ const loginInSave = async (page: Page) => {
   const frames = page.frames();
   //获取登陆的frame
   const loginFrame = frames.find((f) => {
-    console.log("url=>", f.url());
     return f.url().includes("https://xui.ptlogin2.qq.com/cgi-bin/xlogin");
   });
 

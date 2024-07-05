@@ -55,6 +55,19 @@ export const clearAndEnter = (page: Page | Frame) => {
         const tag = document.querySelector(selector);
         if (tag) {
           if (tag instanceof HTMLTextAreaElement) {
+            /// 防止被设置回来
+            const observer = new MutationObserver(() => {
+              if (tag.value !== data) {
+                tag.value = data;
+                tag.dispatchEvent(new Event("input", { bubbles: true }));
+                tag.dispatchEvent(new Event("change", { bubbles: true }));
+              }
+            });
+            observer.observe(tag, {
+              attributes: true,
+              childList: true,
+              subtree: true,
+            });
             tag.value = data;
             tag.dispatchEvent(new Event("input", { bubbles: true }));
             tag.dispatchEvent(new Event("change", { bubbles: true }));
@@ -100,24 +113,43 @@ export const postInputFile = async (
     console.error(`not found ${selector}`);
     return false;
   }
-  // 读取文件内容
+  // 读取文件内容并分块
+  const CHUNK_SIZE = 1024 * 1024; // 1MB
   const fileContent = new Uint8Array(await file.arrayBuffer());
+  const chunks = [];
+  for (let i = 0; i < fileContent.length; i += CHUNK_SIZE) {
+    chunks.push(fileContent.subarray(i, i + CHUNK_SIZE));
+  }
+
+  // 在浏览器上下文中创建一个全局变量用于存储文件数据
+  await page.evaluate(() => {
+    // deno-lint-ignore no-explicit-any
+    (window as any).fileChunks = [];
+  });
+  // 依次传递分块数据到浏览器上下文并拼接
+  for (const chunk of chunks) {
+    await page.evaluate((chunkArray) => {
+      const byteArray = new Uint8Array(chunkArray);
+      // deno-lint-ignore no-explicit-any
+      (window as any).fileChunks.push(byteArray);
+    }, Array.from(chunk));
+  }
+
   // 使用 evaluate 方法将文件内容和名称传递给 input 元素
-  await input.evaluate(
-    (el, { fileContent, fileName, mime }) => {
-      const byteArray = new Uint8Array(fileContent);
-      console.log("fileName=>", fileName, mime);
-      const file = new File([byteArray], fileName, { type: mime });
+  await page.evaluate(
+    (input, fileName, mimeType) => {
+      // deno-lint-ignore no-explicit-any
+      const fileChunks = (window as any).fileChunks;
+      const blob = new Blob(fileChunks, { type: mimeType });
+      const file = new File([blob], fileName, { type: mimeType });
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
-      (el as HTMLInputElement).files = dataTransfer.files;
-      el.dispatchEvent(new Event("change", { bubbles: true }));
+      input.files = dataTransfer.files;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
     },
-    {
-      fileContent: Array.from(fileContent),
-      fileName: file.name,
-      mime: file.type,
-    }
+    selector,
+    file.name,
+    file.type
   );
   return true;
 };
