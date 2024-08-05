@@ -97,7 +97,7 @@ const getAppMessage = async () => {
 /**
  * 工具函数应用Apk 文件上传
  */
-export const uploadApk = async (fileMd5: string) => {
+export const uploadApk = (fileMd5: string) => {
   return warpUpload(
     "uploading APK...",
     MethodType.uploadApp,

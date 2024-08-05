@@ -29,13 +29,13 @@ export interface ApkInfo {
   cpu_code: number;
 }
 
-export interface SignParams {
+export type $SignParams = {
   access_token: string; // 鉴权接口返回的限期access_token
   timestamp: string; // 时间戳（秒级）示例：1609401600，允许客户端请求最大时间误差为15分钟
-  api_sign: string; // API输入参数签名结果，签名算法参照下面的介绍
-}
+  api_sign?: string; // API输入参数签名结果，签名算法参照下面的介绍
+};
 
-export interface ImportantParams {
+export type $ImportantParams = {
   pkg_name: string; // 应用包名
   version_code: string; // 版本号
   version_name: string; // 版本号
@@ -58,10 +58,10 @@ export interface ImportantParams {
   business_mobile: string; // 商务联系人电话
   age_level: number; // APP年龄分级，示例：3
   adaptive_equipment: number; // 平板适配，4-手机，5-平板，6-手机和平板
-}
+};
 
 export interface AppInfoSuccessResult extends ResponseBaseResult {
-  data: ImportantParams;
+  data: $ImportantParams;
 }
 
 export interface UploadUrlSuccessResult extends ResponseBaseResult {

@@ -103,7 +103,8 @@ export const postInputFile = async (
   selector: string | ElementHandle<any>,
   file: File
 ) => {
-  let input;
+  // deno-lint-ignore no-explicit-any
+  let input: ElementHandle<any> | null;
   if (typeof selector === "string") {
     input = await page.waitForSelector(selector);
   } else {
@@ -147,7 +148,7 @@ export const postInputFile = async (
       input.files = dataTransfer.files;
       input.dispatchEvent(new Event("change", { bubbles: true }));
     },
-    selector,
+    input,
     file.name,
     file.type
   );

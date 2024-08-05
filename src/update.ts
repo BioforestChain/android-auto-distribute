@@ -51,10 +51,10 @@ const doUpdate = async (args = Deno.args) => {
       "color: cyan"
     );
     const pubFunction = pubFunctions[target as keyof typeof pubFunctions];
-    if (pubFunction) {
+    try {
       await pubFunction();
-    } else {
-      console.warn(`No publishing function found for ${target}`);
+    } catch (e) {
+      console.warn(`No publishing function found for ${target}: ${e}`);
     }
   }
 };

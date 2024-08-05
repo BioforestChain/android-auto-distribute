@@ -32,6 +32,7 @@ export const pub_360 = async () => {
       "#statusBar > a",
       (element) => element.textContent
     );
+    if (devName == "登陆") throw new Error("login error");
     ///登陆成功！！！
     console.log(`当前账户名称:%c${devName}`, "color: blue");
   }
@@ -51,7 +52,9 @@ export const pub_360 = async () => {
     waitUntil: "networkidle2",
   });
 
-  await page.waitForSelector("a.operatepanel");
+  await page.waitForSelector("a.operatepanel", {
+    timeout: 0,
+  });
 
   /// 获取app的名称，看看跟我们要发布的一不一样
   const appName = await page.$eval("a.operatepanel h4", (el) => el.textContent);
