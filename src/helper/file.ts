@@ -38,6 +38,14 @@ export async function fileExists(filePath: string): Promise<boolean> {
   }
 }
 
+// 获取文件名
+export const getFileName = (path: string): string => {
+  // 找到最后一个斜杠的位置
+  const lastSlashIndex = path.lastIndexOf("/");
+  // 提取并返回文件名
+  return path.substring(lastSlashIndex + 1);
+};
+
 Deno.test("fileExists", () => {
   // 使用例子
   const filePath = "./example.txt";

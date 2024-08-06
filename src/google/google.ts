@@ -1,7 +1,8 @@
+import fs from "node:fs";
 import { androidpublisher_v3, google } from "npm:googleapis";
-import type { GaxiosPromise } from "npm:googleapis-common";
 import { APP_METADATA, RESOURCES } from "../../app.ts";
 import { step } from "../../deps.ts";
+import { getFileName } from "../helper/file.ts";
 import type { EditOptions } from "./google.type.ts";
 /**google DOC
  * https://developers.google.com/android-publisher/tracks?hl=zh-cn
@@ -59,23 +60,24 @@ const getOrCreateEdit = async (options: EditOptions) => {
 
 /**根据ID上传可aab文件 */
 const uploadBundle = async (appEditId: string, options: EditOptions) => {
-  const aab = RESOURCES.aab_64;
-  const signal = step(`正在上传${aab.name}...`).start();
+  const aabPath = RESOURCES.aab_64;
+  const aabName = getFileName(aabPath);
+  const signal = step(`正在上传:${aabName}...`).start();
+  const aab = fs.readFileSync(aabPath);
   try {
-    const gax: GaxiosPromise<androidpublisher_v3.Schema$Bundle> =
-      await androidPublisher.edits.bundles.upload({
-        auth: options.auth,
-        packageName: options.applicationId,
-        editId: appEditId,
-        media: {
-          body: aab,
-        },
-      });
-    const bundle = await gax;
+    const bundle = await androidPublisher.edits.bundles.upload({
+      auth: options.auth,
+      packageName: options.applicationId,
+      editId: appEditId,
+      media: {
+        mimeType: "application/octet-stream",
+        body: aab,
+      },
+    });
     signal.succeed(`上传成功！:${bundle.data.versionCode}`);
     return bundle.data;
   } catch (e) {
-    signal.fail(`上传 ${aab.name} 失败: size:${aab.size}`);
+    signal.fail(`上传 ${aabName} 失败: size:${aab.byteLength}`);
     throw Error(e);
   }
 };
@@ -92,15 +94,12 @@ const uploadToPlayStore = async (options: EditOptions) => {
   // 3 分发到特定的轨道
   await addReleaseToTrack(appEditId, options, bundle.versionCode);
   // 4  提交本次修改
-  const res = await androidPublisher.edits.commit(
-    {
-      auth: options.auth,
-      editId: appEditId,
-      packageName: options.applicationId,
-      changesNotSentForReview: options.changesNotSentForReview,
-    },
-    null
-  );
+  const res = await androidPublisher.edits.commit({
+    auth: options.auth,
+    editId: appEditId,
+    packageName: options.applicationId,
+    changesNotSentForReview: options.changesNotSentForReview,
+  });
 
   if (res.data.id) {
     return true;

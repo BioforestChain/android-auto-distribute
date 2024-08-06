@@ -29,13 +29,11 @@ export const UpdateHandle = {
 
 /**静态文件资源地址 */
 export const RESOURCES = {
-  apk64: await readFile(
+  apk_64: await readFile(
     `./apk/android_v${APP_METADATA.version}/appName_arm64_v${APP_METADATA.version}.apk`
   ),
-  apk32: null,
-  apkaab64: await readFile(
-    `./apk/android_v${APP_METADATA.version}/appName_arm64_v${APP_METADATA.version}.aab`
-  ),
+  apk_32: null,
+  aab_64: `./apk/android_v${APP_METADATA.version}/appName_arm64_v${APP_METADATA.version}.aab`,
   icon: await readFile("./private/image/xxx.png"),
   iconName: "logo.png",
   screenshots: [
