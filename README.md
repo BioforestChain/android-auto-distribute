@@ -35,12 +35,20 @@ android 自动化更新脚本。支持：`华为`，`小米`，`oppo`,`vivo`,`�
 │   ├── xiaomi
 │   │   └── dev.api.public.cer
 │   ├── google
-│   │   └── xxxxxxx-xxxxx.json
+│   │   └── privateKey.json
 ```
 
 > 当然您也可以放到任何位置，只需要修改 `env.ts` 里的对应参数。
 
-> tips: [samsung 地址](https://developer.samsung.com/galaxy-store/galaxy-store-developer-api/create-an-access-token.html)
+### samsung key
+
+[samsung key 获取地址](https://developer.samsung.com/galaxy-store/galaxy-store-developer-api/create-an-access-token.html)，接着按照文档一步一步进行生成。
+
+### [google 服务账号密钥](https://developers.google.com/android-publisher/getting_started?hl=zh-cn#oauth)
+
+获取需要先创建对应的权限账号，然后再进行密钥导出，重命名为 `privateKey.json` 放到对应文件夹。
+
+![Generate google key](./assets/images/google-key.png)
 
 ## update
 

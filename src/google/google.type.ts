@@ -1,4 +1,4 @@
-import type { GoogleAuth } from "npm:google-auth-library/build/src/auth/googleauth";
+import type { GoogleAuth } from "npm:googleapis-common";
 
 export interface EditOptions {
   auth: GoogleAuth;
