@@ -15,8 +15,8 @@ private
 apk
 .DS_Store
 
-/app.ts
-/src/.*.ts
+app.ts
+.*.ts
 
 cookies.json
 localStorage.json

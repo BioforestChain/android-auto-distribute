@@ -4,27 +4,85 @@
 
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
-import * as $api_joke from "./routes/api/joke.ts";
+import * as $_layout from "./routes/_layout.tsx";
+import * as $api_360_360 from "./routes/api/360/360.ts";
+import * as $api_ali_ali from "./routes/api/ali/ali.ts";
+import * as $api_app from "./routes/api/app.ts";
+import * as $api_baidu_baidu from "./routes/api/baidu/baidu.ts";
+import * as $api_google_google from "./routes/api/google/google.ts";
+import * as $api_google_google_type from "./routes/api/google/google.type.ts";
+import * as $api_helper_HMAC from "./routes/api/helper/HMAC.ts";
+import * as $api_helper_RSA_OAEP from "./routes/api/helper/RSA-OAEP.ts";
+import * as $api_helper_RSASSA_PKCS1_v1_5 from "./routes/api/helper/RSASSA-PKCS1-v1_5.ts";
+import * as $api_helper_cookie from "./routes/api/helper/cookie.ts";
+import * as $api_helper_crypto from "./routes/api/helper/crypto.ts";
+import * as $api_helper_date from "./routes/api/helper/date.ts";
+import * as $api_helper_file from "./routes/api/helper/file.ts";
+import * as $api_helper_puppeteer from "./routes/api/helper/puppeteer.ts";
+import * as $api_helper_whichCommond from "./routes/api/helper/whichCommond.ts";
+import * as $api_huawei_huawei from "./routes/api/huawei/huawei.ts";
+import * as $api_huawei_huawei_type from "./routes/api/huawei/huawei.type.ts";
+import * as $api_info from "./routes/api/info.ts";
+import * as $api_oppo_oppo from "./routes/api/oppo/oppo.ts";
+import * as $api_oppo_oppo_type from "./routes/api/oppo/oppo.type.ts";
+import * as $api_samsung_samsung from "./routes/api/samsung/samsung.ts";
+import * as $api_samsung_samsung_type from "./routes/api/samsung/samsung.type.ts";
+import * as $api_setting_path_ from "./routes/api/setting/[path].tsx";
+import * as $api_setting_setting_type from "./routes/api/setting/setting.type.ts";
+import * as $api_tencent_tencent from "./routes/api/tencent/tencent.ts";
+import * as $api_update from "./routes/api/update.ts";
+import * as $api_vivo_vivo from "./routes/api/vivo/vivo.ts";
+import * as $api_vivo_vivo_type from "./routes/api/vivo/vivo.type.ts";
+import * as $api_xiaomi_xiaomi from "./routes/api/xiaomi/xiaomi.ts";
+import * as $api_xiaomi_xiaomi_type from "./routes/api/xiaomi/xiaomi.type.ts";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
-import * as $Counter from "./islands/Counter.tsx";
-import * as $Footer from "./islands/Footer.tsx";
-import * as $Navbar from "./islands/Navbar.tsx";
+import * as $partials_setting from "./routes/partials/setting.tsx";
+import * as $partials_state from "./routes/partials/state.tsx";
+
 import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
   routes: {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
-    "./routes/api/joke.ts": $api_joke,
+    "./routes/_layout.tsx": $_layout,
+    "./routes/api/360/360.ts": $api_360_360,
+    "./routes/api/ali/ali.ts": $api_ali_ali,
+    "./routes/api/app.ts": $api_app,
+    "./routes/api/baidu/baidu.ts": $api_baidu_baidu,
+    "./routes/api/google/google.ts": $api_google_google,
+    "./routes/api/google/google.type.ts": $api_google_google_type,
+    "./routes/api/helper/HMAC.ts": $api_helper_HMAC,
+    "./routes/api/helper/RSA-OAEP.ts": $api_helper_RSA_OAEP,
+    "./routes/api/helper/RSASSA-PKCS1-v1_5.ts": $api_helper_RSASSA_PKCS1_v1_5,
+    "./routes/api/helper/cookie.ts": $api_helper_cookie,
+    "./routes/api/helper/crypto.ts": $api_helper_crypto,
+    "./routes/api/helper/date.ts": $api_helper_date,
+    "./routes/api/helper/file.ts": $api_helper_file,
+    "./routes/api/helper/puppeteer.ts": $api_helper_puppeteer,
+    "./routes/api/helper/whichCommond.ts": $api_helper_whichCommond,
+    "./routes/api/huawei/huawei.ts": $api_huawei_huawei,
+    "./routes/api/huawei/huawei.type.ts": $api_huawei_huawei_type,
+    "./routes/api/info.ts": $api_info,
+    "./routes/api/oppo/oppo.ts": $api_oppo_oppo,
+    "./routes/api/oppo/oppo.type.ts": $api_oppo_oppo_type,
+    "./routes/api/samsung/samsung.ts": $api_samsung_samsung,
+    "./routes/api/samsung/samsung.type.ts": $api_samsung_samsung_type,
+    "./routes/api/setting/[path].tsx": $api_setting_path_,
+    "./routes/api/setting/setting.type.ts": $api_setting_setting_type,
+    "./routes/api/tencent/tencent.ts": $api_tencent_tencent,
+    "./routes/api/update.ts": $api_update,
+    "./routes/api/vivo/vivo.ts": $api_vivo_vivo,
+    "./routes/api/vivo/vivo.type.ts": $api_vivo_vivo_type,
+    "./routes/api/xiaomi/xiaomi.ts": $api_xiaomi_xiaomi,
+    "./routes/api/xiaomi/xiaomi.type.ts": $api_xiaomi_xiaomi_type,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
+    "./routes/partials/setting.tsx": $partials_setting,
+    "./routes/partials/state.tsx": $partials_state,
   },
-  islands: {
-    "./islands/Counter.tsx": $Counter,
-    "./islands/Footer.tsx": $Footer,
-    "./islands/Navbar.tsx": $Navbar,
-  },
+  islands: {},
   baseUrl: import.meta.url,
 } satisfies Manifest;
 
