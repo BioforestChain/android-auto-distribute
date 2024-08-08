@@ -9,6 +9,7 @@ import * as $api_360_360 from "./routes/api/360/360.ts";
 import * as $api_ali_ali from "./routes/api/ali/ali.ts";
 import * as $api_app from "./routes/api/app.ts";
 import * as $api_baidu_baidu from "./routes/api/baidu/baidu.ts";
+import * as $api_fetch from "./routes/api/fetch.ts";
 import * as $api_google_google from "./routes/api/google/google.ts";
 import * as $api_google_google_type from "./routes/api/google/google.type.ts";
 import * as $api_helper_HMAC from "./routes/api/helper/HMAC.ts";
@@ -28,7 +29,6 @@ import * as $api_oppo_oppo_type from "./routes/api/oppo/oppo.type.ts";
 import * as $api_samsung_samsung from "./routes/api/samsung/samsung.ts";
 import * as $api_samsung_samsung_type from "./routes/api/samsung/samsung.type.ts";
 import * as $api_setting_path_ from "./routes/api/setting/[path].tsx";
-import * as $api_setting_setting_type from "./routes/api/setting/setting.type.ts";
 import * as $api_tencent_tencent from "./routes/api/tencent/tencent.ts";
 import * as $api_update from "./routes/api/update.ts";
 import * as $api_vivo_vivo from "./routes/api/vivo/vivo.ts";
@@ -39,7 +39,13 @@ import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $partials_setting from "./routes/partials/setting.tsx";
 import * as $partials_state from "./routes/partials/state.tsx";
-
+import * as $publishState from "./islands/publishState.tsx";
+import * as $setting_ApkRender from "./islands/setting/ApkRender.tsx";
+import * as $setting_Button from "./islands/setting/Button.tsx";
+import * as $setting_HandleRender from "./islands/setting/HandleRender.tsx";
+import * as $setting_InfoRender from "./islands/setting/InfoRender.tsx";
+import * as $setting_ScreenshotsRender from "./islands/setting/ScreenshotsRender.tsx";
+import * as $setting_TextRender from "./islands/setting/TextRender.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -51,6 +57,7 @@ const manifest = {
     "./routes/api/ali/ali.ts": $api_ali_ali,
     "./routes/api/app.ts": $api_app,
     "./routes/api/baidu/baidu.ts": $api_baidu_baidu,
+    "./routes/api/fetch.ts": $api_fetch,
     "./routes/api/google/google.ts": $api_google_google,
     "./routes/api/google/google.type.ts": $api_google_google_type,
     "./routes/api/helper/HMAC.ts": $api_helper_HMAC,
@@ -70,7 +77,6 @@ const manifest = {
     "./routes/api/samsung/samsung.ts": $api_samsung_samsung,
     "./routes/api/samsung/samsung.type.ts": $api_samsung_samsung_type,
     "./routes/api/setting/[path].tsx": $api_setting_path_,
-    "./routes/api/setting/setting.type.ts": $api_setting_setting_type,
     "./routes/api/tencent/tencent.ts": $api_tencent_tencent,
     "./routes/api/update.ts": $api_update,
     "./routes/api/vivo/vivo.ts": $api_vivo_vivo,
@@ -82,7 +88,15 @@ const manifest = {
     "./routes/partials/setting.tsx": $partials_setting,
     "./routes/partials/state.tsx": $partials_state,
   },
-  islands: {},
+  islands: {
+    "./islands/publishState.tsx": $publishState,
+    "./islands/setting/ApkRender.tsx": $setting_ApkRender,
+    "./islands/setting/Button.tsx": $setting_Button,
+    "./islands/setting/HandleRender.tsx": $setting_HandleRender,
+    "./islands/setting/InfoRender.tsx": $setting_InfoRender,
+    "./islands/setting/ScreenshotsRender.tsx": $setting_ScreenshotsRender,
+    "./islands/setting/TextRender.tsx": $setting_TextRender,
+  },
   baseUrl: import.meta.url,
 } satisfies Manifest;
 

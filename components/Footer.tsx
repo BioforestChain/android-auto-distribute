@@ -40,7 +40,7 @@ export default function Footer() {
           />
         </a>
         <a
-          href="https://hyprtxt.dev"
+          href="https://github.com/BioforestChain"
           class="text-blue-500 hover:underline flex gap-2 items-center"
         >
           <svg

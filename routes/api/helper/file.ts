@@ -39,7 +39,8 @@ export async function fileExists(filePath: string): Promise<boolean> {
 }
 
 // 获取文件名
-export const getFileName = (path: string): string => {
+export const getFileName = (path?: string): string => {
+  if (!path) return "";
   // 找到最后一个斜杠的位置
   const lastSlashIndex = path.lastIndexOf("/");
   // 提取并返回文件名

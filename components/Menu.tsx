@@ -2,7 +2,7 @@ export default function Memu() {
   return (
     <ul className="menu bg-base-200 rounded-box w-56 shadow-md">
       <li>
-        <a href="/setting" f-partial="/partials/setting">
+        <a href="/partials/setting" f-partial="/partials/setting">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5 stroke-2"
@@ -21,7 +21,7 @@ export default function Memu() {
         </a>
       </li>
       <li>
-        <a href="/state" f-partial="/partials/state">当前上架状态</a>
+        <a href="/partials/state" f-partial="/partials/state">当前上架状态</a>
       </li>
       <li>
         <h2 className="menu-title">自动化发布</h2>
