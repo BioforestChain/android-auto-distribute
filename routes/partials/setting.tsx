@@ -1,16 +1,20 @@
 import ApkRender from "../../islands/setting/ApkRender.tsx";
-import ButtonRender from "../../islands/setting/Button.tsx";
 import HandleRender from "../../islands/setting/HandleRender.tsx";
 import InfoRender from "../../islands/setting/InfoRender.tsx";
 import ScreenshotsRender from "../../islands/setting/ScreenshotsRender.tsx";
+import SubmitRender from "../../islands/setting/submitRender.tsx";
 import TextRender from "../../islands/setting/TextRender.tsx";
 import {
   $AppMetadata,
   $Resources,
+  $Screenshots,
   $UpdateHandle,
+  appMetadataSignal,
+  handleStateSignal,
+  resourcesSignal,
+  screenshotsSignal,
 } from "../../util/settingSignal.ts";
 import { warpFetch } from "../api/fetch.ts";
-import { METADATA, RESOURCES, UPDATEHANDLE } from "../api/setting/[path].tsx";
 
 const loadData = async <T extends object>(path: string): Promise<T> => {
   const res = await warpFetch(path);
@@ -18,40 +22,31 @@ const loadData = async <T extends object>(path: string): Promise<T> => {
 };
 
 export default async function Setting() {
-  const metadata = await loadData<$AppMetadata>(`api/setting/${METADATA}`);
-
-  const updateHandle = await loadData<$UpdateHandle>(
-    `api/setting/${UPDATEHANDLE}`,
+  appMetadataSignal.value = await loadData<$AppMetadata>(
+    `api/setting/metadata`,
   );
-  const resources = await loadData<$Resources>(`api/setting/${RESOURCES}`);
+  handleStateSignal.value = await loadData<$UpdateHandle>(
+    `api/setting/handle`,
+  );
+  resourcesSignal.value = await loadData<$Resources>(
+    `api/setting/resource`,
+  );
+  screenshotsSignal.value = await loadData<$Screenshots>(
+    `api/setting/screenshot`,
+  );
 
   return (
     <div class="flex flex-col">
       <div class="flex flex-row">
-        <InfoRender />
-        <TextRender updateDesc={metadata.updateDesc} desc={metadata.desc} />
-        <div class="flex flex-col m-3 justify-items-center ">
-          <HandleRender />
-          <ScreenshotsRender />
+        <InfoRender signalMetadata={appMetadataSignal} />
+        <TextRender signalMetadata={appMetadataSignal} />
+        <div class="flex flex-col m-3 justify-items-center basis-1/3">
+          <HandleRender handleStateSignal={handleStateSignal} />
+          <ScreenshotsRender screenshotsSignal={screenshotsSignal} />
         </div>
       </div>
-      <ApkRender />
-      <div class="flex flex-row">
-        <label className="form-control w-full ml-3 basis-2/3">
-          <div className="label">
-            <span className="label-text">当前Google浏览器位置</span>
-            <span className="label-text-alt">
-              半自动化发布需要
-            </span>
-          </div>
-          <input
-            type="text"
-            className="file-input file-input-bordered"
-            value={resources.executablePath}
-          />
-        </label>
-      </div>
-      <ButtonRender />
+      <ApkRender resourcesSignal={resourcesSignal} />
+      <SubmitRender />
     </div>
   );
 }

@@ -1,15 +1,24 @@
-import { handleStateSignal } from "../../util/settingSignal.ts";
+import type { Signal } from "@preact/signals";
+import { warpFetch } from "../../routes/api/fetch.ts";
+import { $UpdateHandle, handleStateSignal } from "../../util/settingSignal.ts";
 
-const handleCheckboxChange = (event: Event, key: string) => {
+const handleCheckboxChange = (event: Event, key: keyof $UpdateHandle) => {
   const target = event.target as HTMLInputElement;
-  handleStateSignal.value = {
-    ...handleStateSignal.value,
-    [key]: target.checked,
-  };
+  handleStateSignal.value[key] = target.checked;
+  updateHandle(key, target.checked);
 };
 
-export default function HandleRender() {
-  const updateHandle = handleStateSignal.value;
+const updateHandle = async (key: string, value: boolean) => {
+  await warpFetch(`api/setting/handle/${key}`, {
+    method: "PATCH",
+    body: `${value}`,
+  });
+};
+
+export default function HandleRender(
+  props: { handleStateSignal: Signal<$UpdateHandle> },
+) {
+  const updateHandle = props.handleStateSignal.value;
   return (
     <div>
       <label className="label cursor-pointer">

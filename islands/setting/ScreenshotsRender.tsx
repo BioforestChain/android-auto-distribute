@@ -1,52 +1,69 @@
-import { resourcesSignal } from "../../util/settingSignal.ts";
+import type { Signal } from "@preact/signals";
+import { warpFetch } from "../../routes/api/fetch.ts";
+import { $Screenshots, screenshotsSignal } from "../../util/settingSignal.ts";
 
-export default function ScreenshotsRender() {
-  const screenshots = resourcesSignal.value.screenshots;
+const handleChange = (event: Event, key: number) => {
+  const target = event.target as HTMLInputElement;
+  screenshotsSignal.value.screenshots[key] = target.value;
+  updateResource(key, target.value);
+};
+
+const updateResource = async (key: number, value: string) => {
+  await warpFetch(`api/setting/screenshot/${key}`, {
+    method: "PATCH",
+    body: value,
+  });
+};
+
+export default function ScreenshotsRender(
+  props: { screenshotsSignal: Signal<$Screenshots> },
+) {
+  const screenshots = props.screenshotsSignal.value.screenshots;
   return (
     <div class=" mt-6">
-      <p class="font-sans">应用商城截屏</p>
-      <label className="form-control w-full max-w-xs ">
+      <p class="font-sans">应用商城截屏文件路径</p>
+      <label className="form-control w-full ">
         <div className="label">
           <span className="label-text">第一张</span>
-          <span className="label-text-alt">当前未选中</span>
         </div>
         <input
-          type="file"
-          className="file-input file-input-bordered w-full max-w-xs"
-          value={screenshots.at(0)?.name}
+          type="text"
+          className="file-input file-input-bordered w-full"
+          value={screenshots.at(0)}
+          onChange={(event) => handleChange(event, 0)}
         />
       </label>
-      <label className="form-control w-full max-w-xs ">
+      <label className="form-control w-full ">
         <div className="label">
           <span className="label-text">第二张</span>
-          <span className="label-text-alt">当前未选中</span>
         </div>
         <input
-          type="file"
-          className="file-input file-input-bordered w-full max-w-xs"
-          value={screenshots.at(1)?.name}
+          type="text"
+          className="file-input file-input-bordered w-full "
+          value={screenshots.at(1)}
+          onChange={(event) => handleChange(event, 1)}
         />
       </label>
-      <label className="form-control w-full max-w-xs ">
+      <label className="form-control w-full ">
         <div className="label">
           <span className="label-text">第三张</span>
-          <span className="label-text-alt">当前未选中</span>
         </div>
         <input
-          type="file"
-          className="file-input file-input-bordered w-full max-w-xs"
-          value={screenshots.at(2)?.name}
+          type="text"
+          className="file-input file-input-bordered w-full "
+          value={screenshots.at(2)}
+          onChange={(event) => handleChange(event, 2)}
         />
       </label>
-      <label className="form-control w-full max-w-xs ">
+      <label className="form-control w-full  ">
         <div className="label">
           <span className="label-text">第四张</span>
-          <span className="label-text-alt">当前未选中</span>
         </div>
         <input
-          type="file"
-          className="file-input file-input-bordered w-full max-w-xs"
-          value={screenshots.at(3)?.name}
+          type="text"
+          className="file-input file-input-bordered w-full "
+          value={screenshots.at(3)}
+          onChange={(event) => handleChange(event, 3)}
         />
       </label>
     </div>

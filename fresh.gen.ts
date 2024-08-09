@@ -28,7 +28,15 @@ import * as $api_oppo_oppo from "./routes/api/oppo/oppo.ts";
 import * as $api_oppo_oppo_type from "./routes/api/oppo/oppo.type.ts";
 import * as $api_samsung_samsung from "./routes/api/samsung/samsung.ts";
 import * as $api_samsung_samsung_type from "./routes/api/samsung/samsung.type.ts";
-import * as $api_setting_path_ from "./routes/api/setting/[path].tsx";
+import * as $api_setting_handle_key_ from "./routes/api/setting/handle/[key].tsx";
+import * as $api_setting_handle_index from "./routes/api/setting/handle/index.tsx";
+import * as $api_setting_index from "./routes/api/setting/index.tsx";
+import * as $api_setting_metadata_key_ from "./routes/api/setting/metadata/[key].tsx";
+import * as $api_setting_metadata_index from "./routes/api/setting/metadata/index.tsx";
+import * as $api_setting_resource_key_ from "./routes/api/setting/resource/[key].tsx";
+import * as $api_setting_resource_index from "./routes/api/setting/resource/index.tsx";
+import * as $api_setting_screenshot_key_ from "./routes/api/setting/screenshot/[key].tsx";
+import * as $api_setting_screenshot_index from "./routes/api/setting/screenshot/index.tsx";
 import * as $api_tencent_tencent from "./routes/api/tencent/tencent.ts";
 import * as $api_update from "./routes/api/update.ts";
 import * as $api_vivo_vivo from "./routes/api/vivo/vivo.ts";
@@ -41,11 +49,11 @@ import * as $partials_setting from "./routes/partials/setting.tsx";
 import * as $partials_state from "./routes/partials/state.tsx";
 import * as $publishState from "./islands/publishState.tsx";
 import * as $setting_ApkRender from "./islands/setting/ApkRender.tsx";
-import * as $setting_Button from "./islands/setting/Button.tsx";
 import * as $setting_HandleRender from "./islands/setting/HandleRender.tsx";
 import * as $setting_InfoRender from "./islands/setting/InfoRender.tsx";
 import * as $setting_ScreenshotsRender from "./islands/setting/ScreenshotsRender.tsx";
 import * as $setting_TextRender from "./islands/setting/TextRender.tsx";
+import * as $setting_submitRender from "./islands/setting/submitRender.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -76,7 +84,15 @@ const manifest = {
     "./routes/api/oppo/oppo.type.ts": $api_oppo_oppo_type,
     "./routes/api/samsung/samsung.ts": $api_samsung_samsung,
     "./routes/api/samsung/samsung.type.ts": $api_samsung_samsung_type,
-    "./routes/api/setting/[path].tsx": $api_setting_path_,
+    "./routes/api/setting/handle/[key].tsx": $api_setting_handle_key_,
+    "./routes/api/setting/handle/index.tsx": $api_setting_handle_index,
+    "./routes/api/setting/index.tsx": $api_setting_index,
+    "./routes/api/setting/metadata/[key].tsx": $api_setting_metadata_key_,
+    "./routes/api/setting/metadata/index.tsx": $api_setting_metadata_index,
+    "./routes/api/setting/resource/[key].tsx": $api_setting_resource_key_,
+    "./routes/api/setting/resource/index.tsx": $api_setting_resource_index,
+    "./routes/api/setting/screenshot/[key].tsx": $api_setting_screenshot_key_,
+    "./routes/api/setting/screenshot/index.tsx": $api_setting_screenshot_index,
     "./routes/api/tencent/tencent.ts": $api_tencent_tencent,
     "./routes/api/update.ts": $api_update,
     "./routes/api/vivo/vivo.ts": $api_vivo_vivo,
@@ -91,11 +107,11 @@ const manifest = {
   islands: {
     "./islands/publishState.tsx": $publishState,
     "./islands/setting/ApkRender.tsx": $setting_ApkRender,
-    "./islands/setting/Button.tsx": $setting_Button,
     "./islands/setting/HandleRender.tsx": $setting_HandleRender,
     "./islands/setting/InfoRender.tsx": $setting_InfoRender,
     "./islands/setting/ScreenshotsRender.tsx": $setting_ScreenshotsRender,
     "./islands/setting/TextRender.tsx": $setting_TextRender,
+    "./islands/setting/submitRender.tsx": $setting_submitRender,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

@@ -12,7 +12,7 @@ const close = () => {
   modal?.close();
 };
 
-export default function ButtonRender() {
+export default function SubmitRender() {
   return (
     <div class=" m-6">
       <button

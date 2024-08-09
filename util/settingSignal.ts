@@ -20,9 +20,12 @@ export const resourcesSignal = signal<$Resources>({
   aab_64: undefined,
   aab_32: undefined,
   icon: undefined,
-  screenshots: [],
   executablePath:
     "/Volumes/developer/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", // 本地chrome 浏览器地址
+});
+
+export const screenshotsSignal = signal<$Screenshots>({
+  screenshots: [],
 });
 
 export const handleStateSignal = signal<$UpdateHandle>({
@@ -46,13 +49,16 @@ export interface $AppMetadata {
 
 // 定义 RESOURCES 接口
 export interface $Resources {
-  apk_64?: File;
-  apk_32?: File;
-  aab_64?: File;
-  aab_32?: File;
-  icon?: File;
-  screenshots: File[];
+  apk_64?: string;
+  apk_32?: string;
+  aab_64?: string;
+  aab_32?: string;
+  icon?: string;
   executablePath: string;
+}
+
+export interface $Screenshots {
+  screenshots: string[];
 }
 
 // 定义 UpdateHandle 接口
