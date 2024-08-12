@@ -28,31 +28,30 @@ const pubFunctions = {
 };
 
 const doUpdate = async (args = Deno.args) => {
-  const targets =
-    args.length === 0
-      ? [
-          "xiaomi",
-          "vivo",
-          "oppo",
-          "baidu",
-          "tencent",
-          "samsung",
-          "google",
-          "360",
-          "huawei",
-          "ali",
-        ]
-      : args;
+  const targets = args.length === 0
+    ? [
+      "xiaomi",
+      "vivo",
+      "oppo",
+      "baidu",
+      "tencent",
+      "samsung",
+      "google",
+      "360",
+      "huawei",
+      "ali",
+    ]
+    : args;
 
   for (const target of targets) {
     console.log(
       `%cStart publishing v${APP_METADATA.version} to  %c${target}:`,
       "color: blue",
-      "color: cyan"
+      "color: cyan",
     );
-    const pubFunction = pubFunctions[target as keyof typeof pubFunctions];
+    // const pubFunction = pubFunctions[target as keyof typeof pubFunctions];
     try {
-      await pubFunction();
+      // await pubFunction();
     } catch (e) {
       console.warn(`No publishing function found for ${target}: ${e}`);
     }

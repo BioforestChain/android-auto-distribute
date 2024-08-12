@@ -21,10 +21,10 @@ export default function ScreenshotsRender(
   const screenshots = props.screenshotsSignal.value.screenshots;
   return (
     <div class=" mt-6">
-      <p class="font-sans">应用商城截屏文件路径</p>
+      <p class="font-bold">应用商城截屏文件路径</p>
       <label className="form-control w-full ">
         <div className="label">
-          <span className="label-text">第一张</span>
+          <span className="label-text font-bold">第一张</span>
         </div>
         <input
           type="text"
@@ -35,7 +35,7 @@ export default function ScreenshotsRender(
       </label>
       <label className="form-control w-full ">
         <div className="label">
-          <span className="label-text">第二张</span>
+          <span className="label-text font-bold">第二张</span>
         </div>
         <input
           type="text"
@@ -46,7 +46,7 @@ export default function ScreenshotsRender(
       </label>
       <label className="form-control w-full ">
         <div className="label">
-          <span className="label-text">第三张</span>
+          <span className="label-text font-bold">第三张</span>
         </div>
         <input
           type="text"
@@ -57,7 +57,7 @@ export default function ScreenshotsRender(
       </label>
       <label className="form-control w-full  ">
         <div className="label">
-          <span className="label-text">第四张</span>
+          <span className="label-text font-bold">第四张</span>
         </div>
         <input
           type="text"

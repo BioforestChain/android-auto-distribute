@@ -41,13 +41,17 @@ import * as $api_tencent_tencent from "./routes/api/tencent/tencent.ts";
 import * as $api_update from "./routes/api/update.ts";
 import * as $api_vivo_vivo from "./routes/api/vivo/vivo.ts";
 import * as $api_vivo_vivo_type from "./routes/api/vivo/vivo.type.ts";
+import * as $api_xiaomi_path_ from "./routes/api/xiaomi/[path].tsx";
 import * as $api_xiaomi_xiaomi from "./routes/api/xiaomi/xiaomi.ts";
 import * as $api_xiaomi_xiaomi_type from "./routes/api/xiaomi/xiaomi.type.ts";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $partials_setting from "./routes/partials/setting.tsx";
 import * as $partials_state from "./routes/partials/state.tsx";
-import * as $publishState from "./islands/publishState.tsx";
+import * as $partials_xiaomi from "./routes/partials/xiaomi.tsx";
+import * as $publish_HandleRender from "./islands/publish/HandleRender.tsx";
+import * as $publish_MessageRender from "./islands/publish/MessageRender.tsx";
+import * as $publish_messageRender from "./islands/publish/messageRender.tsx";
 import * as $setting_ApkRender from "./islands/setting/ApkRender.tsx";
 import * as $setting_HandleRender from "./islands/setting/HandleRender.tsx";
 import * as $setting_InfoRender from "./islands/setting/InfoRender.tsx";
@@ -97,15 +101,19 @@ const manifest = {
     "./routes/api/update.ts": $api_update,
     "./routes/api/vivo/vivo.ts": $api_vivo_vivo,
     "./routes/api/vivo/vivo.type.ts": $api_vivo_vivo_type,
+    "./routes/api/xiaomi/[path].tsx": $api_xiaomi_path_,
     "./routes/api/xiaomi/xiaomi.ts": $api_xiaomi_xiaomi,
     "./routes/api/xiaomi/xiaomi.type.ts": $api_xiaomi_xiaomi_type,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/partials/setting.tsx": $partials_setting,
     "./routes/partials/state.tsx": $partials_state,
+    "./routes/partials/xiaomi.tsx": $partials_xiaomi,
   },
   islands: {
-    "./islands/publishState.tsx": $publishState,
+    "./islands/publish/HandleRender.tsx": $publish_HandleRender,
+    "./islands/publish/MessageRender.tsx": $publish_MessageRender,
+    "./islands/publish/messageRender.tsx": $publish_messageRender,
     "./islands/setting/ApkRender.tsx": $setting_ApkRender,
     "./islands/setting/HandleRender.tsx": $setting_HandleRender,
     "./islands/setting/InfoRender.tsx": $setting_InfoRender,

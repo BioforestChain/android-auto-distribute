@@ -1,8 +1,28 @@
+const autoList = {
+  "xiaomi": "小米",
+  "huawei": "华为",
+  "oppo": "oppo",
+  "vivo": "vivo",
+  "samsung": "三星",
+  "google": "google",
+};
+
+const semiAutoList = {
+  "ali": "阿里",
+  "360": "360手机助手",
+  "baidu": "百度",
+  "tencent": "腾讯应用宝",
+};
+
 export default function Memu() {
   return (
     <ul className="menu bg-base-200 rounded-box w-56 shadow-md">
       <li>
-        <a href="/partials/setting" f-partial="/partials/setting">
+        <a
+          href="/partials/setting"
+          f-partial="/partials/setting"
+          class="aria-[current]:text-green-600"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5 stroke-2"
@@ -21,46 +41,57 @@ export default function Memu() {
         </a>
       </li>
       <li>
-        <a href="/partials/state" f-partial="/partials/state">当前上架状态</a>
+        <a
+          href="/partials/keyStore"
+          f-partial="/partials/keyStore"
+          class="aria-[current]:text-green-600"
+        >
+          密钥管理
+        </a>
+      </li>
+      <li>
+        <a
+          href="/partials/state"
+          f-partial="/partials/state"
+          class="aria-[current]:text-green-600"
+        >
+          当前上架状态
+        </a>
       </li>
       <li>
         <h2 className="menu-title">自动化发布</h2>
         <ul>
-          <li>
-            <a>小米</a>
-          </li>
-          <li>
-            <a>华为</a>
-          </li>
-          <li>
-            <a>oppo</a>
-          </li>
-          <li>
-            <a>vivo</a>
-          </li>
-          <li>
-            <a>samsung</a>
-          </li>
-          <li>
-            <a>google</a>
-          </li>
+          {Object.entries(autoList).map(([key, value]) => {
+            return (
+              <li>
+                <a
+                  href={`/partials/${key}`}
+                  f-partial={`/partials/${key}`}
+                  class="aria-[current]:text-green-600"
+                >
+                  {value}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </li>
       <li>
         <h2 className="menu-title">半自动化发布</h2>
         <ul>
-          <li>
-            <a>阿里</a>
-          </li>
-          <li>
-            <a>360手机助手</a>
-          </li>
-          <li>
-            <a>百度</a>
-          </li>
-          <li>
-            <a>腾讯应用宝</a>
-          </li>
+          {Object.entries(semiAutoList).map(([key, value]) => {
+            return (
+              <li>
+                <a
+                  href={`/partials/${key}`}
+                  f-partial={`/partials/${key}`}
+                  class="aria-[current]:text-green-600"
+                >
+                  {value}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </li>
     </ul>

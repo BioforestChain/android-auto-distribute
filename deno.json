@@ -34,6 +34,7 @@
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
     "$std/": "https://deno.land/std@0.216.0/",
     "daisyui": "npm:daisyui@4.12.10",
+    "history": "npm:history@5.3.0",
     "typography": "npm:@tailwindcss/typography@0.5.13"
   },
   "compilerOptions": {

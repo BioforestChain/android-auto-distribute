@@ -22,7 +22,7 @@ export default function InfoRender(
   return (
     <label className="form-control w-full max-w-xs justify-items-center m-3 basis-1/3">
       <div className="label">
-        <span className="label-text">应用名称</span>
+        <span className="label-text font-bold">应用名称</span>
       </div>
       <input
         type="text"
@@ -32,7 +32,7 @@ export default function InfoRender(
         className="input input-bordered w-full max-w-xs"
       />
       <div className="label">
-        <span className="label-text">应用版本</span>
+        <span className="label-text font-bold">应用版本</span>
       </div>
       <input
         type="text"
@@ -42,7 +42,7 @@ export default function InfoRender(
         className="input input-bordered w-full max-w-xs"
       />
       <div className="label">
-        <span className="label-text">包名</span>
+        <span className="label-text font-bold">包名</span>
         <span className="label-text-alt">例：info.xxx.xxx</span>
       </div>
       <input
@@ -53,7 +53,7 @@ export default function InfoRender(
         className="input input-bordered w-full max-w-xs"
       />
       <div className="label">
-        <span className="label-text">关键字</span>
+        <span className="label-text font-bold">关键字</span>
         <span className="label-text-alt">以空格分割</span>
       </div>
       <input
@@ -64,7 +64,7 @@ export default function InfoRender(
         className="input input-bordered w-full max-w-xs"
       />
       <div className="label">
-        <span className="label-text">隐私政策地址</span>
+        <span className="label-text font-bold">隐私政策地址</span>
       </div>
       <input
         type="text"
@@ -74,7 +74,7 @@ export default function InfoRender(
         className="input input-bordered w-full max-w-xs"
       />
       <div className="label">
-        <span className="label-text">一句话简介</span>
+        <span className="label-text font-bold">一句话简介</span>
         <span className="label-text-alt">小于8个字</span>
       </div>
       <input

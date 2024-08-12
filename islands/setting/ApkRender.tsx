@@ -24,7 +24,7 @@ export default function ApkRender(
       <div class="flex flex-row">
         <label className="form-control w-full  ml-3 basis-1/3">
           <div className="label">
-            <span className="label-text">apk 64位 地址</span>
+            <span className="label-text font-bold">apk 64位 地址</span>
           </div>
           <input
             type="text"
@@ -33,7 +33,7 @@ export default function ApkRender(
             onChange={(event) => handleFileChange(event, "apk_64")}
           />
           <div className="label">
-            <span className="label-text">apk 32位 地址</span>
+            <span className="label-text font-bold">apk 32位 地址</span>
             <span className="label-text-alt">32位可不传</span>
           </div>
           <input
@@ -46,7 +46,7 @@ export default function ApkRender(
         </label>
         <label className="form-control w-full  ml-6 basis-1/3">
           <div className="label">
-            <span className="label-text">aab 64位 地址</span>
+            <span className="label-text font-bold">aab 64位 地址</span>
           </div>
           <input
             type="text"
@@ -56,7 +56,7 @@ export default function ApkRender(
             onChange={(event) => handleFileChange(event, "aab_64")}
           />
           <div className="label">
-            <span className="label-text">aab 32位 地址</span>
+            <span className="label-text font-bold">aab 32位 地址</span>
             <span className="label-text-alt">32位可不传</span>
           </div>
           <input
@@ -71,7 +71,7 @@ export default function ApkRender(
       <div class="flex flex-row">
         <label className="form-control w-full ml-3 basis-2/3">
           <div className="label">
-            <span className="label-text">当前Google浏览器位置</span>
+            <span className="label-text font-bold">当前Google浏览器位置</span>
             <span className="label-text-alt">
               半自动化发布需要
             </span>

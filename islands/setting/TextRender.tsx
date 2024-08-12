@@ -10,7 +10,7 @@ export default function TextRender(
     <div class="flex flex-col m-3 justify-items-center basis-1/3">
       <label className="form-control">
         <div className="label">
-          <span className="label-text">更新说明</span>
+          <span className="label-text font-bold">更新说明</span>
         </div>
         <textarea
           className="textarea textarea-bordered textarea-md max-w-full min-h-32"
@@ -22,7 +22,7 @@ export default function TextRender(
       </label>
       <label className="form-control">
         <div className="label">
-          <span className="label-text">应用介绍</span>
+          <span className="label-text font-bold">应用介绍</span>
         </div>
         <textarea
           placeholder="应用介绍"

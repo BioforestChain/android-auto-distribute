@@ -1,4 +1,3 @@
-import { step } from "jsr:@sylc/step-spinner";
 import { Buffer } from "node:buffer";
 import nodeCrypto from "node:crypto";
 import { xiaomi } from "../../../env.ts";
@@ -31,29 +30,35 @@ const RequestData: $RequestData = {
   appInfo: appInfo,
   synchroType: 1, // 更新类型：0=新增，1=更新包，2=内容更新
 };
+/**发布参数 */
+const pushRequestData: $PushRequest = {
+  RequestData: JSON.stringify(RequestData),
+  apk: RESOURCES.apk_64,
+  icon: RESOURCES.icon,
+  screenshot_1: RESOURCES.screenshots[0],
+  screenshot_2: RESOURCES.screenshots[1],
+  screenshot_3: RESOURCES.screenshots[2],
+  screenshot_4: RESOURCES.screenshots[3],
+};
 
 /**更新小米 */
-export async function pub_xiami() {
-  /**发布参数 */
-  const pushRequestData: $PushRequest = {
-    RequestData: JSON.stringify(RequestData),
-    apk: RESOURCES.apk_64,
-    icon: RESOURCES.icon,
-    screenshot_1: RESOURCES.screenshots[0],
-    screenshot_2: RESOURCES.screenshots[1],
-    screenshot_3: RESOURCES.screenshots[2],
-    screenshot_4: RESOURCES.screenshots[3],
-  };
-  const signal = step("开始签名...").start();
-  pushRequestData.SIG = await digitalSignature(pushRequestData);
-  signal.succeed("签名完成！");
-  const publish = step("开始发布...").start();
-  const response = await pushAppStore(pushRequestData);
-  const resJson = await response.json();
-  if (resJson.result === 0) {
-    publish.succeed(resJson.message);
-  } else {
-    publish.fail(`${resJson.message}-${resJson.result}`);
+export async function pub_xiami(socket: WebSocket) {
+  try {
+    socket.send("开始签名...");
+    pushRequestData.SIG = await digitalSignature(pushRequestData);
+    socket.send("签名完成！");
+    socket.send("正在发布中...");
+    // const response = await pushAppStore(pushRequestData);
+    const resJson = { result: 1, message: "" }; //await response.json();
+    if (resJson.result === 0) {
+      socket.send(resJson.message);
+    } else {
+      socket.send(`${resJson.message}-${resJson.result}`);
+    }
+  } catch (e) {
+    socket.send(e);
+  } finally {
+    socket.close();
   }
 }
 
@@ -83,7 +88,7 @@ async function digitalSignature(pushRequestData: $PushRequest) {
   //将 JSON 字符串编码为二进制数据
   const sig = await encryptContent(
     JSON.stringify(data),
-    xiaomi.public_key_path
+    xiaomi.public_key_path,
   );
   return sig;
 }
@@ -103,19 +108,19 @@ function pushAppStore(pushRequestData: $PushRequest) {
 /**工具方法：公钥加密内容 */
 export const encryptContent = async (
   content: string,
-  publicKeyPath: string
+  publicKeyPath: string,
 ) => {
   const pemPublicKey = await cerToPemX509(publicKeyPath);
   const encryptGroupSize = 1024 / 11 - 11;
   let sig = "";
-  for (let i = 0; i < content.length; ) {
+  for (let i = 0; i < content.length;) {
     const remain = content.length - i;
     const segSize = remain > encryptGroupSize ? encryptGroupSize : remain;
     const segment = content.substring(i, i + segSize);
     // 必须是这个填充方式 web crypto 还不支持
     const r1 = nodeCrypto.publicEncrypt(
       { key: pemPublicKey, padding: nodeCrypto.constants.RSA_PKCS1_PADDING },
-      Buffer.from(segment)
+      Buffer.from(segment),
     );
     const r2 = encodeHex(r1);
     sig += r2;

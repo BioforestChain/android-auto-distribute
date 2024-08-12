@@ -22,7 +22,7 @@ export default function HandleRender(
   return (
     <div>
       <label className="label cursor-pointer">
-        <span className="label-text">是否更新APK</span>
+        <span className="label-text font-bold">是否更新APK</span>
         <input
           type="checkbox"
           className="toggle"
@@ -32,7 +32,7 @@ export default function HandleRender(
         />
       </label>
       <label className="label cursor-pointer">
-        <span className="label-text">是否更新商城截屏</span>
+        <span className="label-text font-bold">是否更新商城截屏</span>
         <input
           type="checkbox"
           className="toggle"
@@ -41,7 +41,7 @@ export default function HandleRender(
         />
       </label>
       <label className="label cursor-pointer">
-        <span className="label-text">是否更新icon（还没写）</span>
+        <span className="label-text font-bold">是否更新icon（还没写）</span>
         <input
           type="checkbox"
           className="toggle"
