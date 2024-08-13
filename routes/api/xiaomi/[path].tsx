@@ -6,7 +6,13 @@ export const handler = {
     if (params.path === "update") {
       const { socket, response } = Deno.upgradeWebSocket(req);
       socket.onopen = async () => {
-        await pub_xiami(socket);
+        try {
+          await pub_xiami(socket);
+        } catch (e) {
+          socket.send(`e:${e}`);
+        } finally {
+          socket.close();
+        }
       };
 
       return response;

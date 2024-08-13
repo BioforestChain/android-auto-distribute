@@ -21,7 +21,7 @@ export default function StatePage() {
         icon="/icon/vivo.svg"
       />
       <HandleRender
-        api="/vivo/update"
+        self="vivo"
         publishing={vivoSignal.publishing}
         messages={vivoSignal.messages}
       />

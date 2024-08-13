@@ -1,5 +1,5 @@
 import { FreshContext } from "$fresh/server.ts";
-import { pub_vivo } from "./vivo.ts";
+import { pub_huawei } from "./huawei.ts";
 
 export const handler = {
   GET: (req: Request, { params }: FreshContext) => {
@@ -7,7 +7,7 @@ export const handler = {
       const { socket, response } = Deno.upgradeWebSocket(req);
       socket.onopen = async () => {
         try {
-          await pub_vivo(socket);
+          await pub_huawei(socket);
         } catch (e) {
           socket.send(`e:${e}`);
         } finally {

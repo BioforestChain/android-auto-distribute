@@ -24,7 +24,7 @@ export const pub_360 = async () => {
   browserSign.succeed("打开成功");
 
   /// 判断是否登陆过
-  if (await fileExists("./src/360/cookies.json")) {
+  if (await fileExists("./routes/api/360/cookies.json")) {
     // 如果登陆过了加载登陆信息
     await loadLoginInfo(page, "360");
   } else {

@@ -20,6 +20,7 @@ import * as $api_helper_date from "./routes/api/helper/date.ts";
 import * as $api_helper_file from "./routes/api/helper/file.ts";
 import * as $api_helper_puppeteer from "./routes/api/helper/puppeteer.ts";
 import * as $api_helper_whichCommond from "./routes/api/helper/whichCommond.ts";
+import * as $api_huawei_path_ from "./routes/api/huawei/[path].tsx";
 import * as $api_huawei_huawei from "./routes/api/huawei/huawei.ts";
 import * as $api_huawei_huawei_type from "./routes/api/huawei/huawei.type.ts";
 import * as $api_info from "./routes/api/info.ts";
@@ -47,6 +48,7 @@ import * as $api_xiaomi_xiaomi from "./routes/api/xiaomi/xiaomi.ts";
 import * as $api_xiaomi_xiaomi_type from "./routes/api/xiaomi/xiaomi.type.ts";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
+import * as $partials_huawei from "./routes/partials/huawei.tsx";
 import * as $partials_setting from "./routes/partials/setting.tsx";
 import * as $partials_state from "./routes/partials/state.tsx";
 import * as $partials_vivo from "./routes/partials/vivo.tsx";
@@ -82,6 +84,7 @@ const manifest = {
     "./routes/api/helper/file.ts": $api_helper_file,
     "./routes/api/helper/puppeteer.ts": $api_helper_puppeteer,
     "./routes/api/helper/whichCommond.ts": $api_helper_whichCommond,
+    "./routes/api/huawei/[path].tsx": $api_huawei_path_,
     "./routes/api/huawei/huawei.ts": $api_huawei_huawei,
     "./routes/api/huawei/huawei.type.ts": $api_huawei_huawei_type,
     "./routes/api/info.ts": $api_info,
@@ -109,6 +112,7 @@ const manifest = {
     "./routes/api/xiaomi/xiaomi.type.ts": $api_xiaomi_xiaomi_type,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
+    "./routes/partials/huawei.tsx": $partials_huawei,
     "./routes/partials/setting.tsx": $partials_setting,
     "./routes/partials/state.tsx": $partials_state,
     "./routes/partials/vivo.tsx": $partials_vivo,

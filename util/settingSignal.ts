@@ -1,7 +1,9 @@
 import { signal } from "@preact/signals";
 
-/// 共享状态
+// 检测设置是否全部填完
+export const checkSetting = signal(false);
 
+/// 共享状态
 export const appMetadataSignal = signal<$AppMetadata>({
   icp: "",
   appName: "",

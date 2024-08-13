@@ -31,19 +31,20 @@ const RequestData: $RequestData = {
   appInfo: appInfo,
   synchroType: 1, // 更新类型：0=新增，1=更新包，2=内容更新
 };
-/**发布参数 */
-const pushRequestData: $PushRequest = {
-  RequestData: JSON.stringify(RequestData),
-  apk: await readFile(RESOURCES.apk_64),
-  // icon: await readFile(RESOURCES.icon),
-  screenshot_1: await readFile(SCREENSHOTS[0]),
-  screenshot_2: await readFile(SCREENSHOTS[1]),
-  screenshot_3: await readFile(SCREENSHOTS[2]),
-  screenshot_4: await readFile(SCREENSHOTS[3]),
-};
 
 /**更新小米 */
 export async function pub_xiami(socket: WebSocket) {
+  /**发布参数 */
+  const pushRequestData: $PushRequest = {
+    RequestData: JSON.stringify(RequestData),
+    apk: await readFile(RESOURCES.apk_64),
+    // icon: await readFile(RESOURCES.icon),
+    screenshot_1: await readFile(SCREENSHOTS[0]),
+    screenshot_2: await readFile(SCREENSHOTS[1]),
+    screenshot_3: await readFile(SCREENSHOTS[2]),
+    screenshot_4: await readFile(SCREENSHOTS[3]),
+  };
+
   socket.send("开始签名...");
   pushRequestData.SIG = await digitalSignature(pushRequestData);
   socket.send("签名完成！");
@@ -55,7 +56,6 @@ export async function pub_xiami(socket: WebSocket) {
   } else {
     socket.send(`e:${resJson.message}-${resJson.result}`);
   }
-  socket.close();
 }
 
 /**

@@ -18,7 +18,7 @@ export const pub_tencent = async () => {
   });
   browserSign.succeed("打开成功");
   /// 判断是否登陆过
-  if (await fileExists("./src/tencent/cookies.json")) {
+  if (await fileExists("./routes/api/tencent/cookies.json")) {
     // 如果登陆过了加载登陆信息
     await loadLoginInfo(page, "tencent");
   } else {

@@ -24,7 +24,7 @@ export const pub_baidu = async () => {
   });
   browserSign.succeed("打开成功");
   /// 判断是否登陆过
-  if (await fileExists("./src/baidu/cookies.json")) {
+  if (await fileExists("./routes/api/baidu/cookies.json")) {
     // 如果登陆过了加载登陆信息
     await loadLoginInfo(page, "baidu");
   } else {

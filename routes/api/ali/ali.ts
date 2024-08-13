@@ -28,7 +28,7 @@ export const pub_ali = async () => {
     waitUntil: "networkidle2", // 这个事件在网络连接有 2 个或更少的活动连接时被调度
   });
   browserSign.succeed("打开成功");
-  if (await fileExists("./src/ali/cookies.json")) {
+  if (await fileExists("./routes/api/ali/cookies.json")) {
     await loadLoginInfo(page, "ali"); // 如果登陆过了，直接加载登陆信息
   } else {
     await loginInSave(page); // 没有登陆过，登陆一下

@@ -15,8 +15,8 @@ deno task start
 ```
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
-  <img src="./static/assets/images/setting.png" alt="publish" width="300" height="200" />
-  <img src="./static/assets/images/publish.png" alt="publish" width="300" height="200" />
+  <img src="./static/assets/images/setting.png" alt="setting Preview" width="400" height="300" />
+  <img src="./static/assets/images/publish.png" alt="publish Preview" width="400" height="300" />
 </div>
 
 ## 各个平台证书相关
@@ -46,7 +46,7 @@ deno task start
 
 获取需要先创建对应的权限账号，然后再进行密钥导出，重命名为 `privateKey.json` 放到对应文件夹。
 
-![Generate google key](./assets/images/google-key.png)
+![Generate google key](/static/assets/images/google-key.png)
 
 ### 半自动化发布
 

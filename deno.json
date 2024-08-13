@@ -1,8 +1,8 @@
 {
   "lock": false,
   "tasks": {
-    "pub": "deno run -A ./src/update.ts",
-    "info": "deno run -A ./src/info.ts",
+    "pub": "deno run -A ./routes/api/update.ts",
+    "info": "deno run -A ./routes/api/info.ts",
     "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
     "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable -A -",
     "manifest": "deno task cli manifest $(pwd)",
