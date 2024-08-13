@@ -4,8 +4,8 @@ import MessageRender from "../../islands/publish/messageRender.tsx";
 export default function StatePage() {
   return (
     <div class="flex flex-col">
-      <HandleRender />
       <MessageRender />
+      <HandleRender />
     </div>
   );
 }

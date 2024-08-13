@@ -43,23 +43,18 @@ const pushRequestData: $PushRequest = {
 
 /**更新小米 */
 export async function pub_xiami(socket: WebSocket) {
-  try {
-    socket.send("开始签名...");
-    pushRequestData.SIG = await digitalSignature(pushRequestData);
-    socket.send("签名完成！");
-    socket.send("正在发布中...");
-    // const response = await pushAppStore(pushRequestData);
-    const resJson = { result: 1, message: "" }; //await response.json();
-    if (resJson.result === 0) {
-      socket.send(resJson.message);
-    } else {
-      socket.send(`${resJson.message}-${resJson.result}`);
-    }
-  } catch (e) {
-    socket.send(e);
-  } finally {
-    socket.close();
+  socket.send("开始签名...");
+  pushRequestData.SIG = await digitalSignature(pushRequestData);
+  socket.send("签名完成！");
+  socket.send("正在发布中...");
+  const response = await pushAppStore(pushRequestData);
+  const resJson = await response.json();
+  if (resJson.result === 0) {
+    socket.send(resJson.message);
+  } else {
+    socket.send(`e:${resJson.message}-${resJson.result}`);
   }
+  socket.close();
 }
 
 /**
