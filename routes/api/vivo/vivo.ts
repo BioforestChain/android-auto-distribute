@@ -2,7 +2,12 @@ import { step } from "jsr:@sylc/step-spinner";
 import { vivo } from "../../../env.ts";
 import { HMAC } from "../helper/HMAC.ts";
 import { digestFileAlgorithm } from "../helper/crypto.ts";
-import { APP_METADATA, RESOURCES, SCREENSHOTS } from "../setting/app.ts";
+import {
+  APP_METADATA,
+  RESOURCES,
+  SCREENSHOTS,
+  UpdateHandle,
+} from "../setting/app.ts";
 import { readFile } from "./../helper/file.ts";
 import {
   $CommonParams,
@@ -43,14 +48,15 @@ const commonParameters: $CommonParams = {
 /**
  * 🌈主入口发布app
  */
-export const pub_vivo = async (
-  isUpdateIcon = false,
-  isUpdateScreenshot = false,
-) => {
+export const pub_vivo = async (socket: WebSocket) => {
+  socket.send("正在给APK签名...");
   const fileMd5 = await digestFileAlgorithm(await readFile(RESOURCES.apk_64));
+  socket.send("签名成功！");
   // 获取app信息
+  socket.send("获取app信息...");
   const info = await getAppMessage();
   // 获取上传到apk信息
+  socket.send("开始上传APK...");
   const apkInfo = await uploadApk(fileMd5);
   // 构建上传参数
   const updateParams: $UpdateAppParams = {
@@ -63,21 +69,26 @@ export const pub_vivo = async (
     detailDesc: APP_METADATA.desc,
     simpleDesc: APP_METADATA.brief,
   };
-
+  socket.send("上传成功！");
+  const handle = UpdateHandle;
   // 是否要更新icon
-  if (isUpdateIcon) {
+  if (handle.icon) {
+    socket.send("您选中了更新icon");
     updateParams.icon = (await uploadIcon()).serialnumber;
   }
   // 是否要更新Screenshot
-  if (isUpdateScreenshot) {
+  if (handle.screenshots) {
+    socket.send("您选中了更新应用商城截屏");
     updateParams.screenshot = await uploadScreenshot();
   }
+  socket.send("正在推送更新...");
   await warpUpload(
     "正在更新到vivo应用商城...",
     MethodType.updateApp,
     undefined,
     updateParams,
   );
+  socket.send("更新完成！");
 };
 
 /**工具函数：获取app信息 */

@@ -1,26 +1,31 @@
-import { xiaomiSignal } from "../../util/publishSignal.ts";
+import type { Signal } from "@preact/signals";
 
-const fetchPublish = () => {
-  const socket = new WebSocket("ws://localhost:8000/api/xiaomi/update");
-  socket.onopen = () => {
-    // 更新信号的整个值
-    xiaomiSignal.publishing.value = true;
+interface Props {
+  api: string;
+  publishing: Signal<boolean>;
+  messages: Signal<string[]>;
+}
 
-    socket.addEventListener("message", (event) => {
-      const msg = event.data;
-      xiaomiSignal.messages.value = [...xiaomiSignal.messages.value, msg];
-    });
-    socket.addEventListener("close", () => {
-      xiaomiSignal.publishing.value = false;
-    });
+export default function HandleRender({ api, publishing, messages }: Props) {
+  const fetchPublish = () => {
+    const socket = new WebSocket(`ws://localhost:8000/api${api}`);
+    socket.onopen = () => {
+      // 更新信号的整个值
+      publishing.value = true;
+
+      socket.addEventListener("message", (event) => {
+        const msg = event.data;
+        messages.value = [...messages.value, msg];
+      });
+      socket.addEventListener("close", () => {
+        publishing.value = false;
+      });
+    };
   };
-};
-
-export default function HandleRender() {
-  const isPublishing = xiaomiSignal.publishing.value;
+  const isPublishing = publishing.value;
 
   return (
-    <div class="flex m-6">
+    <div class="absolute inset-x-1/2 inset-y-3/4  m-6 h-auto w-32">
       <button className="btn" onClick={fetchPublish}>
         {isPublishing
           ? (

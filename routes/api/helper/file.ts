@@ -1,4 +1,5 @@
-export const readFile = async (filePath: string) => {
+export const readFile = async (filePath?: string) => {
+  if (!filePath) return undefined;
   const fileData = await Deno.readFile(filePath); // 读取文件内容为Uint8Array
   const fileName = filePath.split("/").pop() || "default.txt"; // 提取文件名
 

@@ -14,6 +14,11 @@ android 自动化更新脚本。支持：`华为`，`小米`，`oppo`,`vivo`,`�
 deno task start
 ```
 
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <img src="./static/assets/images/setting.png" alt="publish" width="300" height="200" />
+  <img src="./static/assets/images/publish.png" alt="publish" width="300" height="200" />
+</div>
+
 ## 各个平台证书相关
 
 各个平台接口加密方式各不相同，需要下载各个商场的证书(或公钥/私钥)放到项目根目录的 `private`文件夹内。

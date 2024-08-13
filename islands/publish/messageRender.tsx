@@ -1,18 +1,16 @@
-import { xiaomiSignal } from "../../util/publishSignal.ts";
+import { Signal } from "@preact/signals";
 
-const steps = [
-  { weight: 2, label: "签名" },
-  { weight: 3, label: "签名完成" },
-  { weight: 4, label: "发布APK" },
-  { weight: 5, label: "发布完成" },
-];
+interface Props {
+  setps: Signal<{ weight: number; label: string }[]>;
+  messages: Signal<string[]>;
+  icon: string;
+}
 
-export default function MessageRender() {
-  const msgs = xiaomiSignal.messages.value;
-  const setpNumber = xiaomiSignal.messages.value.length;
+export default function MessageRender({ setps, messages, icon }: Props) {
+  const setpNumber = messages.value.length;
   // 动态改变进度条状态
   const setStepState = (weight: number) => {
-    const msg = xiaomiSignal.messages.value[weight - 1];
+    const msg = messages.value[weight - 1];
     if (!msg) return "";
     if (setpNumber >= weight) {
       if (msg.startsWith("e:")) {
@@ -22,7 +20,7 @@ export default function MessageRender() {
     }
   };
   const setSetpContent = (weight: number) => {
-    const msg = xiaomiSignal.messages.value[weight - 1];
+    const msg = messages.value[weight - 1];
     if (!msg) return weight - 1;
     if (setpNumber >= weight) {
       if (msg.startsWith("e:")) {
@@ -34,14 +32,14 @@ export default function MessageRender() {
   return (
     <div class="flex place-content-between m-6">
       <div class="basis-2/3">
-        {msgs.map((msg, index) => {
+        {messages.value.map((msg, index) => {
           return (
             <div className="chat chat-start" key={index}>
               <div className="chat-image avatar">
                 <div className="w-10 rounded-full">
                   <img
                     alt="Tailwind CSS chat bubble component"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                    src={icon}
                   />
                 </div>
               </div>
@@ -54,7 +52,7 @@ export default function MessageRender() {
       </div>
       <div class="m-6 ">
         <ul className="steps steps-vertical">
-          {steps.map((setp) => {
+          {setps.value.map((setp) => {
             return (
               <li
                 className={`step ${setStepState(setp.weight)}`}

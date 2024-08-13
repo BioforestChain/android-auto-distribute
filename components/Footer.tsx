@@ -36,7 +36,7 @@ export default function Footer() {
           <img
             width="197"
             height="37"
-            src="https://fresh.deno.dev/fresh-badge.svg"
+            src="/fresh-badge.svg"
           />
         </a>
         <a
