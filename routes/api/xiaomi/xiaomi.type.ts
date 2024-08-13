@@ -41,7 +41,7 @@ export interface $PushRequest {
   SIG?: string; // 必选，加密字符串，具体拼接加密方式见下
   apk?: File; // 可选，Apk包，上传类型为新增和更新时必传
   secondApk?: File; // 可选，secondApk包，双包发布时必传
-  icon: File; // 必选，应用图标
+  icon?: File; // 必选，应用图标
   screenshot_1?: File; // 可选，应用的第1幅截图，synchroType=0时必选
   screenshot_2?: File; // 可选，应用的第2幅截图，synchroType=0时必选
   screenshot_3?: File; // 可选，应用的第3幅截图，synchroType=0时必选

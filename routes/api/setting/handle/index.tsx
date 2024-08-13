@@ -8,17 +8,21 @@ import { HANDLE, kv } from "../index.tsx";
 
 export const handler = {
   GET: async (_req: Request, _ctx: FreshContext) => {
-    const result: $UpdateHandle = {
-      apk: true,
-      screenshots: false,
-      icon: false,
-    };
-    const entries = kv.list<boolean>({ prefix: [HANDLE] });
-    for await (const entry of entries) {
-      const key = entry.key[1] as keyof $UpdateHandle;
-      result[key] = entry.value;
-    }
-
+    const result = await getAllHandle();
     return new Response(JSON.stringify(result));
   },
+};
+
+export const getAllHandle = async () => {
+  const result: $UpdateHandle = {
+    apk: true,
+    screenshots: false,
+    icon: false,
+  };
+  const entries = kv.list<boolean>({ prefix: [HANDLE] });
+  for await (const entry of entries) {
+    const key = entry.key[1] as keyof $UpdateHandle;
+    result[key] = entry.value;
+  }
+  return result;
 };

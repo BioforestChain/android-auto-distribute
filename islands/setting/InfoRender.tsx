@@ -5,9 +5,11 @@ import { $AppMetadata, appMetadataSignal } from "../../util/settingSignal.ts";
 export const handleTextChange = (event: Event, key: keyof $AppMetadata) => {
   const target = event.target as HTMLInputElement;
   appMetadataSignal.value[key] = target.value;
+
   updateMetadata(key, target.value);
 };
 
+/**更新数据到存储层 */
 const updateMetadata = async (key: string, value: string) => {
   await warpFetch(`api/setting/metadata/${key}`, {
     method: "PATCH",

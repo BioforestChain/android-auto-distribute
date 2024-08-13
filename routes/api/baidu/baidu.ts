@@ -1,8 +1,7 @@
 import { Page, step } from "../../../deps.ts";
 import { baidu } from "../../../env.ts";
-import { APP_METADATA, RESOURCES, UpdateHandle } from "../app.ts";
 import { loadLoginInfo, saveLoginInfo } from "../helper/cookie.ts";
-import { fileExists } from "../helper/file.ts";
+import { fileExists, readFile } from "../helper/file.ts";
 import {
   clearAndEnter,
   createPage,
@@ -10,6 +9,12 @@ import {
   postInputFile,
   scrollIntoView,
 } from "../helper/puppeteer.ts";
+import {
+  APP_METADATA,
+  RESOURCES,
+  SCREENSHOTS,
+  UpdateHandle,
+} from "../setting/app.ts";
 
 export const pub_baidu = async () => {
   const browserSign = step("正在打开百度移动应用平台...");
@@ -30,7 +35,7 @@ export const pub_baidu = async () => {
     // 报错就是存储的cookie过期了
     const devName = await page.$eval(
       "span.header-profile-user-info",
-      (element) => element.textContent
+      (element) => element.textContent,
     );
     ///登陆成功！！！
     console.log(`当前账户名称:%c${devName}`, "color: blue");
@@ -53,7 +58,7 @@ export const pub_baidu = async () => {
   /// 查找是否有自己要发布的app
   const appName = await page.evaluateHandle((appName) => {
     return Array.from(
-      document.querySelectorAll("div.one-table-row-cell-content")
+      document.querySelectorAll("div.one-table-row-cell-content"),
     ).find((el) => el.textContent!.trim() === appName);
   }, APP_METADATA.appName);
   if (!appName) {
@@ -84,7 +89,7 @@ const updateApk = async (page: Page) => {
   /// 点击删除旧的apk
   (
     await page.waitForSelector(
-      "button.one-button.one-uploader-file-item-control"
+      "button.one-button.one-uploader-file-item-control",
     )
   )?.click();
 
@@ -92,7 +97,7 @@ const updateApk = async (page: Page) => {
   const res = await postInputFile(
     page,
     'input[type="file"][accept=".apk,application/vnd.android.package-archive"]',
-    RESOURCES.apk_64
+    await readFile(RESOURCES.apk_64),
   );
   if (!res) {
     sign.fail("上传apk失败！");
@@ -105,7 +110,7 @@ const updateApk = async (page: Page) => {
         if (rows.length >= 4) {
           const fourthRow = rows[3]; // 第4个元素的索引是3
           const contentElement = fourthRow.querySelector(
-            "div.app-package-info-row-content"
+            "div.app-package-info-row-content",
           );
           return contentElement ? contentElement.textContent : null;
         }
@@ -124,17 +129,17 @@ const updateApk = async (page: Page) => {
 const updateScreenshots = async (page: Page) => {
   const sign = step("正在上传截图...").start();
   const appScreenshot = await page.waitForSelector(
-    'label[for="appScreenshots"]'
+    'label[for="appScreenshots"]',
   );
   appScreenshot && (await scrollIntoView(page, appScreenshot));
 
   /// 需要先删除screenshots
-  for (let i = 0; i < RESOURCES.screenshots.length; i++) {
+  for (let i = 0; i < SCREENSHOTS.length; i++) {
     const deleteHandle = await page.evaluateHandle(() => {
       const divs = Array.from(
         document.querySelectorAll(
-          "div.one-uploader-image-item.one-uploader-image-item-success"
-        )
+          "div.one-uploader-image-item.one-uploader-image-item-success",
+        ),
       );
       if (divs.length > 1) {
         // 确保有足够的元素进行操作
@@ -163,17 +168,21 @@ const updateScreenshots = async (page: Page) => {
   const element = await page.evaluateHandle(() => {
     const inputs = Array.from(
       document.querySelectorAll(
-        'input[type="file"].one-uploader-input[name="file"]'
-      )
+        'input[type="file"].one-uploader-input[name="file"]',
+      ),
     );
     return inputs.length >= 3 ? inputs[2] : null;
   });
-  for (let i = 0; i < RESOURCES.screenshots.length; i++) {
-    const res = await postInputFile(page, element, RESOURCES.screenshots[i]);
+  for (let i = 0; i < SCREENSHOTS.length; i++) {
+    const res = await postInputFile(
+      page,
+      element,
+      await readFile(SCREENSHOTS[i]),
+    );
     if (!res) {
       sign.fail("上传截图失败！");
     }
-    sign.succeed(`${RESOURCES.screenshots[i].name}截屏上传成功！`);
+    sign.succeed(`${SCREENSHOTS[i]}截屏上传成功！`);
   }
 };
 

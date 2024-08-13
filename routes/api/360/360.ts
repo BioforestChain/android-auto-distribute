@@ -1,14 +1,19 @@
 import { Page, step } from "../../../deps.ts";
 import { key360 } from "../../../env.ts";
-import { APP_METADATA, RESOURCES, UpdateHandle } from "../app.ts";
 import { loadLoginInfo, saveLoginInfo } from "../helper/cookie.ts";
-import { fileExists } from "../helper/file.ts";
+import { fileExists, readFile } from "../helper/file.ts";
 import {
   clearAndEnter,
   createPage,
   delay,
   postInputFile,
 } from "../helper/puppeteer.ts";
+import {
+  APP_METADATA,
+  RESOURCES,
+  SCREENSHOTS,
+  UpdateHandle,
+} from "../setting/app.ts";
 
 export const pub_360 = async () => {
   const browserSign = step("正在打开360移动开放平台...");
@@ -30,7 +35,7 @@ export const pub_360 = async () => {
     // 报错就是存储的cookie过期了
     const devName = await page.$eval(
       "#statusBar > a",
-      (element) => element.textContent
+      (element) => element.textContent,
     );
     if (devName == "登陆") throw new Error("login error");
     ///登陆成功！！！
@@ -63,8 +68,9 @@ export const pub_360 = async () => {
   }
 
   /// 如果一样就获取链接跳转到更新页面
-  const hrefValue = await page.$eval("a.operatepanel", (el) =>
-    el.getAttribute("href")
+  const hrefValue = await page.$eval(
+    "a.operatepanel",
+    (el) => el.getAttribute("href"),
   );
   const updateUrl = new URL(`https://dev.360.cn${hrefValue}`);
   const appId = updateUrl.searchParams.get("appid");
@@ -108,7 +114,7 @@ const updateApk = async (page: Page) => {
   const res = await postInputFile(
     page,
     'span#uploadapk_btn input[type="file"]',
-    RESOURCES.apk_64
+    await readFile(RESOURCES.apk_64),
   );
   if (!res) {
     sign.fail("上传apk失败！");
@@ -122,7 +128,7 @@ const updateApk = async (page: Page) => {
     while (true) {
       const textContent = await page.$eval(
         "div.progressBarStatus",
-        (el) => el.textContent
+        (el) => el.textContent,
       );
       if (textContent === "上传应用文件成功") {
         sign.succeed(textContent);
@@ -137,17 +143,17 @@ const updateApk = async (page: Page) => {
 const updateScreenshots = async (page: Page) => {
   const sign = step("正在上传截图...").start();
   await Promise.all(
-    RESOURCES.screenshots.map(async (file, index) => {
+    SCREENSHOTS.map(async (filePath, index) => {
       const res = await postInputFile(
         page,
         `div#upshot_${index + 1} input[type="file"]`,
-        file
+        await readFile(filePath),
       );
       if (!res) {
         sign.fail("上传截图失败！");
       }
       return res;
-    })
+    }),
   );
   sign.succeed("截屏上传成功！");
 };

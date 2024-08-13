@@ -7,7 +7,6 @@ import * as $_app from "./routes/_app.tsx";
 import * as $_layout from "./routes/_layout.tsx";
 import * as $api_360_360 from "./routes/api/360/360.ts";
 import * as $api_ali_ali from "./routes/api/ali/ali.ts";
-import * as $api_app from "./routes/api/app.ts";
 import * as $api_baidu_baidu from "./routes/api/baidu/baidu.ts";
 import * as $api_fetch from "./routes/api/fetch.ts";
 import * as $api_google_google from "./routes/api/google/google.ts";
@@ -28,6 +27,7 @@ import * as $api_oppo_oppo from "./routes/api/oppo/oppo.ts";
 import * as $api_oppo_oppo_type from "./routes/api/oppo/oppo.type.ts";
 import * as $api_samsung_samsung from "./routes/api/samsung/samsung.ts";
 import * as $api_samsung_samsung_type from "./routes/api/samsung/samsung.type.ts";
+import * as $api_setting_app from "./routes/api/setting/app.ts";
 import * as $api_setting_handle_key_ from "./routes/api/setting/handle/[key].tsx";
 import * as $api_setting_handle_index from "./routes/api/setting/handle/index.tsx";
 import * as $api_setting_index from "./routes/api/setting/index.tsx";
@@ -67,7 +67,6 @@ const manifest = {
     "./routes/_layout.tsx": $_layout,
     "./routes/api/360/360.ts": $api_360_360,
     "./routes/api/ali/ali.ts": $api_ali_ali,
-    "./routes/api/app.ts": $api_app,
     "./routes/api/baidu/baidu.ts": $api_baidu_baidu,
     "./routes/api/fetch.ts": $api_fetch,
     "./routes/api/google/google.ts": $api_google_google,
@@ -88,6 +87,7 @@ const manifest = {
     "./routes/api/oppo/oppo.type.ts": $api_oppo_oppo_type,
     "./routes/api/samsung/samsung.ts": $api_samsung_samsung,
     "./routes/api/samsung/samsung.type.ts": $api_samsung_samsung_type,
+    "./routes/api/setting/app.ts": $api_setting_app,
     "./routes/api/setting/handle/[key].tsx": $api_setting_handle_key_,
     "./routes/api/setting/handle/index.tsx": $api_setting_handle_index,
     "./routes/api/setting/index.tsx": $api_setting_index,

@@ -1,10 +1,11 @@
 // https://oop-openapi-cn.heytapmobi.com/developer/v1/token
 import { step } from "jsr:@sylc/step-spinner";
 import { oppo } from "../../../env.ts";
-import { APP_METADATA, RESOURCES } from "../app.ts";
 import { decoder, encoder } from "../helper/crypto.ts";
 import { formatDate } from "../helper/date.ts";
+import { readFile } from "../helper/file.ts";
 import { HMAC } from "../helper/HMAC.ts";
+import { APP_METADATA, RESOURCES } from "../setting/app.ts";
 import type {
   $ImportantParams,
   $SignParams,
@@ -47,7 +48,7 @@ const uploadApkFile = async () => {
   const data = new FormData();
   data.append("type", "apk");
   data.append("sign", result.data.sign);
-  data.append("file", RESOURCES.apk_64);
+  data.append("file", await readFile(RESOURCES.apk_64));
 
   const response = await fetch(result.data.upload_url, {
     method: "POST",
@@ -123,7 +124,7 @@ const fetchTaskState = async (version_code: string) => {
       pkg_name: APP_METADATA.packageName,
       version_code: version_code,
     },
-    true
+    true,
   );
   const result = await res.json();
   if (result.errno === 0) {
@@ -197,7 +198,7 @@ const fetchAccessToken = async () => {
   // 读取两天过期的token
   try {
     ACCESS_TOKEN = JSON.parse(
-      decoder.decode(await Deno.readFile(`./src/oppo/token.json`))
+      decoder.decode(await Deno.readFile(`./src/oppo/token.json`)),
     ) as AccessTokenSuccessResult;
     if (Date.now() / 1000 < ACCESS_TOKEN.data.expire_in) {
       return ACCESS_TOKEN.data.access_token;
@@ -208,14 +209,15 @@ const fetchAccessToken = async () => {
     ACCESS_TOKEN = null;
   }
 
-  const url = `${BASE_URL}/developer/v1/token?client_id=${oppo.client_id}&client_secret=${oppo.client_secret}`;
+  const url =
+    `${BASE_URL}/developer/v1/token?client_id=${oppo.client_id}&client_secret=${oppo.client_secret}`;
   const res = await fetch(url);
   const result: AccessTokenSuccessResult = await res.json();
   ACCESS_TOKEN = result;
   // 写入token
   await Deno.writeFile(
     `./src/oppo/token.json`,
-    encoder.encode(JSON.stringify(ACCESS_TOKEN, null, 2))
+    encoder.encode(JSON.stringify(ACCESS_TOKEN, null, 2)),
   );
   return ACCESS_TOKEN.data.access_token;
 };

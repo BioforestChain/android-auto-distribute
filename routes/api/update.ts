@@ -1,8 +1,8 @@
 import { pub_360 } from "./360/360.ts";
 import { pub_ali } from "./ali/ali.ts";
-import { APP_METADATA } from "./app.ts";
 import { pub_baidu } from "./baidu/baidu.ts";
 import { pub_google } from "./google/google.ts";
+import { APP_METADATA } from "./setting/app.ts";
 
 import { pub_huawei } from "./huawei/huawei.ts";
 import { pub_oppo } from "./oppo/oppo.ts";

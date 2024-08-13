@@ -1,13 +1,14 @@
 import { Buffer } from "node:buffer";
 import nodeCrypto from "node:crypto";
 import { xiaomi } from "../../../env.ts";
-import { APP_METADATA, RESOURCES } from "../app.ts";
 import {
   cerToPemX509,
   digestFileAlgorithm,
   digestStringAlgorithm,
   encodeHex,
 } from "../helper/crypto.ts";
+import { readFile } from "../helper/file.ts";
+import { APP_METADATA, RESOURCES, SCREENSHOTS } from "../setting/app.ts";
 import { $AppInfo, $PushRequest, $RequestData } from "./xiaomi.type.ts";
 
 // 通过应用包名查询小米应用商店内本账户推送的最新应用详情，用于判断是否需要进行应用推送
@@ -33,12 +34,12 @@ const RequestData: $RequestData = {
 /**发布参数 */
 const pushRequestData: $PushRequest = {
   RequestData: JSON.stringify(RequestData),
-  apk: RESOURCES.apk_64,
-  icon: RESOURCES.icon,
-  screenshot_1: RESOURCES.screenshots[0],
-  screenshot_2: RESOURCES.screenshots[1],
-  screenshot_3: RESOURCES.screenshots[2],
-  screenshot_4: RESOURCES.screenshots[3],
+  apk: await readFile(RESOURCES.apk_64),
+  // icon: await readFile(RESOURCES.icon),
+  screenshot_1: await readFile(SCREENSHOTS[0]),
+  screenshot_2: await readFile(SCREENSHOTS[1]),
+  screenshot_3: await readFile(SCREENSHOTS[2]),
+  screenshot_4: await readFile(SCREENSHOTS[3]),
 };
 
 /**更新小米 */

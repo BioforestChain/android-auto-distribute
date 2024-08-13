@@ -1,7 +1,8 @@
 import { step } from "jsr:@sylc/step-spinner";
 import { samsung } from "../../../env.ts";
-import { APP_METADATA, RESOURCES } from "../app.ts";
+import { readFile } from "../helper/file.ts";
 import { RSASSA } from "../helper/RSASSA-PKCS1-v1_5.ts";
+import { APP_METADATA, RESOURCES, SCREENSHOTS } from "../setting/app.ts";
 import {
   $AccessTokenSuccessResult,
   $AppContent,
@@ -28,14 +29,14 @@ export class Samsung {
     // 获取每次的请求头
     const contentId = await this.updateAppInfo(
       isUpdateScreenshots,
-      isUpdateApk
+      isUpdateApk,
     );
     const sign = step("正在发布...").start();
     const res = await this.samsungFetch(
       `${this.BASE_URL}/seller/contentSubmit`,
       JSON.stringify({
         contentId,
-      })
+      }),
     );
     if (res.ok) {
       sign.succeed("三星分发成功");
@@ -89,17 +90,19 @@ export class Samsung {
     const res = await this.samsungFetch(
       `${this.BASE_URL}/seller/contentList`,
       undefined,
-      "GET"
+      "GET",
     );
     const contentList: $AppContent[] = await res.json();
     const appContent = contentList.find(
-      (v) => v.contentName === APP_METADATA.appName
+      (v) => v.contentName === APP_METADATA.appName,
     );
     if (appContent === undefined) {
       throw new Error(
-        `not found app ${APP_METADATA.appName} in ${JSON.stringify(
-          contentList
-        )}`
+        `not found app ${APP_METADATA.appName} in ${
+          JSON.stringify(
+            contentList,
+          )
+        }`,
       );
     }
     return appContent;
@@ -112,7 +115,7 @@ export class Samsung {
     const res = await this.samsungFetch(
       `${this.BASE_URL}/seller/contentInfo?contentId=${content.contentId}`,
       undefined,
-      "GET"
+      "GET",
     );
     const result: $ContentUpdateItem[] = await res.json();
     return result[0]; // 第一个
@@ -127,7 +130,7 @@ export class Samsung {
       throw new Error(sessionItem.url);
     }
     signSession.succeed(
-      `获取成功=>${sessionItem.url}[${sessionItem.sessionId}]`
+      `获取成功=>${sessionItem.url}[${sessionItem.sessionId}]`,
     );
     const formData = new FormData();
     // 必需的。要上传的文件，例如二进制文件、图像（图标、封面图像或屏幕截图）或 zip 文件（游戏行业年龄评级证书或应用审核所需的其他参考信息）以及文件类型。
@@ -146,7 +149,7 @@ export class Samsung {
     const update = step("更新应用信息...").start();
     const { appInfo, binaryList, screenshots } = await this.generateParams(
       isUpdateScreenshots,
-      isUpdateApk
+      isUpdateApk,
     );
     // 构建上传需要的数据
     const updateParams = {
@@ -168,16 +171,16 @@ export class Samsung {
       `${this.BASE_URL}/seller/contentUpdate`,
       JSON.stringify(updateParams),
       "POST",
-      "include"
+      "include",
     );
     const updateRes: $ContentUpdateRes = await res.json();
     if (updateRes.errorMsg == null) {
       update.succeed(
-        `samsung 更新应用信息成功:${updateRes.httpStatus} [${updateRes.contentStatus}]`
+        `samsung 更新应用信息成功:${updateRes.httpStatus} [${updateRes.contentStatus}]`,
       );
     } else {
       update.fail(
-        `samsung 更新应用信息失败:${updateRes.errorCode} [${updateRes.errorMsg}]`
+        `samsung 更新应用信息失败:${updateRes.errorCode} [${updateRes.errorMsg}]`,
       );
     }
     return updateRes.contentId;
@@ -186,7 +189,7 @@ export class Samsung {
   /**构建参数 */
   private async generateParams(
     isUpdateScreenshots = false,
-    isUpdateApk = false
+    isUpdateApk = false,
   ) {
     const infoSign = step("正在获取app状态...").start();
     const appInfo = await this.fetchAppInfo();
@@ -196,7 +199,7 @@ export class Samsung {
     // 是否针对apk进行更新
     if (isUpdateApk) {
       const sign = step("正在上传APK...").start();
-      const apk = await this.uploadFile(RESOURCES.apk_64);
+      const apk = await this.uploadFile(await readFile(RESOURCES.apk_64));
       sign.succeed(`samsung 上传APK成功:${apk.fileName} ${apk.fileSize}`);
       const oldBinaryItem = appInfo.binaryList[appInfo.binaryList.length - 1];
       const binaryItem: $Binaryinfo = {
@@ -218,7 +221,8 @@ export class Samsung {
     let screenshots = null;
     if (isUpdateScreenshots) {
       screenshots = appInfo.screenshots;
-      for (const [index, file] of RESOURCES.screenshots.entries()) {
+      for (const [index, filePath] of SCREENSHOTS.entries()) {
+        const file = await readFile(filePath);
         const v = screenshots[index];
         const sign = step(`正在更新 ${file.name} [${index}]...`).start();
 
@@ -239,7 +243,7 @@ export class Samsung {
     url: string,
     data?: BodyInit,
     method = "POST",
-    credentials: RequestCredentials = "same-origin"
+    credentials: RequestCredentials = "same-origin",
   ) {
     const headers = await this.generateHeaders(data instanceof FormData);
     return fetch(url, {
@@ -249,11 +253,11 @@ export class Samsung {
       body: data,
     });
   }
-  /**更新app信息到应用商店
+  /** 更新app信息到应用商店
    * FOR_SALE:分发状态
    * SUSPENDED: 暂停应用程序的分发
    * TERMINATED：让处于暂停状态的app终止
-   * */
+   */
   updateAppState = async () => {
     const appInfo = await this.fetchAppInfo();
     const res = await this.samsungFetch(
@@ -261,7 +265,7 @@ export class Samsung {
       JSON.stringify({
         contentId: appInfo.contentId,
         contentStatus: "FOR_SALE",
-      })
+      }),
     );
     return res.ok;
   };
@@ -269,7 +273,7 @@ export class Samsung {
   // 工具方法：创建上传文件的sessionId
   private createUploadSessionId = async () => {
     const res = await this.samsungFetch(
-      `${this.BASE_URL}/seller/createUploadSessionId`
+      `${this.BASE_URL}/seller/createUploadSessionId`,
     );
     const result: $CreateSessionSuccessResult = await res.json();
     return result;

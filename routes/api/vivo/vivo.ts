@@ -1,8 +1,9 @@
 import { step } from "jsr:@sylc/step-spinner";
 import { vivo } from "../../../env.ts";
-import { APP_METADATA, RESOURCES } from "../app.ts";
 import { HMAC } from "../helper/HMAC.ts";
 import { digestFileAlgorithm } from "../helper/crypto.ts";
+import { APP_METADATA, RESOURCES, SCREENSHOTS } from "../setting/app.ts";
+import { readFile } from "./../helper/file.ts";
 import {
   $CommonParams,
   $DetailResponse,
@@ -44,9 +45,9 @@ const commonParameters: $CommonParams = {
  */
 export const pub_vivo = async (
   isUpdateIcon = false,
-  isUpdateScreenshot = false
+  isUpdateScreenshot = false,
 ) => {
-  const fileMd5 = await digestFileAlgorithm(RESOURCES.apk_64);
+  const fileMd5 = await digestFileAlgorithm(await readFile(RESOURCES.apk_64));
   // 获取app信息
   const info = await getAppMessage();
   // 获取上传到apk信息
@@ -75,7 +76,7 @@ export const pub_vivo = async (
     "正在更新到vivo应用商城...",
     MethodType.updateApp,
     undefined,
-    updateParams
+    updateParams,
   );
 };
 
@@ -97,31 +98,36 @@ const getAppMessage = async () => {
 /**
  * 工具函数应用Apk 文件上传
  */
-export const uploadApk = (fileMd5: string) => {
+export const uploadApk = async (fileMd5: string) => {
   return warpUpload(
     "uploading APK...",
     MethodType.uploadApp,
-    RESOURCES.apk_64,
+    await readFile(RESOURCES.apk_64),
     {
       fileMd5: fileMd5,
-    }
+    },
   );
 };
 
 /**工具函数：上传icon */
-export const uploadIcon = () => {
-  return warpUpload("ploading icon...", MethodType.uploadIcon, RESOURCES.icon);
+export const uploadIcon = async () => {
+  return warpUpload(
+    "ploading icon...",
+    MethodType.uploadIcon,
+    await readFile(RESOURCES.icon),
+  );
 };
 
 /**工具函数：上传截屏页面 */
 export const uploadScreenshot = async () => {
   let serialnumbers = "";
-  for (const screenshot of RESOURCES.screenshots) {
+  for (const path of SCREENSHOTS) {
+    const screenshot = await readFile(path);
     const serialnumber = (
       await warpUpload(
         `loading ${screenshot.name}...`,
         MethodType.uploadScreenshot,
-        screenshot
+        screenshot,
       )
     ).serialnumber;
     serialnumbers += `,${serialnumber}`;
@@ -134,7 +140,7 @@ const warpUpload = async (
   signal: string,
   methodType: MethodType,
   file?: File,
-  params: object = {}
+  params: object = {},
 ) => {
   const signalApkCode = step(signal).start();
   const response = await vivoFetch(
@@ -143,7 +149,7 @@ const warpUpload = async (
       packageName: APP_METADATA.packageName,
       ...params,
     },
-    file
+    file,
   );
   const apkResponse: $UpdateApkResponse = await response.json();
   if (apkResponse.subCode == "0") {
@@ -159,11 +165,11 @@ const warpUpload = async (
 export const vivoFetch = async (
   methodType: MethodType,
   params: object,
-  file?: File
+  file?: File,
 ) => {
   const data = Object.assign(
     { method: methodType, ...params },
-    commonParameters
+    commonParameters,
   );
   // 对参数进行签名
   const sign = await parameterSign(data);

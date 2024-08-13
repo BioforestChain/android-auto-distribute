@@ -1,9 +1,8 @@
 import { step } from "jsr:@sylc/step-spinner";
 import { Page } from "../../../deps.ts";
 import { ali } from "../../../env.ts";
-import { APP_METADATA, RESOURCES, UpdateHandle } from "../app.ts";
 import { loadLoginInfo, saveLoginInfo } from "../helper/cookie.ts";
-import { fileExists } from "../helper/file.ts";
+import { fileExists, readFile } from "../helper/file.ts";
 import {
   clearAndEnter,
   createPage,
@@ -11,6 +10,12 @@ import {
   navClick,
   postInputFile,
 } from "../helper/puppeteer.ts";
+import {
+  APP_METADATA,
+  RESOURCES,
+  SCREENSHOTS,
+  UpdateHandle,
+} from "../setting/app.ts";
 
 /**
  * 主入口
@@ -35,7 +40,7 @@ export const pub_ali = async () => {
   async function showCompany() {
     const companyName = await page.$eval(
       "span.opp-user-nickname",
-      (element) => element.textContent
+      (element) => element.textContent,
     );
     ///登陆成功！！！
     console.log(`当前账户名称:%c${companyName}`, "color: blue");
@@ -56,7 +61,7 @@ export const pub_ali = async () => {
 
   /// 点击应用管理 (如果是第一次发布可能没有这个)
   const manage = await page.waitForSelector(
-    ".po-btn.po-btn-line.po-btn-small.app-btn"
+    ".po-btn.po-btn-line.po-btn-small.app-btn",
   );
   await manage?.click();
 
@@ -88,7 +93,7 @@ const updateApk = async (page: Page) => {
   const res = await postInputFile(
     page,
     'div.apk-btn-box input[id="fileupload"]',
-    RESOURCES.apk_64
+    await readFile(RESOURCES.apk_64),
   );
   if (!res) {
     sign.fail("上传apk失败！");
@@ -102,7 +107,7 @@ const updateApk = async (page: Page) => {
     while (true) {
       const versionName = await page.$eval(
         "span#versionName",
-        (el) => el.textContent
+        (el) => el.textContent,
       );
       if (versionName === APP_METADATA.version) {
         sign.succeed("上传应用文件成功");
@@ -117,13 +122,17 @@ const updateApk = async (page: Page) => {
 const updateScreenshots = async (page: Page) => {
   const sign = step("正在上传截图...").start();
   await Promise.all(
-    RESOURCES.screenshots.map(async (file, index) => {
-      const res = await postInputFile(page, `input#shot${index + 1}`, file);
+    SCREENSHOTS.map(async (filePath, index) => {
+      const res = await postInputFile(
+        page,
+        `input#shot${index + 1}`,
+        await readFile(filePath),
+      );
       if (!res) {
         sign.fail("上传截图失败！");
       }
       return res;
-    })
+    }),
   );
   sign.succeed("截屏上传成功！");
 };

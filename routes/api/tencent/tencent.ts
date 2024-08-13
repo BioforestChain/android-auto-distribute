@@ -1,6 +1,5 @@
 import { Page, step } from "../../../deps.ts";
 import { tencent } from "../../../env.ts";
-import { APP_METADATA, RESOURCES, UpdateHandle } from "../app.ts";
 import { loadLoginInfo, saveLoginInfo } from "../helper/cookie.ts";
 import { fileExists } from "../helper/file.ts";
 import {
@@ -8,6 +7,8 @@ import {
   createPage,
   postInputFile,
 } from "../helper/puppeteer.ts";
+import { APP_METADATA, RESOURCES, UpdateHandle } from "../setting/app.ts";
+import { readFile } from "./../helper/file.ts";
 
 export const pub_tencent = async () => {
   const browserSign = step("正在打开腾讯应用开放平台...");
@@ -28,7 +29,7 @@ export const pub_tencent = async () => {
     // 报错就是存储的cookie过期了
     const devName = await page.$eval(
       "span.name-span.break-word",
-      (element) => element.textContent
+      (element) => element.textContent,
     );
     ///登陆成功！！！
     console.log(`当前账户名称:%c${devName}`, "color: blue");
@@ -71,11 +72,11 @@ export const pub_tencent = async () => {
   if (UpdateHandle.apk) {
     /// 看看是否要上传32位安装包
     if (RESOURCES.apk_32) {
-      await updateApk(page, 0, RESOURCES.apk_32);
+      await updateApk(page, 0, await readFile(RESOURCES.apk_32));
     }
 
     /// 上传64位安装包
-    await updateApk(page, 1, RESOURCES.apk_64);
+    await updateApk(page, 1, await readFile(RESOURCES.apk_64));
 
     /// 不需要上传32位的，帮用户关闭32位上传
     if (!RESOURCES.apk_32) {
@@ -94,7 +95,7 @@ const updateApk = async (page: Page, index: number, file: File) => {
   await page.waitForSelector("input[type='file'][name='myInputFile']");
   const input = await page.evaluateHandle((index) => {
     const divs = Array.from(
-      document.querySelectorAll("input[type='file'][name='myInputFile']")
+      document.querySelectorAll("input[type='file'][name='myInputFile']"),
     );
     return divs[index];
   }, index);
@@ -115,7 +116,7 @@ const positioningApp = async (page: Page) => {
   const sign = step(`正在定位：${APP_METADATA.appName}...`);
   /// 定位到要发布的app
   const appCard = await page.waitForSelector(
-    ".app-card.ant-card.ant-card-bordered.ant-card-hoverable"
+    ".app-card.ant-card.ant-card-bordered.ant-card-hoverable",
   );
   if (!appCard) {
     return sign.fail(`not found ${APP_METADATA.appName}`);

@@ -1,5 +1,5 @@
 import { ElementHandle, Frame, Page, puppeteer } from "../../../deps.ts";
-import { RESOURCES } from "../app.ts";
+import { RESOURCES } from "../setting/app.ts";
 // 等待函数
 export function delay(time: number) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -79,7 +79,7 @@ export const clearAndEnter = (page: Page | Frame) => {
         }
       },
       selector,
-      data
+      data,
     );
   };
 };
@@ -101,7 +101,7 @@ export const postInputFile = async (
   page: Page,
   // deno-lint-ignore no-explicit-any
   selector: string | ElementHandle<any>,
-  file: File
+  file: File,
 ) => {
   // deno-lint-ignore no-explicit-any
   let input: ElementHandle<any> | null;
@@ -150,7 +150,7 @@ export const postInputFile = async (
     },
     input,
     file.name,
-    file.type
+    file.type,
   );
   return true;
 };

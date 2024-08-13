@@ -1,16 +1,16 @@
 import fs from "node:fs";
 import { androidpublisher_v3, google } from "npm:googleapis";
 import { step } from "../../../deps.ts";
-import { APP_METADATA, RESOURCES } from "../app.ts";
 import { getFileName } from "../helper/file.ts";
+import { APP_METADATA, RESOURCES } from "../setting/app.ts";
 import type { EditOptions } from "./google.type.ts";
-/**google DOC
+/** google DOC
  * https://developers.google.com/android-publisher/tracks?hl=zh-cn
  * https://github.com/googleapis/google-api-nodejs-client
- *  */
+ */
 
-const androidPublisher: androidpublisher_v3.Androidpublisher =
-  google.androidpublisher("v3");
+const androidPublisher: androidpublisher_v3.Androidpublisher = google
+  .androidpublisher("v3");
 
 export const pub_google = async () => {
   const auth = new google.auth.GoogleAuth({
@@ -111,7 +111,7 @@ const uploadToPlayStore = async (options: EditOptions) => {
 // deno-lint-ignore no-unused-vars
 const fetchReleaseTrackList = async (
   appEditId: string,
-  options: EditOptions
+  options: EditOptions,
 ) => {
   const res = await androidPublisher.edits.tracks.list({
     auth: options.auth,
@@ -126,7 +126,7 @@ const fetchReleaseTrackList = async (
 const addReleaseToTrack = async (
   appEditId: string,
   options: EditOptions,
-  versionCode: number
+  versionCode: number,
 ) => {
   const releaseNotes: androidpublisher_v3.Schema$LocalizedText[] = [
     {

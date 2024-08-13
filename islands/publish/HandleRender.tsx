@@ -1,9 +1,5 @@
 import { xiaomiSignal } from "../../util/publishSignal.ts";
 
-const handlePublish = () => {
-  fetchPublish();
-};
-
 const fetchPublish = () => {
   const socket = new WebSocket("ws://localhost:8000/api/xiaomi/update");
   socket.onopen = () => {
@@ -25,7 +21,7 @@ export default function HandleRender() {
 
   return (
     <div class="flex m-6">
-      <button className="btn" onClick={handlePublish}>
+      <button className="btn" onClick={fetchPublish}>
         {isPublishing
           ? (
             <>

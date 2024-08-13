@@ -1,7 +1,8 @@
 import { huawei } from "../../../env.ts";
-import { APP_METADATA, RESOURCES } from "../app.ts";
 import { digestFileAlgorithm } from "../helper/crypto.ts";
 import { formatDateToLocalString } from "../helper/date.ts";
+import { getFileName, readFile } from "../helper/file.ts";
+import { APP_METADATA, RESOURCES } from "../setting/app.ts";
 import {
   AccessTokenSuccessResult,
   AppIdSuccessResult,
@@ -69,7 +70,7 @@ const fetchAppId = async () => {
         Authorization: `Bearer ${access_token}`,
         client_id: huawei.client_id,
       },
-    }
+    },
   );
 
   if (res.ok) {
@@ -77,7 +78,7 @@ const fetchAppId = async () => {
 
     if (result.ret.code === 0) {
       const appId = (result as AppIdSuccessResult).appids.filter(
-        (v) => v.key === APP_METADATA.appName
+        (v) => v.key === APP_METADATA.appName,
       );
 
       if (Array.isArray(appId) && appId.length > 0) {
@@ -112,7 +113,7 @@ const fetchAppInfo = async () => {
         Authorization: `Bearer ${access_token}`,
         client_id: huawei.client_id,
       },
-    }
+    },
   );
 
   if (res.ok) {
@@ -144,9 +145,9 @@ const getUploadUrl = async () => {
   }
 
   const params = new URLSearchParams();
-  const file = RESOURCES.apk_64;
+  const file = await readFile(RESOURCES.apk_64);
   params.append("appId", appId);
-  params.append("fileName", RESOURCES.apk_64.name);
+  params.append("fileName", file.name);
   params.append("contentLength", "" + file.size);
   params.append("sha256", await digestFileAlgorithm(file, "SHA-256"));
 
@@ -158,7 +159,7 @@ const getUploadUrl = async () => {
         Authorization: `Bearer ${access_token}`,
         client_id: huawei.client_id,
       },
-    }
+    },
   );
 
   if (res.ok) {
@@ -184,7 +185,7 @@ const uploadApk = async () => {
   const res = await fetch(urlInfo.url, {
     method: urlInfo.method,
     headers: urlInfo.headers,
-    body: RESOURCES.apk_64,
+    body: await readFile(RESOURCES.apk_64),
   });
 
   if (res.ok) {
@@ -229,11 +230,11 @@ const updateAppInfo = async () => {
         lang: "zh-CN",
         fileType: 5,
         files: {
-          fileName: RESOURCES.apk_64.name,
+          fileName: getFileName(RESOURCES.apk_64),
           fileDestUrl: objectId,
         },
       }),
-    }
+    },
   );
 
   if (res.ok) {
@@ -285,7 +286,7 @@ export const pub_huawei = async () => {
         client_id: huawei.client_id,
       },
       body: null,
-    }
+    },
   );
 
   if (res.ok) {

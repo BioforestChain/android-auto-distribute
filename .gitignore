@@ -17,7 +17,6 @@ database/*
 !database/*.md
 .DS_Store
 
-app.ts
 .*.ts
 
 cookies.json

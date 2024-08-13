@@ -15,11 +15,11 @@ export const appMetadataSignal = signal<$AppMetadata>({
 });
 
 export const resourcesSignal = signal<$Resources>({
-  apk_64: undefined,
-  apk_32: undefined,
-  aab_64: undefined,
-  aab_32: undefined,
-  icon: undefined,
+  apk_64: "",
+  apk_32: "",
+  aab_64: "",
+  aab_32: "",
+  icon: "",
   executablePath:
     "/Volumes/developer/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", // 本地chrome 浏览器地址
 });
@@ -49,11 +49,11 @@ export interface $AppMetadata {
 
 // 定义 RESOURCES 接口
 export interface $Resources {
-  apk_64?: string;
-  apk_32?: string;
-  aab_64?: string;
-  aab_32?: string;
-  icon?: string;
+  apk_64: string;
+  apk_32: string;
+  aab_64: string;
+  aab_32: string;
+  icon: string;
   executablePath: string;
 }
 
