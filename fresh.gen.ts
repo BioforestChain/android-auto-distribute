@@ -9,6 +9,7 @@ import * as $api_360_360 from "./routes/api/360/360.ts";
 import * as $api_ali_ali from "./routes/api/ali/ali.ts";
 import * as $api_baidu_baidu from "./routes/api/baidu/baidu.ts";
 import * as $api_fetch from "./routes/api/fetch.ts";
+import * as $api_google_path_ from "./routes/api/google/[path].tsx";
 import * as $api_google_google from "./routes/api/google/google.ts";
 import * as $api_google_google_type from "./routes/api/google/google.type.ts";
 import * as $api_helper_HMAC from "./routes/api/helper/HMAC.ts";
@@ -19,13 +20,16 @@ import * as $api_helper_crypto from "./routes/api/helper/crypto.ts";
 import * as $api_helper_date from "./routes/api/helper/date.ts";
 import * as $api_helper_file from "./routes/api/helper/file.ts";
 import * as $api_helper_puppeteer from "./routes/api/helper/puppeteer.ts";
+import * as $api_helper_socket from "./routes/api/helper/socket.ts";
 import * as $api_helper_whichCommond from "./routes/api/helper/whichCommond.ts";
 import * as $api_huawei_path_ from "./routes/api/huawei/[path].tsx";
 import * as $api_huawei_huawei from "./routes/api/huawei/huawei.ts";
 import * as $api_huawei_huawei_type from "./routes/api/huawei/huawei.type.ts";
 import * as $api_info from "./routes/api/info.ts";
+import * as $api_oppo_path_ from "./routes/api/oppo/[path].tsx";
 import * as $api_oppo_oppo from "./routes/api/oppo/oppo.ts";
 import * as $api_oppo_oppo_type from "./routes/api/oppo/oppo.type.ts";
+import * as $api_samsung_path_ from "./routes/api/samsung/[path].tsx";
 import * as $api_samsung_samsung from "./routes/api/samsung/samsung.ts";
 import * as $api_samsung_samsung_type from "./routes/api/samsung/samsung.type.ts";
 import * as $api_setting_app from "./routes/api/setting/app.ts";
@@ -48,7 +52,10 @@ import * as $api_xiaomi_xiaomi from "./routes/api/xiaomi/xiaomi.ts";
 import * as $api_xiaomi_xiaomi_type from "./routes/api/xiaomi/xiaomi.type.ts";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
+import * as $partials_google from "./routes/partials/google.tsx";
 import * as $partials_huawei from "./routes/partials/huawei.tsx";
+import * as $partials_oppo from "./routes/partials/oppo.tsx";
+import * as $partials_samsung from "./routes/partials/samsung.tsx";
 import * as $partials_setting from "./routes/partials/setting.tsx";
 import * as $partials_state from "./routes/partials/state.tsx";
 import * as $partials_vivo from "./routes/partials/vivo.tsx";
@@ -73,6 +80,7 @@ const manifest = {
     "./routes/api/ali/ali.ts": $api_ali_ali,
     "./routes/api/baidu/baidu.ts": $api_baidu_baidu,
     "./routes/api/fetch.ts": $api_fetch,
+    "./routes/api/google/[path].tsx": $api_google_path_,
     "./routes/api/google/google.ts": $api_google_google,
     "./routes/api/google/google.type.ts": $api_google_google_type,
     "./routes/api/helper/HMAC.ts": $api_helper_HMAC,
@@ -83,13 +91,16 @@ const manifest = {
     "./routes/api/helper/date.ts": $api_helper_date,
     "./routes/api/helper/file.ts": $api_helper_file,
     "./routes/api/helper/puppeteer.ts": $api_helper_puppeteer,
+    "./routes/api/helper/socket.ts": $api_helper_socket,
     "./routes/api/helper/whichCommond.ts": $api_helper_whichCommond,
     "./routes/api/huawei/[path].tsx": $api_huawei_path_,
     "./routes/api/huawei/huawei.ts": $api_huawei_huawei,
     "./routes/api/huawei/huawei.type.ts": $api_huawei_huawei_type,
     "./routes/api/info.ts": $api_info,
+    "./routes/api/oppo/[path].tsx": $api_oppo_path_,
     "./routes/api/oppo/oppo.ts": $api_oppo_oppo,
     "./routes/api/oppo/oppo.type.ts": $api_oppo_oppo_type,
+    "./routes/api/samsung/[path].tsx": $api_samsung_path_,
     "./routes/api/samsung/samsung.ts": $api_samsung_samsung,
     "./routes/api/samsung/samsung.type.ts": $api_samsung_samsung_type,
     "./routes/api/setting/app.ts": $api_setting_app,
@@ -112,7 +123,10 @@ const manifest = {
     "./routes/api/xiaomi/xiaomi.type.ts": $api_xiaomi_xiaomi_type,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
+    "./routes/partials/google.tsx": $partials_google,
     "./routes/partials/huawei.tsx": $partials_huawei,
+    "./routes/partials/oppo.tsx": $partials_oppo,
+    "./routes/partials/samsung.tsx": $partials_samsung,
     "./routes/partials/setting.tsx": $partials_setting,
     "./routes/partials/state.tsx": $partials_state,
     "./routes/partials/vivo.tsx": $partials_vivo,

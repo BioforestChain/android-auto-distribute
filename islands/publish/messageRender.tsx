@@ -1,29 +1,25 @@
 import { Signal } from "@preact/signals";
+import { $SetpMessages } from "../../util/publishSignal.ts";
 
 interface Props {
-  setps: Signal<{ weight: number; label: string }[]>;
+  setps: Signal<$SetpMessages>;
   messages: Signal<string[]>;
   icon: string;
 }
 
 export default function MessageRender({ setps, messages, icon }: Props) {
-  const setpNumber = messages.value.length;
   // 动态改变进度条状态
-  const setStepState = (weight: number) => {
-    const msg = messages.value[weight - 1];
-    if (!msg) return "";
-    if (setpNumber >= weight) {
-      if (msg.startsWith("e:")) {
+  const setStepState = (active: boolean = false, error: boolean = false) => {
+    if (active) {
+      if (error) {
         return "step-error";
       }
       return "step-primary";
     }
   };
-  const setSetpContent = (weight: number) => {
-    const msg = messages.value[weight - 1];
-    if (!msg) return weight - 1;
-    if (setpNumber >= weight) {
-      if (msg.startsWith("e:")) {
+  const setSetpContent = (active: boolean = false, error: boolean = false) => {
+    if (active) {
+      if (error) {
         return "✕";
       }
       return "✓";
@@ -55,8 +51,8 @@ export default function MessageRender({ setps, messages, icon }: Props) {
           {setps.value.map((setp) => {
             return (
               <li
-                className={`step ${setStepState(setp.weight)}`}
-                data-content={setSetpContent(setp.weight)}
+                className={`step ${setStepState(setp.active, setp.error)}`}
+                data-content={setSetpContent(setp.active, setp.error)}
               >
                 {setp.label}
               </li>

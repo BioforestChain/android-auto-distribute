@@ -1,6 +1,7 @@
 // https://oop-openapi-cn.heytapmobi.com/developer/v1/token
 import { step } from "jsr:@sylc/step-spinner";
 import { oppo } from "../../../env.ts";
+import { $sendCallback } from "../../../util/publishSignal.ts";
 import { decoder, encoder } from "../helper/crypto.ts";
 import { formatDate } from "../helper/date.ts";
 import { readFile } from "../helper/file.ts";
@@ -63,12 +64,16 @@ const uploadApkFile = async () => {
   return uploadObj;
 };
 
-// 上传应用
-export const pub_oppo = async () => {
+/**更新应用 */
+export const pub_oppo = async (send: $sendCallback) => {
+  send("获取APP信息...");
   const appInfo = await queryAppInfo();
+  send(`获取成功:${appInfo.app_name}`);
+  send("开始上传APK...");
   const uploadObj = await uploadApkFile();
+  send("上传成功！");
 
-  const signal = step("开始发布新版本...").start();
+  send("开始发布新版本...");
   const date = new Date();
   date.setTime(date.getTime() + 7200000);
 
@@ -106,12 +111,12 @@ export const pub_oppo = async () => {
   const res = await oppoFetch("/resource/v1/app/upd", importantParams, true);
   const result: ResponseBaseResult = await res.json();
   if (result.errno === 0) {
-    signal.succeed("发布成功！");
+    send("发布成功！");
     setTimeout(async () => {
       await fetchTaskState("" + (parseInt(appInfo.version_code) + 1));
     }, 2000);
   } else {
-    signal.fail(`发布失败：${JSON.stringify(result)}`);
+    send(`发布失败：${JSON.stringify(result)}`);
   }
 };
 

@@ -1,6 +1,7 @@
 import { Buffer } from "node:buffer";
 import nodeCrypto from "node:crypto";
 import { xiaomi } from "../../../env.ts";
+import { $sendCallback } from "../../../util/publishSignal.ts";
 import {
   cerToPemX509,
   digestFileAlgorithm,
@@ -33,7 +34,7 @@ const RequestData: $RequestData = {
 };
 
 /**更新小米 */
-export async function pub_xiami(socket: WebSocket) {
+export async function pub_xiami(send: $sendCallback) {
   /**发布参数 */
   const pushRequestData: $PushRequest = {
     RequestData: JSON.stringify(RequestData),
@@ -45,16 +46,16 @@ export async function pub_xiami(socket: WebSocket) {
     screenshot_4: await readFile(SCREENSHOTS[3]),
   };
 
-  socket.send("开始签名...");
+  send("开始签名...");
   pushRequestData.SIG = await digitalSignature(pushRequestData);
-  socket.send("签名完成！");
-  socket.send("正在发布中...");
+  send("签名完成！");
+  send("正在发布中...");
   const response = await pushAppStore(pushRequestData);
   const resJson = await response.json();
   if (resJson.result === 0) {
-    socket.send(resJson.message);
+    send(resJson.message);
   } else {
-    socket.send(`e:${resJson.message}-${resJson.result}`);
+    send(`e:${resJson.message}-${resJson.result}`);
   }
 }
 

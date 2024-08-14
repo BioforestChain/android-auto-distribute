@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import { androidpublisher_v3, google } from "npm:googleapis";
 import { step } from "../../../deps.ts";
+import { $sendCallback } from "../../../util/publishSignal.ts";
 import { getFileName } from "../helper/file.ts";
 import { APP_METADATA, RESOURCES } from "../setting/app.ts";
 import type { EditOptions } from "./google.type.ts";
@@ -12,13 +13,13 @@ import type { EditOptions } from "./google.type.ts";
 const androidPublisher: androidpublisher_v3.Androidpublisher = google
   .androidpublisher("v3");
 
-export const pub_google = async () => {
+export const pub_google = async (send: $sendCallback) => {
   const auth = new google.auth.GoogleAuth({
     keyFile: "./private/google/privateKey.json",
     scopes: ["https://www.googleapis.com/auth/androidpublisher"],
   });
 
-  const result = await uploadToPlayStore({
+  const result = await uploadToPlayStore(send, {
     auth: auth,
     applicationId: APP_METADATA.packageName,
     name: APP_METADATA.version,
@@ -28,9 +29,9 @@ export const pub_google = async () => {
   });
 
   if (result) {
-    console.log("google 分发成功");
+    send("google 分发成功");
   } else {
-    console.error("google 分发失败");
+    send("e:google 分发失败");
   }
 };
 
@@ -52,7 +53,7 @@ const getOrCreateEdit = async (options: EditOptions) => {
   });
   if (!insertResult.data.id) {
     signal.fail("获取失败");
-    throw new Error(insertResult);
+    throw new Error(insertResult.statusText);
   }
   signal.succeed(`获取成功：${insertResult.data.id}`);
   return insertResult.data.id;
@@ -83,17 +84,22 @@ const uploadBundle = async (appEditId: string, options: EditOptions) => {
 };
 
 /**提交更新到google */
-const uploadToPlayStore = async (options: EditOptions) => {
+const uploadToPlayStore = async (send: $sendCallback, options: EditOptions) => {
   // 1
+  send("创建编辑ID...");
   const appEditId = await getOrCreateEdit(options);
   // 2
+  send("发布aab文件...");
   const bundle = await uploadBundle(appEditId, options);
   if (!bundle.versionCode) {
+    send("e:发布aab文件失败");
     return false;
   }
   // 3 分发到特定的轨道
+  send("分发到特定的轨道...");
   await addReleaseToTrack(appEditId, options, bundle.versionCode);
   // 4  提交本次修改
+  send("提交修改");
   const res = await androidPublisher.edits.commit({
     auth: options.auth,
     editId: appEditId,

@@ -1,4 +1,5 @@
 import { huawei } from "../../../env.ts";
+import { $sendCallback } from "../../../util/publishSignal.ts";
 import { decoder, digestFileAlgorithm, encoder } from "../helper/crypto.ts";
 import { formatDateToLocalString } from "../helper/date.ts";
 import { getFileName, readFile } from "../helper/file.ts";
@@ -16,18 +17,18 @@ const BASE_URL = "https://connect-api.cloud.huawei.com";
 let ACCESS_TOKEN: AccessTokenSuccessResult | null = null;
 let APP_ID: string | null = null;
 
-export const pub_huawei = async (socket: WebSocket) => {
-  socket.send("获取AppId...");
+export const pub_huawei = async (send: $sendCallback) => {
+  send("获取AppId...");
   const appId = await fetchAppId();
-  socket.send(`获取成功：${appId}`);
+  send(`获取成功：${appId}`);
 
-  socket.send("开始更新APK...");
+  send("开始更新APK...");
   const pkgVersion = await updateAppInfo();
-  socket.send(`更新APK成功:${pkgVersion.join("|")}`);
+  send(`更新APK成功:${pkgVersion.join("|")}`);
 
-  socket.send(`开始提交审核`);
+  send(`开始提交审核`);
   await submitForReview();
-  socket.send("提交成功！");
+  send("提交成功！");
 };
 
 /**获取App信息 */

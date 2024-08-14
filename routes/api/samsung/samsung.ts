@@ -1,8 +1,14 @@
 import { step } from "jsr:@sylc/step-spinner";
 import { samsung } from "../../../env.ts";
+import { $sendCallback } from "../../../util/publishSignal.ts";
 import { readFile } from "../helper/file.ts";
 import { RSASSA } from "../helper/RSASSA-PKCS1-v1_5.ts";
-import { APP_METADATA, RESOURCES, SCREENSHOTS } from "../setting/app.ts";
+import {
+  APP_METADATA,
+  RESOURCES,
+  SCREENSHOTS,
+  UpdateHandle,
+} from "../setting/app.ts";
 import {
   $AccessTokenSuccessResult,
   $AppContent,
@@ -25,13 +31,10 @@ export class Samsung {
   rsass = new RSASSA(samsung.private_key_path);
 
   /**🌈发布包 */
-  pub_samsung = async (isUpdateScreenshots = false, isUpdateApk = false) => {
+  pub_samsung = async (send: $sendCallback) => {
     // 获取每次的请求头
-    const contentId = await this.updateAppInfo(
-      isUpdateScreenshots,
-      isUpdateApk,
-    );
-    const sign = step("正在发布...").start();
+    const contentId = await this.updateAppInfo(send);
+    send("正在发布...");
     const res = await this.samsungFetch(
       `${this.BASE_URL}/seller/contentSubmit`,
       JSON.stringify({
@@ -39,9 +42,9 @@ export class Samsung {
       }),
     );
     if (res.ok) {
-      sign.succeed("三星分发成功");
+      send("三星分发成功");
     } else {
-      sign.fail(`pub_samsung ${res.statusText}`);
+      send("pub_samsung ${res.statusText}", true);
     }
     return res;
   };
@@ -145,11 +148,9 @@ export class Samsung {
    * 工具方法：应用程序提交并在 Galaxy Store 中出售后，修改应用程序信息，包括图像、图标和二进制文件
    * @returns
    */
-  updateAppInfo = async (isUpdateScreenshots = false, isUpdateApk = false) => {
-    const update = step("更新应用信息...").start();
+  updateAppInfo = async (send: $sendCallback) => {
     const { appInfo, binaryList, screenshots } = await this.generateParams(
-      isUpdateScreenshots,
-      isUpdateApk,
+      send,
     );
     // 构建上传需要的数据
     const updateParams = {
@@ -166,7 +167,7 @@ export class Samsung {
       sellCountryList: null,
       usExportLaws: true,
     };
-    console.log(updateParams);
+    send("更新应用信息...");
     const res = await this.samsungFetch(
       `${this.BASE_URL}/seller/contentUpdate`,
       JSON.stringify(updateParams),
@@ -175,32 +176,31 @@ export class Samsung {
     );
     const updateRes: $ContentUpdateRes = await res.json();
     if (updateRes.errorMsg == null) {
-      update.succeed(
+      send(
         `samsung 更新应用信息成功:${updateRes.httpStatus} [${updateRes.contentStatus}]`,
       );
     } else {
-      update.fail(
+      send(
         `samsung 更新应用信息失败:${updateRes.errorCode} [${updateRes.errorMsg}]`,
+        true,
       );
     }
     return updateRes.contentId;
   };
 
   /**构建参数 */
-  private async generateParams(
-    isUpdateScreenshots = false,
-    isUpdateApk = false,
-  ) {
-    const infoSign = step("正在获取app状态...").start();
+  private async generateParams(send: $sendCallback) {
+    const handle = UpdateHandle;
+    send("正在获取app状态...");
     const appInfo = await this.fetchAppInfo();
     // 请注意，内容状态为“FOR_SALE”，它将在注册二进制文件后发生变化。
-    infoSign.succeed(`获取状态成功：${appInfo.contentStatus}`);
+    send(`获取状态成功：${appInfo.contentStatus}`);
     let binaryList = null;
     // 是否针对apk进行更新
-    if (isUpdateApk) {
-      const sign = step("正在上传APK...").start();
+    if (handle.apk) {
+      send("正在上传APK...");
       const apk = await this.uploadFile(await readFile(RESOURCES.apk_64));
-      sign.succeed(`samsung 上传APK成功:${apk.fileName} ${apk.fileSize}`);
+      send(`samsung 上传APK成功:${apk.fileName} ${apk.fileSize}`);
       const oldBinaryItem = appInfo.binaryList[appInfo.binaryList.length - 1];
       const binaryItem: $Binaryinfo = {
         ...oldBinaryItem,
@@ -219,18 +219,20 @@ export class Samsung {
     }
     // 是否更新应用截图
     let screenshots = null;
-    if (isUpdateScreenshots) {
+    if (handle.screenshots) {
+      send(`正在准备上传截屏`);
       screenshots = appInfo.screenshots;
       for (const [index, filePath] of SCREENSHOTS.entries()) {
         const file = await readFile(filePath);
         const v = screenshots[index];
-        const sign = step(`正在更新 ${file.name} [${index}]...`).start();
+        send(`正在更新 ${file.name} [${index}]...`);
 
         const screenshot = await this.uploadFile(file);
-        sign.succeed(`上传 ${file.name} 成功`);
+        send(`上传 ${file.name} 成功`);
         v.screenshotKey = screenshot.fileKey;
         v.reuseYn = false;
       }
+      send(`上传截屏完成`);
     }
     return {
       appInfo,

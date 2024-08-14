@@ -5,10 +5,10 @@ import { xiaomiSignal } from "../../util/publishSignal.ts";
 
 export default function StatePage() {
   const steps = useSignal([
-    { weight: 2, label: "签名" },
-    { weight: 3, label: "签名完成" },
-    { weight: 4, label: "发布APK" },
-    { weight: 5, label: "发布完成" },
+    { label: "签名" },
+    { label: "签名完成" },
+    { label: "发布APK" },
+    { label: "发布完成" },
   ]);
   return (
     <div class="flex flex-col">
@@ -18,7 +18,8 @@ export default function StatePage() {
         icon="/icon/xiaomi.svg"
       />
       <HandleRender
-        api="/xiaomi/update"
+        setps={steps}
+        self="/xiaomi/update"
         publishing={xiaomiSignal.publishing}
         messages={xiaomiSignal.messages}
       />

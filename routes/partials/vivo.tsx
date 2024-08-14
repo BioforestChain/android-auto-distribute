@@ -5,13 +5,13 @@ import { vivoSignal } from "../../util/publishSignal.ts";
 
 export default function StatePage() {
   const steps = useSignal([
-    { weight: 2, label: "签名" },
-    { weight: 3, label: "签名完成" },
-    { weight: 4, label: "获取app信息" },
-    { weight: 5, label: "上传APK" },
-    { weight: 6, label: "上传成功" },
-    { weight: 7, label: "推送更新" },
-    { weight: 8, label: "推送完成" },
+    { label: "签名" },
+    { label: "签名完成" },
+    { label: "获取app信息" },
+    { label: "上传APK" },
+    { label: "上传成功" },
+    { label: "推送更新" },
+    { label: "推送完成" },
   ]);
   return (
     <div class="flex flex-col">
@@ -22,6 +22,7 @@ export default function StatePage() {
       />
       <HandleRender
         self="vivo"
+        setps={steps}
         publishing={vivoSignal.publishing}
         messages={vivoSignal.messages}
       />
