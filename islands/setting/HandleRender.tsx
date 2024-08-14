@@ -1,10 +1,12 @@
-import type { Signal } from "@preact/signals";
+import { Signal } from "@preact/signals";
 import { warpFetch } from "../../routes/api/fetch.ts";
 import { $UpdateHandle, handleStateSignal } from "../../util/settingSignal.ts";
 
 const handleCheckboxChange = (event: Event, key: keyof $UpdateHandle) => {
   const target = event.target as HTMLInputElement;
-  handleStateSignal.value[key] = target.checked;
+  const old = handleStateSignal.value;
+  old[key] = target.checked;
+  handleStateSignal.value = old;
   updateHandle(key, target.checked);
 };
 

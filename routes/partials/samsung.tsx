@@ -1,8 +1,10 @@
+import { Handlers } from "$fresh/server.ts";
 import { useSignal } from "@preact/signals";
 import HandleRender from "../../islands/publish/HandleRender.tsx";
 import MessageRender from "../../islands/publish/messageRender.tsx";
 import { samsungSignal } from "../../util/publishSignal.ts";
-import { handleStateSignal } from "../../util/settingSignal.ts";
+import { $UpdateHandle, handleStateSignal } from "../../util/settingSignal.ts";
+import { loadData } from "./setting.tsx";
 
 // 动态添加进度条关键节点
 const createSetps = (apk: boolean, screenshots: boolean) => {
@@ -29,11 +31,18 @@ const createSetps = (apk: boolean, screenshots: boolean) => {
   return baseSetps.concat(lastSetps);
 };
 
+export const handler: Handlers = {
+  async GET(_req, ctx) {
+    handleStateSignal.value = await loadData<$UpdateHandle>(
+      `api/setting/handle`,
+    );
+    return ctx.render(handleStateSignal);
+  },
+};
+
 export default function StatePage() {
   const handle = handleStateSignal.value;
-
   const steps = useSignal(createSetps(handle.apk, handle.screenshots));
-
   return (
     <div class="flex flex-col">
       <MessageRender

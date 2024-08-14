@@ -7,13 +7,6 @@ const autoList = {
   "google": "google",
 };
 
-const semiAutoList = {
-  "ali": "阿里",
-  "360": "360手机助手",
-  "baidu": "百度",
-  "tencent": "腾讯应用宝",
-};
-
 export default function Memu() {
   return (
     <ul className="menu bg-base-200 rounded-box w-56 shadow-md">
@@ -42,8 +35,8 @@ export default function Memu() {
       </li>
       <li>
         <a
-          href="/partials/keyStore"
-          f-partial="/partials/keyStore"
+          href="/partials/key"
+          f-partial="/partials/key"
           class="aria-[current]:text-green-600"
         >
           密钥管理
@@ -77,22 +70,13 @@ export default function Memu() {
         </ul>
       </li>
       <li>
-        <h2 className="menu-title">半自动化发布</h2>
-        <ul>
-          {Object.entries(semiAutoList).map(([key, value]) => {
-            return (
-              <li>
-                <a
-                  href={`/partials/${key}`}
-                  f-partial={`/partials/${key}`}
-                  class="aria-[current]:text-green-600"
-                >
-                  {value}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
+        <a
+          href="/partials/semi"
+          f-partial="/partials/semi"
+          class="aria-[current]:text-green-600"
+        >
+          半自动化发布
+        </a>
       </li>
     </ul>
   );

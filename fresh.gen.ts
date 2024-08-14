@@ -54,8 +54,10 @@ import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $partials_google from "./routes/partials/google.tsx";
 import * as $partials_huawei from "./routes/partials/huawei.tsx";
+import * as $partials_key from "./routes/partials/key.tsx";
 import * as $partials_oppo from "./routes/partials/oppo.tsx";
 import * as $partials_samsung from "./routes/partials/samsung.tsx";
+import * as $partials_semi from "./routes/partials/semi.tsx";
 import * as $partials_setting from "./routes/partials/setting.tsx";
 import * as $partials_state from "./routes/partials/state.tsx";
 import * as $partials_vivo from "./routes/partials/vivo.tsx";
@@ -125,8 +127,10 @@ const manifest = {
     "./routes/index.tsx": $index,
     "./routes/partials/google.tsx": $partials_google,
     "./routes/partials/huawei.tsx": $partials_huawei,
+    "./routes/partials/key.tsx": $partials_key,
     "./routes/partials/oppo.tsx": $partials_oppo,
     "./routes/partials/samsung.tsx": $partials_samsung,
+    "./routes/partials/semi.tsx": $partials_semi,
     "./routes/partials/setting.tsx": $partials_setting,
     "./routes/partials/state.tsx": $partials_state,
     "./routes/partials/vivo.tsx": $partials_vivo,

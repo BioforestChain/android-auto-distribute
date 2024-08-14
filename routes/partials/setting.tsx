@@ -1,8 +1,9 @@
+import { Handlers } from "$fresh/server.ts";
+import { Signal } from "@preact/signals";
 import ApkRender from "../../islands/setting/ApkRender.tsx";
 import HandleRender from "../../islands/setting/HandleRender.tsx";
 import InfoRender from "../../islands/setting/InfoRender.tsx";
 import ScreenshotsRender from "../../islands/setting/ScreenshotsRender.tsx";
-import SubmitRender from "../../islands/setting/submitRender.tsx";
 import TextRender from "../../islands/setting/TextRender.tsx";
 import {
   $AppMetadata,
@@ -16,25 +17,42 @@ import {
 } from "../../util/settingSignal.ts";
 import { warpFetch } from "../api/fetch.ts";
 
-const loadData = async <T extends object>(path: string): Promise<T> => {
+interface $SettingData {
+  appMetadataSignal: Signal<$AppMetadata>;
+  handleStateSignal: Signal<$UpdateHandle>;
+  resourcesSignal: Signal<$Resources>;
+  screenshotsSignal: Signal<$Screenshots>;
+}
+
+export const loadData = async <T extends object>(path: string): Promise<T> => {
   const res = await warpFetch(path);
   return await res.json();
 };
+/** 初始化数据 */
+export const handler: Handlers<$SettingData> = {
+  async GET(_req, ctx) {
+    appMetadataSignal.value = await loadData<$AppMetadata>(
+      `api/setting/metadata`,
+    );
+    handleStateSignal.value = await loadData<$UpdateHandle>(
+      `api/setting/handle`,
+    );
+    resourcesSignal.value = await loadData<$Resources>(
+      `api/setting/resource`,
+    );
+    screenshotsSignal.value = await loadData<$Screenshots>(
+      `api/setting/screenshot`,
+    );
+    return ctx.render({
+      appMetadataSignal,
+      handleStateSignal,
+      resourcesSignal,
+      screenshotsSignal,
+    });
+  },
+};
 
-export default async function Setting() {
-  appMetadataSignal.value = await loadData<$AppMetadata>(
-    `api/setting/metadata`,
-  );
-  handleStateSignal.value = await loadData<$UpdateHandle>(
-    `api/setting/handle`,
-  );
-  resourcesSignal.value = await loadData<$Resources>(
-    `api/setting/resource`,
-  );
-  screenshotsSignal.value = await loadData<$Screenshots>(
-    `api/setting/screenshot`,
-  );
-
+export default function Setting() {
   return (
     <div class="flex flex-col">
       <div class="flex flex-row">
@@ -46,7 +64,7 @@ export default async function Setting() {
         </div>
       </div>
       <ApkRender resourcesSignal={resourcesSignal} />
-      <SubmitRender />
+      {/* <SubmitRender /> */}
     </div>
   );
 }
