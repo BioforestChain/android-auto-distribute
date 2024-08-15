@@ -31,6 +31,7 @@ const createSetps = (apk: boolean, screenshots: boolean) => {
   return baseSetps.concat(lastSetps);
 };
 
+/**这里的signal真是奇怪 没办法跨组件共享，又不想用useContext 等以后学到再改 */
 export const handler: Handlers = {
   async GET(_req, ctx) {
     handleStateSignal.value = await loadData<$UpdateHandle>(

@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
-    <div class="p-4 mx-auto max-w-screen-md">
-      <p class="mt-20 mb-6 sm:flex sm:justify-between">
+    <div class="p-4 mt-10 mx-auto max-w-screen-md">
+      <p class=" flex justify-between absolute inset-x-0 bottom-3">
         <a
           href="https://github.com/BioforestChain/android-auto-distribute"
           class="text-blue-500 hover:underline flex gap-2 items-center"

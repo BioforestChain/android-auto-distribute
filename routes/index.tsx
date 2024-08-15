@@ -13,12 +13,26 @@ const loadContent = (type: string) => {
   return <Setting />;
 };
 
+//  const Metadata = createContext<$AppMetadata>({
+//   icp: "",
+//   appName: "",
+//   version: "",
+//   packageName: "",
+//   keyWords: "",
+//   privacyUrl: "",
+//   updateDesc: "",
+//   brief: "",
+//   desc: "",
+// });
+
 export default defineRoute((_req, ctx) => {
   const content = loadContent(ctx.params.id);
   return (
+    // <Metadata.Provider value={}>
     <Partial name="content">
       {content}
     </Partial>
+    // </ Metadata.Provider>
   );
 });
 

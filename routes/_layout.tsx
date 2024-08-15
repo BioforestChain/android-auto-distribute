@@ -8,12 +8,12 @@ export default function Layout({
 }: PageProps) {
   return (
     <>
-      <div class="container mx-auto">
+      <div class="container mx-auto min-h-screen relative">
         <div class="mb-3">
           <Navbar />
         </div>
         <div class="flex flex-row">
-          <aside>
+          <aside class="hidden sm:block">
             <Menu />
           </aside>
           <div class="grow m-3">

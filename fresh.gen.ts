@@ -65,6 +65,7 @@ import * as $partials_xiaomi from "./routes/partials/xiaomi.tsx";
 import * as $publish_HandleRender from "./islands/publish/HandleRender.tsx";
 import * as $publish_MessageRender from "./islands/publish/MessageRender.tsx";
 import * as $publish_messageRender from "./islands/publish/messageRender.tsx";
+import * as $semi_toast from "./islands/semi/toast.tsx";
 import * as $setting_ApkRender from "./islands/setting/ApkRender.tsx";
 import * as $setting_HandleRender from "./islands/setting/HandleRender.tsx";
 import * as $setting_InfoRender from "./islands/setting/InfoRender.tsx";
@@ -140,6 +141,7 @@ const manifest = {
     "./islands/publish/HandleRender.tsx": $publish_HandleRender,
     "./islands/publish/MessageRender.tsx": $publish_MessageRender,
     "./islands/publish/messageRender.tsx": $publish_messageRender,
+    "./islands/semi/toast.tsx": $semi_toast,
     "./islands/setting/ApkRender.tsx": $setting_ApkRender,
     "./islands/setting/HandleRender.tsx": $setting_HandleRender,
     "./islands/setting/InfoRender.tsx": $setting_InfoRender,
