@@ -15,7 +15,7 @@ export async function createPage() {
     ],
     headless: false,
     dumpio: true, // 是否将浏览器进程标准输出和标准错误输入到 process.stdout 和 process.stderr 中。默认是 false。
-    executablePath: RESOURCES.executablePath,
+    executablePath: RESOURCES.chromiumPath,
     defaultViewport: { width: 1200, height: 1000 },
   });
   const page = await browser.newPage();

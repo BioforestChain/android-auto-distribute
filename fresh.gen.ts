@@ -6,7 +6,10 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $_layout from "./routes/_layout.tsx";
 import * as $api_360_360 from "./routes/api/360/360.ts";
+import * as $api_360_path_ from "./routes/api/360/[path].tsx";
+import * as $api_ali_path_ from "./routes/api/ali/[path].tsx";
 import * as $api_ali_ali from "./routes/api/ali/ali.ts";
+import * as $api_baidu_path_ from "./routes/api/baidu/[path].tsx";
 import * as $api_baidu_baidu from "./routes/api/baidu/baidu.ts";
 import * as $api_fetch from "./routes/api/fetch.ts";
 import * as $api_google_path_ from "./routes/api/google/[path].tsx";
@@ -42,6 +45,7 @@ import * as $api_setting_resource_key_ from "./routes/api/setting/resource/[key]
 import * as $api_setting_resource_index from "./routes/api/setting/resource/index.tsx";
 import * as $api_setting_screenshot_key_ from "./routes/api/setting/screenshot/[key].tsx";
 import * as $api_setting_screenshot_index from "./routes/api/setting/screenshot/index.tsx";
+import * as $api_tencent_path_ from "./routes/api/tencent/[path].tsx";
 import * as $api_tencent_tencent from "./routes/api/tencent/tencent.ts";
 import * as $api_update from "./routes/api/update.ts";
 import * as $api_vivo_path_ from "./routes/api/vivo/[path].tsx";
@@ -65,6 +69,7 @@ import * as $partials_xiaomi from "./routes/partials/xiaomi.tsx";
 import * as $publish_HandleRender from "./islands/publish/HandleRender.tsx";
 import * as $publish_MessageRender from "./islands/publish/MessageRender.tsx";
 import * as $publish_messageRender from "./islands/publish/messageRender.tsx";
+import * as $semi_PublishButton from "./islands/semi/PublishButton.tsx";
 import * as $semi_toast from "./islands/semi/toast.tsx";
 import * as $setting_ApkRender from "./islands/setting/ApkRender.tsx";
 import * as $setting_HandleRender from "./islands/setting/HandleRender.tsx";
@@ -80,7 +85,10 @@ const manifest = {
     "./routes/_app.tsx": $_app,
     "./routes/_layout.tsx": $_layout,
     "./routes/api/360/360.ts": $api_360_360,
+    "./routes/api/360/[path].tsx": $api_360_path_,
+    "./routes/api/ali/[path].tsx": $api_ali_path_,
     "./routes/api/ali/ali.ts": $api_ali_ali,
+    "./routes/api/baidu/[path].tsx": $api_baidu_path_,
     "./routes/api/baidu/baidu.ts": $api_baidu_baidu,
     "./routes/api/fetch.ts": $api_fetch,
     "./routes/api/google/[path].tsx": $api_google_path_,
@@ -116,6 +124,7 @@ const manifest = {
     "./routes/api/setting/resource/index.tsx": $api_setting_resource_index,
     "./routes/api/setting/screenshot/[key].tsx": $api_setting_screenshot_key_,
     "./routes/api/setting/screenshot/index.tsx": $api_setting_screenshot_index,
+    "./routes/api/tencent/[path].tsx": $api_tencent_path_,
     "./routes/api/tencent/tencent.ts": $api_tencent_tencent,
     "./routes/api/update.ts": $api_update,
     "./routes/api/vivo/[path].tsx": $api_vivo_path_,
@@ -141,6 +150,7 @@ const manifest = {
     "./islands/publish/HandleRender.tsx": $publish_HandleRender,
     "./islands/publish/MessageRender.tsx": $publish_MessageRender,
     "./islands/publish/messageRender.tsx": $publish_messageRender,
+    "./islands/semi/PublishButton.tsx": $semi_PublishButton,
     "./islands/semi/toast.tsx": $semi_toast,
     "./islands/setting/ApkRender.tsx": $setting_ApkRender,
     "./islands/setting/HandleRender.tsx": $setting_HandleRender,

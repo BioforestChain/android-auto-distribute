@@ -22,7 +22,7 @@ export const resourcesSignal = signal<$Resources>({
   aab_64: "",
   aab_32: "",
   icon: "",
-  executablePath:
+  chromiumPath:
     "/Volumes/developer/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", // 本地chrome 浏览器地址
 });
 
@@ -56,7 +56,7 @@ export interface $Resources {
   aab_64: string;
   aab_32: string;
   icon: string;
-  executablePath: string;
+  chromiumPath: string;
 }
 
 export interface $Screenshots {

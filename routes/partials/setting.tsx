@@ -1,5 +1,4 @@
 import { Handlers } from "$fresh/server.ts";
-import { Signal } from "@preact/signals";
 import ApkRender from "../../islands/setting/ApkRender.tsx";
 import HandleRender from "../../islands/setting/HandleRender.tsx";
 import InfoRender from "../../islands/setting/InfoRender.tsx";
@@ -17,19 +16,12 @@ import {
 } from "../../util/settingSignal.ts";
 import { warpFetch } from "../api/fetch.ts";
 
-interface $SettingData {
-  appMetadataSignal: Signal<$AppMetadata>;
-  handleStateSignal: Signal<$UpdateHandle>;
-  resourcesSignal: Signal<$Resources>;
-  screenshotsSignal: Signal<$Screenshots>;
-}
-
 export const loadData = async <T extends object>(path: string): Promise<T> => {
   const res = await warpFetch(path);
   return await res.json();
 };
 /** 初始化数据 */
-export const handler: Handlers<$SettingData> = {
+export const handler: Handlers = {
   async GET(_req, ctx) {
     appMetadataSignal.value = await loadData<$AppMetadata>(
       `api/setting/metadata`,

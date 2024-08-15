@@ -2,13 +2,13 @@ import type { Signal } from "@preact/signals";
 import { warpFetch } from "../../routes/api/fetch.ts";
 import { $Resources, resourcesSignal } from "../../util/settingSignal.ts";
 // 处理文件选择
-const handleFileChange = (event: Event, key: keyof $Resources) => {
+export const handleFileChange = (event: Event, key: keyof $Resources) => {
   const target = event.target as HTMLInputElement;
   resourcesSignal.value[key] = target.value;
   updateResource(key, target.value);
 };
 
-const updateResource = async (key: string, value: string) => {
+export const updateResource = async (key: string, value: string) => {
   await warpFetch(`api/setting/resource/${key}`, {
     method: "PATCH",
     body: value,
@@ -79,8 +79,8 @@ export default function ApkRender(
           <input
             type="text"
             className="file-input file-input-bordered"
-            value={resources.executablePath}
-            onChange={(event) => handleFileChange(event, "executablePath")}
+            value={resources.chromiumPath}
+            onChange={(event) => handleFileChange(event, "chromiumPath")}
           />
         </label>
       </div>
