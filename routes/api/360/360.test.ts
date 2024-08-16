@@ -1,4 +1,4 @@
-import { app_state } from "./oppo_state.ts";
+import { app_state } from "./360_state.ts";
 
 Deno.test("测试获取APP信息", async () => {
   const state = await app_state();

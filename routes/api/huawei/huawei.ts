@@ -38,18 +38,13 @@ export const fetchAppInfo = async () => {
     `/api/publish/v2/app-info?appId=${appId}`,
   );
 
-  if (res.ok) {
-    const result: ResponseBaseResult = await res.json();
+  const result: ResponseBaseResult = await res.json();
 
-    if (result.ret.code === 0) {
-      console.log(result);
-      return (result as AppInfoSuccessResult).appInfo;
-    } else {
-      console.error("fetchAppInfo", result);
-    }
+  if (result.ret.code === 0) {
+    return (result as AppInfoSuccessResult).appInfo;
+  } else {
+    throw Error(`e:${await res.text()}`);
   }
-
-  return null;
 };
 
 /** 提交审核 */

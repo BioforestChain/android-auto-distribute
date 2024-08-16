@@ -25,18 +25,11 @@ const hmacCrypto = new HMAC(await HMAC.importKey(oppo.client_secret));
 
 // 查询已上传应用信息
 export const queryAppInfo = async () => {
-  const signal = step("正在查询应用信息...").start();
-
   const data = {
     pkg_name: APP_METADATA.packageName,
   };
   const res = await oppoFetch("/resource/v1/app/info", data);
   const result: AppInfoSuccessResult = await res.json();
-  if (result.errno === 0) {
-    signal.succeed(`获取 ${result.data.app_name} 信息成功！`);
-  } else {
-    signal.fail(`获取app信息失败！:${JSON.stringify(result.data)}`);
-  }
   return result.data;
 };
 

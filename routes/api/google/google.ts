@@ -114,20 +114,6 @@ const uploadToPlayStore = async (send: $sendCallback, options: EditOptions) => {
   }
 };
 
-// deno-lint-ignore no-unused-vars
-const fetchReleaseTrackList = async (
-  appEditId: string,
-  options: EditOptions,
-) => {
-  const res = await androidPublisher.edits.tracks.list({
-    auth: options.auth,
-    editId: appEditId,
-    packageName: options.applicationId,
-  });
-
-  console.log(JSON.stringify(res.data));
-};
-
 /**通过将 APK 分配至各个轨道（Alpha 版、Beta 版、分阶段发布版本或正式版）来发布应用 */
 const addReleaseToTrack = async (
   appEditId: string,

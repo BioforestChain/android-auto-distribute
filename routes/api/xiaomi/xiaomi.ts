@@ -13,7 +13,7 @@ import { APP_METADATA, RESOURCES, SCREENSHOTS } from "../setting/app.ts";
 import { $AppInfo, $PushRequest, $RequestData } from "./xiaomi.type.ts";
 
 // 通过应用包名查询小米应用商店内本账户推送的最新应用详情，用于判断是否需要进行应用推送
-// const QUERY_API = "https://api.developer.xiaomi.com/devupload/dev/query";
+const QUERY_API = "https://api.developer.xiaomi.com/devupload/dev/query";
 // 查询小米应用商店的应用分类，获取到分类后在category填上分类ID
 //curl --location --request POST 'https://api.developer.xiaomi.com/devupload/dev/category'
 
@@ -88,6 +88,27 @@ async function digitalSignature(pushRequestData: $PushRequest) {
     xiaomi.public_key_path,
   );
   return sig;
+}
+/**
+ * 获取app信息
+ * @returns
+ */
+export async function queryAppInfo() {
+  const requestData: $PushRequest = {
+    "RequestData": JSON.stringify({
+      "packageName": appInfo.packageName,
+      "userName": xiaomi.email,
+    }),
+  };
+  requestData.SIG = await digitalSignature(requestData);
+  const formData = new FormData();
+  for (const [key, value] of Object.entries(requestData)) {
+    formData.append(key, value);
+  }
+  return fetch(QUERY_API, {
+    method: "POST",
+    body: formData,
+  });
 }
 
 /**工具函数：开始发布 */

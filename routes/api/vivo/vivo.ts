@@ -94,7 +94,7 @@ export const pub_vivo = async (send: $sendCallback) => {
 };
 
 /**工具函数：获取app信息 */
-const getAppMessage = async () => {
+export const getAppMessage = async () => {
   const signalApkCode = step("获取APP信息...").start();
   const response = await vivoFetch(MethodType.detail, {
     packageName: APP_METADATA.packageName,

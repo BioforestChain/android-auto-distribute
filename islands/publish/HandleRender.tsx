@@ -57,7 +57,7 @@ export default function HandleRender(
 
   return (
     <>
-      <div class="absolute inset-x-1/2 inset-y-3/4  m-6 h-auto w-32">
+      <div class="absolute left-1/2 top-3/4 transform -translate-x-1/2 -translate-y-1/2  m-6 h-auto w-32">
         <button className="btn" onClick={fetchPublish}>
           {isPublishing
             ? (

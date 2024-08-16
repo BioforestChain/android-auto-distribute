@@ -3,6 +3,7 @@ import { readFile } from "../helper/file.ts";
 import { APP_METADATA, RESOURCES } from "../setting/app.ts";
 import { uploadApk, vivoFetch } from "./vivo.ts";
 import { MethodType } from "./vivo.type.ts";
+import { app_state } from "./vivo_state.ts";
 
 Deno.test("vivo 查询详细信息", async () => {
   const response = await vivoFetch(MethodType.detail, {
@@ -16,4 +17,9 @@ Deno.test("vivo 上传APK文件", async () => {
   // 获取上传到apk信息
   const apkInfo = await uploadApk(fileMd5);
   console.log(apkInfo);
+});
+
+Deno.test("测试获取APP信息", async () => {
+  const state = await app_state();
+  console.log("state:", state);
 });
