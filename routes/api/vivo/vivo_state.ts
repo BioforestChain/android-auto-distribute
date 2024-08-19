@@ -7,7 +7,12 @@ export const app_state = async () => {
     onlineVersion: "",
     issues: ``,
   };
-  const info = await getAppMessage();
-  state.onlineVersion = info.versionName ?? "";
-  return state;
+  try {
+    const info = await getAppMessage();
+    state.onlineVersion = info.versionName ?? "";
+    return state;
+  } catch (e) {
+    state.issues = JSON.stringify(e) ?? "";
+    return state;
+  }
 };

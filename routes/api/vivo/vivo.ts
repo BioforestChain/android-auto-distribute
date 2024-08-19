@@ -95,14 +95,12 @@ export const pub_vivo = async (send: $sendCallback) => {
 
 /**工具函数：获取app信息 */
 export const getAppMessage = async () => {
-  const signalApkCode = step("获取APP信息...").start();
   const response = await vivoFetch(MethodType.detail, {
     packageName: APP_METADATA.packageName,
   });
   const message: $DetailResponse = await response.json();
   const data = message.data;
   if (message.subCode == "0" && data !== undefined) {
-    signalApkCode.succeed(`获取app信息成功：${data.versionName}`);
     return data;
   }
   throw Error(`${MethodType.detail}: ${message.msg}`);
