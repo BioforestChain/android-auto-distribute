@@ -1,4 +1,4 @@
-import { DigestAlgorithm, crypto } from "jsr:@std/crypto";
+import { crypto, DigestAlgorithm } from "jsr:@std/crypto";
 import { whichSync } from "./whichCommond.ts";
 
 export const encoder = new TextEncoder();
@@ -11,7 +11,7 @@ export const decoder = new TextDecoder("utf-8");
  */
 export async function digestFileAlgorithm(
   file: File,
-  algorithm: DigestAlgorithm = "MD5"
+  algorithm: DigestAlgorithm = "MD5",
 ) {
   const readableStream = file.stream();
   const fileHashBuffer = await crypto.subtle.digest(algorithm, readableStream);
@@ -25,7 +25,7 @@ export async function digestFileAlgorithm(
  */
 export async function digestStringAlgorithm(
   text: string,
-  algorithm: DigestAlgorithm = "MD5"
+  algorithm: DigestAlgorithm = "MD5",
 ) {
   const messageBuffer = encoder.encode(text);
   const hashBuffer = await crypto.subtle.digest(algorithm, messageBuffer);
@@ -33,7 +33,6 @@ export async function digestStringAlgorithm(
 }
 
 /**
- *
  * @param uint8Array
  * @returns
  * @example assertEquals(encodeHex("abc"), "616263");
@@ -56,7 +55,7 @@ export function encodeHex(bytes: Uint8Array | ArrayBuffer): string {
  * @returns {Promise<string>}
  */
 export async function cerToPemPKS8(privateKeyPath: string): Promise<string> {
-  const openssl = whichSync("openssl");
+  const openssl = checkOrInstallOpenSSL();
   if (!openssl) {
     throw new Error("OpenSSL not found in your PATH");
   }
@@ -64,7 +63,7 @@ export async function cerToPemPKS8(privateKeyPath: string): Promise<string> {
   const cwd = privateKeyPath.slice(0, privateKeyPath.lastIndexOf("/") + 1);
   const filename = privateKeyPath.slice(privateKeyPath.lastIndexOf("/") + 1);
   // pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in private_key.pem
-  const process = await new Deno.Command(openssl, {
+  const process = await new Deno.Command("openssl", {
     cwd,
     args: ["pkcs8", "-topk8", "-inform", "PEM", "-nocrypt", "-in", filename],
     stdout: "piped",
@@ -138,7 +137,7 @@ export const base64UrlEncode = (obj: object) => {
 export const base64UrlDecode = (encodedSignature: string) => {
   return Uint8Array.from(
     atob(encodedSignature.replace(/-/g, "+").replace(/_/g, "/")),
-    (c) => c.charCodeAt(0)
+    (c) => c.charCodeAt(0),
   );
 };
 
@@ -159,4 +158,99 @@ export async function getKeyLength(publicKey: CryptoKey): Promise<number> {
   // Calculate the length of the modulus in bits
   const modulus = view.subarray(offset + 2, offset + 2 + modulusLength);
   return modulus.length * 8; // 返回位长度
+}
+
+/**
+ * 检查 OpenSSL 是否存在或安装
+ */
+async function checkOrInstallOpenSSL(): Promise<string | null> {
+  let opensslPath: string | undefined = undefined;
+
+  // 检查 OpenSSL 是否在 PATH 中
+  try {
+    opensslPath = whichSync("openssl");
+
+    if (!opensslPath) throw new Error();
+    console.log(`OpenSSL found at: ${opensslPath}`);
+    return opensslPath;
+  } catch {
+    console.log("OpenSSL not found in your PATH.");
+  }
+
+  // 尝试安装 OpenSSL
+  console.log("Attempting to install OpenSSL...");
+
+  try {
+    const { os } = Deno.build;
+
+    if (os === "windows") {
+      console.log(
+        "Windows detected. Please install OpenSSL manually from https://slproweb.com/products/Win32OpenSSL.html",
+      );
+    } else if (os === "darwin") {
+      // macOS 系统
+      try {
+        await runCommand("brew", ["install", "openssl"]);
+        console.log("OpenSSL installed via Homebrew.");
+      } catch (_err) {
+        console.log(
+          "Homebrew not found or failed to install OpenSSL. Please install Homebrew first from https://brew.sh/",
+        );
+      }
+    } else if (os === "linux") {
+      // Linux 系统
+      try {
+        await runCommand("sudo", ["apt-get", "update"]);
+        await runCommand("sudo", ["apt-get", "install", "-y", "openssl"]);
+        console.log("OpenSSL installed via apt-get.");
+      } catch (_err) {
+        console.log(
+          "Failed to install OpenSSL via apt-get. Please try installing it manually.",
+        );
+      }
+    } else {
+      console.log(
+        `Unsupported platform: ${os}. Please install OpenSSL manually.`,
+      );
+    }
+  } catch (installError) {
+    console.error(
+      "Error occurred while trying to install OpenSSL:",
+      installError,
+    );
+  }
+
+  // 再次检查 OpenSSL 是否成功安装
+  try {
+    opensslPath = whichSync("openssl");
+
+    if (opensslPath) {
+      console.log("OpenSSL has been installed successfully.");
+      return opensslPath;
+    } else {
+      throw new Error(
+        "OpenSSL installation failed. Please install it manually.",
+      );
+    }
+  } catch (_error) {
+    console.error(
+      "OpenSSL not found after attempted installation. Please install it manually.",
+    );
+    return null;
+  }
+}
+
+// 封装运行命令的函数
+async function runCommand(cmd: string, args: string[]) {
+  const process = new Deno.Command(cmd, {
+    args: args,
+    stdout: "inherit",
+    stderr: "inherit",
+  });
+  // 等待命令完成
+  const { code } = await process.spawn().status;
+  if (code !== 0) {
+    console.error(`Failed to run command: ${cmd} `);
+    Deno.exit(code);
+  }
 }
