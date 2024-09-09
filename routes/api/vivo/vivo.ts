@@ -143,6 +143,7 @@ export const uploadScreenshot = async () => {
     ).serialnumber;
     serialnumbers += `,${serialnumber}`;
   }
+  serialnumbers = serialnumbers.slice(1);
   return serialnumbers;
 };
 

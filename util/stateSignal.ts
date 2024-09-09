@@ -10,7 +10,7 @@ export const appStates = signal({
     onlineVersion: "0.000000.0",
     issues: "",
     host:
-      "https://id1.cloud.huawei.com/CAS/portal/login.html?reqClientType=7&loginChannel=7000000&regionCode=cn&loginUrl=https%3A%2F%2Fid1.cloud.huawei.com%2FCAS%2Fportal%2Flogin.html&lang=en-us&themeName=red&service=https%3A%2F%2Fid1.cloud.huawei.com%2FAMW%2Fportal%2FuserCenter%2Findex.html%3FregionCode%3Dcn%26themeName%3Dred%26loginChannel%3D7000000%26loginUrl%3Dhttps%253A%252F%252Fid1.cloud.huawei.com%252FCAS%252Fportal%252Flogin.html%26service%3Dhttps%253A%252F%252Fid1.cloud.huawei.com%252FAMW%252Fportal%252Fhome.html%253FreflushCode%253D0.42420033130647816%2526cVersion%253DUP_CAS_6.15.0.100_green%26reqClientType%3D7%26lang%3Den-us&validated=true",
+      "https://developer.huawei.com/consumer/cn/service/josp/agc/index.html#/",
   },
   "oppo": {
     onlineVersion: "0.000000.0",

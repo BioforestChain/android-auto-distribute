@@ -31,7 +31,11 @@ export const upadteSocket = (
     try {
       await pub_fun(send);
     } catch (e) {
-      send(`e:${JSON.stringify(e)}`, true, true);
+      if (e instanceof Error) {
+        send(`e:${e.message}`, true, true);
+      } else {
+        send(`e:${JSON.stringify(e)}`, true, true);
+      }
     } finally {
       socket.close();
     }
