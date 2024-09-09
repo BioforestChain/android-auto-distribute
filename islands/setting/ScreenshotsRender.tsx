@@ -66,6 +66,17 @@ export default function ScreenshotsRender(
           onChange={(event) => handleChange(event, 3)}
         />
       </label>
+      <label className="form-control w-full  ">
+        <div className="label">
+          <span className="label-text font-bold">第五张</span>
+        </div>
+        <input
+          type="text"
+          className="file-input file-input-bordered w-full "
+          value={screenshots.at(4)}
+          onChange={(event) => handleChange(event, 4)}
+        />
+      </label>
     </div>
   );
 }

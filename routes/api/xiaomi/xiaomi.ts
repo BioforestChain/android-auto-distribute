@@ -9,7 +9,12 @@ import {
   encodeHex,
 } from "../helper/crypto.ts";
 import { readFile } from "../helper/file.ts";
-import { APP_METADATA, RESOURCES, SCREENSHOTS } from "../setting/app.ts";
+import {
+  APP_METADATA,
+  RESOURCES,
+  SCREENSHOTS,
+  UpdateHandle,
+} from "../setting/app.ts";
 import { $AppInfo, $PushRequest, $RequestData } from "./xiaomi.type.ts";
 
 // 通过应用包名查询小米应用商店内本账户推送的最新应用详情，用于判断是否需要进行应用推送
@@ -39,13 +44,12 @@ export async function pub_xiami(send: $sendCallback) {
   const pushRequestData: $PushRequest = {
     RequestData: JSON.stringify(RequestData),
     apk: await readFile(RESOURCES.apk_64),
-    // icon: await readFile(RESOURCES.icon),
-    screenshot_1: await readFile(SCREENSHOTS[0]),
-    screenshot_2: await readFile(SCREENSHOTS[1]),
-    screenshot_3: await readFile(SCREENSHOTS[2]),
-    screenshot_4: await readFile(SCREENSHOTS[3]),
   };
 
+  if (UpdateHandle.screenshots) {
+    const screenshots = await updateScreenshots(send);
+    Object.assign(pushRequestData, screenshots);
+  }
   send("开始签名...");
   pushRequestData.SIG = await digitalSignature(pushRequestData);
   send("签名完成！");
@@ -145,4 +149,20 @@ export const encryptContent = async (
     i = i + segSize;
   }
   return sig;
+};
+
+/**工具函数：获取需要发布的截屏 */
+
+const updateScreenshots = async (
+  send: $sendCallback,
+) => {
+  send(`正在获取截屏数据。`, false, false);
+  const screenshots = {} as { [key: `screenshot_${number}`]: File | undefined };
+  for (let i = 0; i < SCREENSHOTS.length; i++) {
+    if (SCREENSHOTS[i]) {
+      screenshots[`screenshot_${i + 1}`] = await readFile(SCREENSHOTS[i]);
+    }
+  }
+  send(`获取完成，共${SCREENSHOTS.length}张。`, false, false);
+  return screenshots;
 };

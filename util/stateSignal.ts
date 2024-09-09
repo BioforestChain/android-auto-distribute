@@ -4,7 +4,7 @@ export const appStates = signal({
   "xiaomi": {
     onlineVersion: "0.000000.0",
     issues: "",
-    host: "https://account.xiaomi.com/fe/service/login/password?_locale=zh_CN",
+    host: "https://dev.mi.com/distribute",
   },
   "huawei": {
     onlineVersion: "0.000000.0",

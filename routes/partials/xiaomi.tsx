@@ -19,7 +19,7 @@ export default function StatePage() {
       />
       <HandleRender
         setps={steps}
-        self="/xiaomi/update"
+        self="xiaomi"
         publishing={xiaomiSignal.publishing}
         messages={xiaomiSignal.messages}
       />

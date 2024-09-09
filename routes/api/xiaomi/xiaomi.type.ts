@@ -42,10 +42,11 @@ export interface $PushRequest {
   apk?: File; // 可选，Apk包，上传类型为新增和更新时必传
   secondApk?: File; // 可选，secondApk包，双包发布时必传
   icon?: File; // 必选，应用图标
+  [key: `screenshot_${number}`]: File | undefined; // 可选，应用的截图
   screenshot_1?: File; // 可选，应用的第1幅截图，synchroType=0时必选
   screenshot_2?: File; // 可选，应用的第2幅截图，synchroType=0时必选
   screenshot_3?: File; // 可选，应用的第3幅截图，synchroType=0时必选
   screenshot_4?: File; // 可选，应用的第4幅截图，可选，截图显示顺序为1-5
-  screenshot_5?: File; // 可选，应用的第5幅截图，可选
+  screenshot_5?: File; // ，可选
 }
 //#endregion
