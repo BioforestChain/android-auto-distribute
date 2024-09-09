@@ -37,7 +37,7 @@ export const pub_360 = async () => {
       "#statusBar > a",
       (element) => element.textContent,
     );
-    if (devName == "登陆") throw new Error("login error");
+    if (devName == "登录") throw new Error("login error");
     ///登陆成功！！！
     console.log(`当前账户名称:%c${devName}`, "color: blue");
   }

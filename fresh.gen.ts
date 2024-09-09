@@ -77,7 +77,6 @@ import * as $partials_state from "./routes/partials/state.tsx";
 import * as $partials_vivo from "./routes/partials/vivo.tsx";
 import * as $partials_xiaomi from "./routes/partials/xiaomi.tsx";
 import * as $publish_HandleRender from "./islands/publish/HandleRender.tsx";
-import * as $publish_MessageRender from "./islands/publish/MessageRender.tsx";
 import * as $publish_messageRender from "./islands/publish/messageRender.tsx";
 import * as $semi_PublishButton from "./islands/semi/PublishButton.tsx";
 import * as $semi_toast from "./islands/semi/toast.tsx";
@@ -170,7 +169,6 @@ const manifest = {
   },
   islands: {
     "./islands/publish/HandleRender.tsx": $publish_HandleRender,
-    "./islands/publish/MessageRender.tsx": $publish_MessageRender,
     "./islands/publish/messageRender.tsx": $publish_messageRender,
     "./islands/semi/PublishButton.tsx": $semi_PublishButton,
     "./islands/semi/toast.tsx": $semi_toast,
