@@ -13,7 +13,9 @@ export default function HandleRender(
 ) {
   // 开始发布
   const fetchPublish = () => {
-    const socket = new WebSocket(`ws://localhost:8000/api/${self}/update`);
+    const socket = new WebSocket(
+      `ws://localhost:8000/api/platforms/${self}/update`,
+    );
     socket.onopen = () => {
       // 更新信号的整个值
       publishing.value = true;

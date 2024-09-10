@@ -1,6 +1,7 @@
-import { signal } from "@preact/signals";
+import { Signal, signal } from "@preact/signals";
 
-export const appStates = signal({
+// app状态初始化数据
+export const appStateData: $AppStates = {
   "xiaomi": {
     onlineVersion: "0.000000.0",
     issues: "",
@@ -52,8 +53,8 @@ export const appStates = signal({
     issues: "",
     host: "https://app.open.qq.com/p/home",
   },
-});
-
+};
+export const appStates: Signal<$AppStates> = signal(appStateData);
 /**
  * @param onlineVersion 当前上线版本
  * @param issues 是否审核出现了问题
@@ -76,55 +77,21 @@ export const platforms = [
   "baidu",
   "tencent",
 ];
+
+export type $StateContent = {
+  onlineVersion: string;
+  issues: string;
+  host: string;
+};
 export type $AppStates = {
-  xiaomi: {
-    onlineVersion: string;
-    issues: string;
-    host: string;
-  };
-  huawei: {
-    onlineVersion: string;
-    issues: string;
-    host: string;
-  };
-  oppo: {
-    onlineVersion: string;
-    issues: string;
-    host: string;
-  };
-  vivo: {
-    onlineVersion: string;
-    issues: string;
-    host: string;
-  };
-  samsung: {
-    onlineVersion: string;
-    issues: string;
-    host: string;
-  };
-  google: {
-    onlineVersion: string;
-    issues: string;
-    host: string;
-  };
-  360: {
-    onlineVersion: string;
-    issues: string;
-    host: string;
-  };
-  ali: {
-    onlineVersion: string;
-    issues: string;
-    host: string;
-  };
-  baidu: {
-    onlineVersion: string;
-    issues: string;
-    host: string;
-  };
-  tencent: {
-    onlineVersion: string;
-    issues: string;
-    host: string;
-  };
+  xiaomi?: $StateContent;
+  huawei?: $StateContent;
+  oppo?: $StateContent;
+  vivo?: $StateContent;
+  samsung?: $StateContent;
+  google?: $StateContent;
+  360?: $StateContent;
+  ali?: $StateContent;
+  baidu?: $StateContent;
+  tencent?: $StateContent;
 };

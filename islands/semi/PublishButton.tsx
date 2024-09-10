@@ -10,7 +10,7 @@ const semiAutoList = {
 };
 
 export const startPublish = async (key: string) => {
-  await warpFetch(`api/${key}/start`);
+  await warpFetch(`api/platforms/${key}/start`);
 };
 
 export default function PublishButtonRender() {

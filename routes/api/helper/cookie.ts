@@ -9,7 +9,7 @@ export const saveLoginInfo = async (page: Page, platform: string) => {
 
   // 将cookies保存到文件中
   await Deno.writeFile(
-    `./routes/api/${platform}/cookies.json`,
+    `./routes/api/platforms/${platform}/cookies.json`,
     encoder.encode(JSON.stringify(cookies, null, 2)),
   );
   const localStorageData = await page.evaluate(() => {
@@ -21,7 +21,7 @@ export const saveLoginInfo = async (page: Page, platform: string) => {
     return json;
   });
   await Deno.writeFile(
-    `./routes/api/${platform}/localStorage.json`,
+    `./routes/api/platforms/${platform}/localStorage.json`,
     encoder.encode(JSON.stringify(localStorageData, null, 2)),
   );
   signCookie.succeed("登陆信息保存成功！");
@@ -33,7 +33,7 @@ export const saveLoginInfo = async (page: Page, platform: string) => {
 export const loadLoginInfo = async (page: Page, platform: string) => {
   const cookies = JSON.parse(
     decoder.decode(
-      await Deno.readFile(`./routes/api/${platform}/cookies.json`),
+      await Deno.readFile(`./routes/api/platforms/${platform}/cookies.json`),
     ),
   );
   // 设置之前保存的cookies
@@ -41,7 +41,9 @@ export const loadLoginInfo = async (page: Page, platform: string) => {
 
   const localStorageData = JSON.parse(
     decoder.decode(
-      await Deno.readFile(`./routes/api/${platform}/localStorage.json`),
+      await Deno.readFile(
+        `./routes/api/platforms/${platform}/localStorage.json`,
+      ),
     ),
   );
   // 在页面加载后设置localStorage数据
