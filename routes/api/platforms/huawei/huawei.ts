@@ -197,7 +197,9 @@ const fetchAccessToken = async () => {
   // 读取两天过期的token
   try {
     ACCESS_TOKEN = JSON.parse(
-      decoder.decode(await Deno.readFile(`./routes/api/huawei/token.json`)),
+      decoder.decode(
+        await Deno.readFile(`./routes/api/platforms/huawei/token.json`),
+      ),
     ) as AccessTokenSuccessResult;
     if (Date.now() / 1000 < ACCESS_TOKEN.expires_in) {
       return ACCESS_TOKEN.access_token;
@@ -226,7 +228,7 @@ const fetchAccessToken = async () => {
   };
   // 写入token
   await Deno.writeFile(
-    `./routes/api/huawei/token.json`,
+    `./routes/api/platforms/huawei/token.json`,
     encoder.encode(JSON.stringify(ACCESS_TOKEN, null, 2)),
   );
   return ACCESS_TOKEN.access_token;

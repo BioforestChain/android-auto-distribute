@@ -1,4 +1,4 @@
-import { Signal, signal } from "@preact/signals";
+import { signal } from "@preact/signals";
 
 // app状态初始化数据
 export const appStateData: $AppStates = {
@@ -54,13 +54,14 @@ export const appStateData: $AppStates = {
     host: "https://app.open.qq.com/p/home",
   },
 };
-export const appStates: Signal<$AppStates> = signal(appStateData);
+/**在islands 中共享的数据 */
+export const appStates = signal(appStateData);
 /**
  * @param onlineVersion 当前上线版本
  * @param issues 是否审核出现了问题
  */
 export interface $AppState {
-  platform: keyof $AppStates;
+  platform: string;
   onlineVersion: string;
   issues: string;
 }
@@ -84,14 +85,15 @@ export type $StateContent = {
   host: string;
 };
 export type $AppStates = {
-  xiaomi?: $StateContent;
-  huawei?: $StateContent;
-  oppo?: $StateContent;
-  vivo?: $StateContent;
-  samsung?: $StateContent;
-  google?: $StateContent;
-  360?: $StateContent;
-  ali?: $StateContent;
-  baidu?: $StateContent;
-  tencent?: $StateContent;
+  xiaomi: $StateContent;
+  huawei: $StateContent;
+  oppo: $StateContent;
+  vivo: $StateContent;
+  samsung: $StateContent;
+  google: $StateContent;
+  360: $StateContent;
+  ali: $StateContent;
+  baidu: $StateContent;
+  tencent: $StateContent;
+  [key: string]: $StateContent;
 };

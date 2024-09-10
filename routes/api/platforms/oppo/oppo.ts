@@ -196,7 +196,9 @@ const fetchAccessToken = async () => {
   // 读取两天过期的token
   try {
     ACCESS_TOKEN = JSON.parse(
-      decoder.decode(await Deno.readFile(`./routes/api/oppo/token.json`)),
+      decoder.decode(
+        await Deno.readFile(`./routes/api/platforms/oppo/token.json`),
+      ),
     ) as AccessTokenSuccessResult;
     if (Date.now() / 1000 < ACCESS_TOKEN.data.expire_in) {
       return ACCESS_TOKEN.data.access_token;
@@ -214,7 +216,7 @@ const fetchAccessToken = async () => {
   ACCESS_TOKEN = result;
   // 写入token
   await Deno.writeFile(
-    `./routes/api/oppo/token.json`,
+    `./routes/api/platforms/oppo/token.json`,
     encoder.encode(JSON.stringify(ACCESS_TOKEN, null, 2)),
   );
   return ACCESS_TOKEN.data.access_token;

@@ -63,7 +63,7 @@ import * as $api_setting_resource_key_ from "./routes/api/setting/resource/[key]
 import * as $api_setting_resource_index from "./routes/api/setting/resource/index.tsx";
 import * as $api_setting_screenshot_key_ from "./routes/api/setting/screenshot/[key].tsx";
 import * as $api_setting_screenshot_index from "./routes/api/setting/screenshot/index.tsx";
-import * as $api_state_path_ from "./routes/api/state/[path].tsx";
+import * as $api_state_index from "./routes/api/state/index.tsx";
 import * as $api_update from "./routes/api/update.ts";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
@@ -164,7 +164,7 @@ const manifest = {
     "./routes/api/setting/resource/index.tsx": $api_setting_resource_index,
     "./routes/api/setting/screenshot/[key].tsx": $api_setting_screenshot_key_,
     "./routes/api/setting/screenshot/index.tsx": $api_setting_screenshot_index,
-    "./routes/api/state/[path].tsx": $api_state_path_,
+    "./routes/api/state/index.tsx": $api_state_index,
     "./routes/api/update.ts": $api_update,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,

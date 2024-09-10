@@ -1,9 +1,6 @@
-import { Signal } from "@preact/signals";
-import { $AppStates } from "../../util/stateSignal.ts";
+import { appStates } from "../../util/stateSignal.ts";
 
-export default function StateList(
-  { appStates }: { appStates: Signal<$AppStates> },
-) {
+export default function StateList() {
   const openInfo = (host: string) => {
     console.log("openInfo=>", host);
     globalThis.open(host, "_blank");

@@ -72,7 +72,9 @@ const fetchAccessToken = async () => {
   // 读取两天过期的token
   try {
     access_token = JSON.parse(
-      decoder.decode(await Deno.readFile(`./routes/api/samsung/token.json`)),
+      decoder.decode(
+        await Deno.readFile(`./routes/api/platforms/samsung/token.json`),
+      ),
     );
     if (access_token && Math.round(Date.now() / 1000) < exp) {
       return access_token;
@@ -96,7 +98,7 @@ const fetchAccessToken = async () => {
   access_token = result.createdItem.accessToken;
   // 写入token
   await Deno.writeFile(
-    `./routes/api/samsung/token.json`,
+    `./routes/api/platforms/samsung/token.json`,
     encoder.encode(JSON.stringify(access_token, null, 2)),
   );
   signal.succeed(`获取access_token成功:${access_token}`);
