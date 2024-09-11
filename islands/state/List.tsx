@@ -1,9 +1,24 @@
-import { appStates } from "../../util/stateSignal.ts";
+import { Signal, useSignal } from "@preact/signals";
+import { warpFetch } from "../../routes/api/fetch.ts";
+import { $StateContent, appStates } from "../../util/stateSignal.ts";
 
 export default function StateList() {
   const openInfo = (host: string) => {
     console.log("openInfo=>", host);
     globalThis.open(host, "_blank");
+  };
+  const isLoding: Signal<{ [key: string]: boolean }> = useSignal({});
+  const reload = async (platform: string) => {
+    isLoding.value = { [platform]: true };
+    const res = await warpFetch(`api/state?platform=${platform}`, {
+      method: "PATCH",
+    });
+    if (res.ok) {
+      const state: $StateContent = await res.json();
+      appStates.value[platform] = state;
+      appStates.value = { ...appStates.value };
+    }
+    isLoding.value = { [platform]: false };
   };
 
   return (
@@ -35,6 +50,21 @@ export default function StateList() {
                   onClick={() => openInfo(state.host)}
                 >
                   打开
+                </button>
+                <button
+                  className="btn btn-sm ml-2"
+                  onClick={() => reload(platform)}
+                >
+                  {isLoding.value[platform] === true
+                    ? (
+                      <>
+                        <span className="loading loading-spinner"></span>
+                        ...
+                      </>
+                    )
+                    : (
+                      "刷新"
+                    )}
                 </button>
               </div>
             </div>

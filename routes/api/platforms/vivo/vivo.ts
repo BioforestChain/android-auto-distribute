@@ -33,7 +33,7 @@ const CONFIG = {
   target_app_key: "developer",
   // 响应格式。默认值：json。
   format: "json",
-  sign_method: "HMAC-SHA256",
+  sign_method: "hmac",
 };
 
 /**vivo 的接口是有一系列公共的参数，通过 MethodType区分各个接口 */
@@ -66,8 +66,8 @@ export const pub_vivo = async (send: $sendCallback) => {
     onlineType: info.onlineType,
     fileMd5: fileMd5,
     apk: apkInfo.serialnumber, // 上传api拿到一个流水号
-    updateDesc: APP_METADATA.updateDesc,
-    detailDesc: APP_METADATA.desc,
+    updateDesc: JSON.stringify(APP_METADATA.updateDesc),
+    detailDesc: JSON.stringify(APP_METADATA.desc),
     simpleDesc: APP_METADATA.brief,
   };
   send("上传成功！");

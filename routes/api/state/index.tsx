@@ -47,12 +47,36 @@ export const handler = {
     }
     return Response.json(result);
   },
-  PATCH: async (_req: Request, { params }: FreshContext) => {
-    console.log("PATH 请求state=>", params);
-    const platfrom = params.platfrom;
-    const version = params.version;
-    const behavior = await kv.atomic().set([STATE_PREFIX, platfrom], version)
-      .commit();
-    return Response.json(behavior.ok);
+  PATCH: async (_req: Request, { url }: FreshContext) => {
+    const platform = url.searchParams.get("platform");
+
+    if (!platform) {
+      return new Response("The platform parameter must be passed!", {
+        status: 400,
+      });
+    }
+
+    try {
+      const res = await warpFetch(`api/platforms/${platform}/state`);
+      const state: $AppState = await res.json();
+      const stateContent = {
+        issues: state.issues,
+        onlineVersion: state.onlineVersion,
+        host: appStateData[state.platform]!.host,
+      };
+      const behavior = await kv.atomic().set(
+        [STATE_PREFIX, platform],
+        stateContent,
+      )
+        .commit();
+      if (behavior.ok) {
+        return Response.json(stateContent);
+      }
+      return Response.json(behavior);
+    } catch (error) {
+      return new Response(error, {
+        status: 500,
+      });
+    }
   },
 };
