@@ -139,13 +139,15 @@ const loginInSave = async (page: Page) => {
   (await page.waitForSelector("button[dt-eid='login_btn']"))?.click();
   /// 等待加载frame
   await page.waitForNavigation({
-    waitUntil: "networkidle2",
+    waitUntil: "domcontentloaded",
   });
-  const frames = page.frames();
   //获取登陆的frame
-  const loginFrame = frames.find((f) => {
-    return f.url().includes("https://xui.ptlogin2.qq.com/cgi-bin/xlogin");
-  });
+  const loginFrame = await awaitCheck(() => {
+    const frames = page.frames();
+    return frames.find((f) => {
+      return f.url().includes("https://xui.ptlogin2.qq.com/cgi-bin/xlogin");
+    });
+  }, 2000);
 
   if (!loginFrame) {
     return console.error("没找到对应Frame!");
@@ -171,4 +173,19 @@ const loginInSave = async (page: Page) => {
   loginSign.succeed("登陆成功！");
   // 保存登陆信息
   await saveLoginInfo(page, "tencent");
+};
+
+const awaitCheck = async <T>(callFn: () => T | undefined, spacer: number) => {
+  // 创建一个延迟函数，返回一个在 spacer 毫秒后完成的 Promise
+  const wait = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  let result: T | undefined = callFn();
+
+  while (!result) {
+    await wait(spacer);
+    result = callFn();
+  }
+
+  return result;
 };
