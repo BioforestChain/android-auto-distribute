@@ -9,12 +9,10 @@ import {
   postInputFile,
   scrollIntoView,
 } from "../../helper/puppeteer.ts";
-import {
-  APP_METADATA,
-  RESOURCES,
-  SCREENSHOTS,
-  UpdateHandle,
-} from "../../setting/app.ts";
+import { getHandle } from "../../setting/handle/index.tsx";
+import { getAllMetadata, getMetadata } from "../../setting/metadata/index.tsx";
+import { getResource } from "../../setting/resource/index.tsx";
+import { getAllScreenshot } from "../../setting/screenshot/index.tsx";
 
 export const pub_baidu = async () => {
   const browserSign = step("正在打开百度移动应用平台...");
@@ -23,6 +21,10 @@ export const pub_baidu = async () => {
     waitUntil: "networkidle2", // 这个事件在网络连接有 2 个或更少的活动连接时被调度
   });
   browserSign.succeed("打开成功");
+
+  // 请求元数据
+  const metadata = await getAllMetadata();
+
   /// 判断是否登陆过
   if (await fileExists("./routes/api/baidu/cookies.json")) {
     // 如果登陆过了加载登陆信息
@@ -60,7 +62,7 @@ export const pub_baidu = async () => {
     return Array.from(
       document.querySelectorAll("div.one-table-row-cell-content"),
     ).find((el) => el.textContent!.trim() === appName);
-  }, APP_METADATA.appName);
+  }, metadata.appName);
   if (!appName) {
     throw new Error(`要发布的app不是同一个:${appName}`);
   }
@@ -68,18 +70,18 @@ export const pub_baidu = async () => {
   const [updateButton] = await page.$x("//span[text()='更新']");
   await updateButton.click();
 
-  UpdateHandle.apk && (await updateApk(page));
+  await getHandle("apk") && (await updateApk(page));
 
-  UpdateHandle.screenshots && (await updateScreenshots(page));
+  await getHandle("screenshots") && (await updateScreenshots(page));
 
   const input = clearAndEnter(page);
   /// 等待输入框出现
   await page.waitForSelector("#appIntroduce");
   /// 填充内容
-  await input("#summary", APP_METADATA.brief);
-  await input("#appIntroduce", APP_METADATA.desc);
-  await input("#updateInfo", APP_METADATA.updateDesc);
-  await input("#privateUrl", APP_METADATA.privacyUrl);
+  await input("#summary", metadata.brief);
+  await input("#appIntroduce", metadata.desc);
+  await input("#updateInfo", metadata.updateDesc);
+  await input("#privateUrl", metadata.privacyUrl);
 
   console.log("请审核无错误后，点击提交。");
 };
@@ -97,7 +99,7 @@ const updateApk = async (page: Page) => {
   const res = await postInputFile(
     page,
     'input[type="file"][accept=".apk,application/vnd.android.package-archive"]',
-    await readFile(RESOURCES.apk_64),
+    await readFile(await getResource("apk_64")),
   );
   if (!res) {
     sign.fail("上传apk失败！");
@@ -116,7 +118,7 @@ const updateApk = async (page: Page) => {
         }
         return null;
       });
-      if (appVersion === APP_METADATA.version) {
+      if (appVersion === await getMetadata("version")) {
         sign.succeed(`应用上传成功！${appVersion}`);
         break;
       }
@@ -132,9 +134,9 @@ const updateScreenshots = async (page: Page) => {
     'label[for="appScreenshots"]',
   );
   appScreenshot && (await scrollIntoView(page, appScreenshot));
-
+  const screenshots = await getAllScreenshot();
   /// 需要先删除screenshots
-  for (let i = 0; i < SCREENSHOTS.length; i++) {
+  for (let i = 0; i < screenshots.length; i++) {
     const deleteHandle = await page.evaluateHandle(() => {
       const divs = Array.from(
         document.querySelectorAll(
@@ -173,16 +175,16 @@ const updateScreenshots = async (page: Page) => {
     );
     return inputs.length >= 3 ? inputs[2] : null;
   });
-  for (let i = 0; i < SCREENSHOTS.length; i++) {
+  for (let i = 0; i < screenshots.length; i++) {
     const res = await postInputFile(
       page,
       element,
-      await readFile(SCREENSHOTS[i]),
+      await readFile(screenshots[i]),
     );
     if (!res) {
       sign.fail("上传截图失败！");
     }
-    sign.succeed(`${SCREENSHOTS[i]}截屏上传成功！`);
+    sign.succeed(`${screenshots[i]}截屏上传成功！`);
   }
 };
 

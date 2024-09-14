@@ -53,7 +53,6 @@ import * as $api_platforms_xiaomi_path_ from "./routes/api/platforms/xiaomi/[pat
 import * as $api_platforms_xiaomi_xiaomi from "./routes/api/platforms/xiaomi/xiaomi.ts";
 import * as $api_platforms_xiaomi_xiaomi_type from "./routes/api/platforms/xiaomi/xiaomi.type.ts";
 import * as $api_platforms_xiaomi_xiaomi_state from "./routes/api/platforms/xiaomi/xiaomi_state.ts";
-import * as $api_setting_app from "./routes/api/setting/app.ts";
 import * as $api_setting_handle_key_ from "./routes/api/setting/handle/[key].tsx";
 import * as $api_setting_handle_index from "./routes/api/setting/handle/index.tsx";
 import * as $api_setting_index from "./routes/api/setting/index.tsx";
@@ -153,7 +152,6 @@ const manifest = {
       $api_platforms_xiaomi_xiaomi_type,
     "./routes/api/platforms/xiaomi/xiaomi_state.ts":
       $api_platforms_xiaomi_xiaomi_state,
-    "./routes/api/setting/app.ts": $api_setting_app,
     "./routes/api/setting/handle/[key].tsx": $api_setting_handle_key_,
     "./routes/api/setting/handle/index.tsx": $api_setting_handle_index,
     "./routes/api/setting/index.tsx": $api_setting_index,

@@ -10,12 +10,10 @@ import {
   navClick,
   postInputFile,
 } from "../../helper/puppeteer.ts";
-import {
-  APP_METADATA,
-  RESOURCES,
-  SCREENSHOTS,
-  UpdateHandle,
-} from "../../setting/app.ts";
+import { getHandle } from "../../setting/handle/index.tsx";
+import { getAllMetadata, getMetadata } from "../../setting/metadata/index.tsx";
+import { getResource } from "../../setting/resource/index.tsx";
+import { getAllScreenshot } from "../../setting/screenshot/index.tsx";
 
 /**
  * 主入口
@@ -28,6 +26,10 @@ export const pub_ali = async () => {
     waitUntil: "networkidle2", // 这个事件在网络连接有 2 个或更少的活动连接时被调度
   });
   browserSign.succeed("打开成功");
+
+  // 请求元数据
+  const metadata = await getAllMetadata();
+
   if (await fileExists("./routes/api/ali/cookies.json")) {
     await loadLoginInfo(page, "ali"); // 如果登陆过了，直接加载登陆信息
   } else {
@@ -70,21 +72,21 @@ export const pub_ali = async () => {
   editUpdate?.click();
   await page.waitForNavigation({ waitUntil: "networkidle2" });
 
-  UpdateHandle.apk && (await updateApk(page));
+  await getHandle("apk") && (await updateApk(page));
 
-  UpdateHandle.screenshots && (await updateScreenshots(page));
+  await getHandle("screenshots") && (await updateScreenshots(page));
 
   const input = clearAndEnter(page);
   /// 填入app名称
-  await input("#appNameInput", APP_METADATA.appName);
+  await input("#appNameInput", metadata.appName);
   /// 一句话简介
-  await input("#sentenceDescInput", APP_METADATA.brief);
+  await input("#sentenceDescInput", metadata.brief);
   /// 应用描述
-  await input("#descInput", APP_METADATA.desc);
+  await input("#descInput", metadata.desc);
   /// 新版本描述
-  await input("#updateInput", APP_METADATA.updateDesc);
+  await input("#updateInput", metadata.updateDesc);
   /// 隐私政策地址
-  await input("#privacyPolicyUrlInput", APP_METADATA.privacyUrl);
+  await input("#privacyPolicyUrlInput", metadata.privacyUrl);
   /// TODO 这里再添加是否需要更新app图片 用户审核没问题后，自己点击提交审核
 };
 
@@ -93,7 +95,7 @@ const updateApk = async (page: Page) => {
   const res = await postInputFile(
     page,
     'div.apk-btn-box input[id="fileupload"]',
-    await readFile(RESOURCES.apk_64),
+    await readFile(await getResource("apk_64")),
   );
   if (!res) {
     sign.fail("上传apk失败！");
@@ -109,7 +111,7 @@ const updateApk = async (page: Page) => {
         "span#versionName",
         (el) => el.textContent,
       );
-      if (versionName === APP_METADATA.version) {
+      if (versionName === await getMetadata("version")) {
         sign.succeed("上传应用文件成功");
         break;
       }
@@ -122,7 +124,7 @@ const updateApk = async (page: Page) => {
 const updateScreenshots = async (page: Page) => {
   const sign = step("正在上传截图...").start();
   await Promise.all(
-    SCREENSHOTS.map(async (filePath, index) => {
+    (await getAllScreenshot()).map(async (filePath, index) => {
       const res = await postInputFile(
         page,
         `input#shot${index + 1}`,

@@ -1,5 +1,5 @@
 import { ElementHandle, Frame, Page, puppeteer } from "../../../deps.ts";
-import { RESOURCES } from "../setting/app.ts";
+import { getResource } from "../setting/resource/index.tsx";
 // 等待函数
 export function delay(time: number) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -15,7 +15,7 @@ export async function createPage() {
     ],
     headless: false,
     dumpio: true, // 是否将浏览器进程标准输出和标准错误输入到 process.stdout 和 process.stderr 中。默认是 false。
-    executablePath: RESOURCES.chromiumPath,
+    executablePath: await getResource("chromiumPath"),
     defaultViewport: { width: 1200, height: 1000 },
   });
   const page = await browser.newPage();

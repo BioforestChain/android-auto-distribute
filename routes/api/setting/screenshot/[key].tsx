@@ -8,7 +8,7 @@ import { kv, SCREENSHOTS } from "../index.tsx";
 export const handler = {
   async PATCH(req: Request, { params }: FreshContext) {
     const data = await req.text();
-    const ok = await kv.atomic().set([SCREENSHOTS, params.key], data)
+    const ok = await kv.atomic().set([SCREENSHOTS, params.key], data) // number
       .commit();
     if (!ok) throw new Error("Something went wrong.");
     return new Response(JSON.stringify(data));

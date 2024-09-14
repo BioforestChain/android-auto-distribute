@@ -1,12 +1,12 @@
 // https://oop-openapi-cn.heytapmobi.com/developer/v1/token
-import { step } from "jsr:@sylc/step-spinner";
 import { oppo } from "../../../../env.ts";
 import { $sendCallback } from "../../../../util/publishSignal.ts";
 import { decoder, encoder } from "../../helper/crypto.ts";
 import { formatDate } from "../../helper/date.ts";
 import { readFile } from "../../helper/file.ts";
 import { HMAC } from "../../helper/HMAC.ts";
-import { APP_METADATA, RESOURCES } from "../../setting/app.ts";
+import { getAllMetadata, getMetadata } from "../../setting/metadata/index.tsx";
+import { getResource } from "../../setting/resource/index.tsx";
 import type {
   $ImportantParams,
   $SignParams,
@@ -26,7 +26,7 @@ const hmacCrypto = new HMAC(await HMAC.importKey(oppo.client_secret));
 // 查询已上传应用信息
 export const queryAppInfo = async () => {
   const data = {
-    pkg_name: APP_METADATA.packageName,
+    pkg_name: await getMetadata("packageName"),
   };
   const res = await oppoFetch("/resource/v1/app/info", data);
   const result: AppInfoSuccessResult = await res.json();
@@ -34,15 +34,15 @@ export const queryAppInfo = async () => {
 };
 
 /// 上传apk
-const uploadApkFile = async () => {
-  const signal = step("正在上传应用...").start();
+const uploadApkFile = async (send: $sendCallback) => {
+  send("正在上传应用...");
   // 获取上传的url
   const res = await oppoFetch("/resource/v1/upload/get-upload-url");
   const result: UploadUrlSuccessResult = await res.json();
   const data = new FormData();
   data.append("type", "apk");
   data.append("sign", result.data.sign);
-  data.append("file", await readFile(RESOURCES.apk_64));
+  data.append("file", await readFile(await getResource("apk_64")));
 
   const response = await fetch(result.data.upload_url, {
     method: "POST",
@@ -50,21 +50,22 @@ const uploadApkFile = async () => {
   });
   const uploadObj: UploadFileSuccessResult = await response.json();
   if (uploadObj.errno === 0) {
-    signal.succeed("上传成功！");
+    send("上传成功！");
   } else {
-    signal.fail(`上传APK 失败！${uploadObj}`);
+    send(`上传APK 失败！${uploadObj}`, true);
   }
   return uploadObj;
 };
 
 /**更新应用 */
 export const pub_oppo = async (send: $sendCallback) => {
+  // 请求元数据
+  const metadata = await getAllMetadata();
+
   send("获取APP信息...");
   const appInfo = await queryAppInfo();
   send(`获取成功:${appInfo.app_name}`);
-  send("开始上传APK...");
-  const uploadObj = await uploadApkFile();
-  send("上传成功！");
+  const uploadObj = await uploadApkFile(send);
 
   send("开始发布新版本...");
   const date = new Date();
@@ -74,7 +75,7 @@ export const pub_oppo = async (send: $sendCallback) => {
   const importantParams: $ImportantParams = {
     pkg_name: appInfo.pkg_name,
     version_code: "" + (parseInt(appInfo.version_code) + 1),
-    version_name: APP_METADATA.version,
+    version_name: metadata.version,
     apk_url: JSON.stringify([
       {
         url: uploadObj.data.url,
@@ -87,7 +88,7 @@ export const pub_oppo = async (send: $sendCallback) => {
     third_category_id: appInfo.third_category_id,
     summary: appInfo.summary,
     detail_desc: appInfo.detail_desc,
-    update_desc: APP_METADATA.updateDesc,
+    update_desc: metadata.updateDesc,
     privacy_source_url: appInfo.privacy_source_url,
     icon_url: appInfo.icon_url,
     pic_url: appInfo.pic_url,
@@ -115,20 +116,19 @@ export const pub_oppo = async (send: $sendCallback) => {
 
 /// 工具方法，请求任务状态
 const fetchTaskState = async (version_code: string) => {
-  const signal = step("正在查询任务状态...").start();
   const res = await oppoFetch(
     "/resource/v1/app/task-state",
     {
-      pkg_name: APP_METADATA.packageName,
+      pkg_name: await getMetadata("packageName"),
       version_code: version_code,
     },
     true,
   );
   const result = await res.json();
   if (result.errno === 0) {
-    signal.succeed(`${JSON.stringify(result.data)}`);
+    console.log(`${JSON.stringify(result.data)}`);
   } else {
-    signal.fail(`${JSON.stringify(result.data)}`);
+    console.log(`${JSON.stringify(result.data)}`);
   }
 };
 

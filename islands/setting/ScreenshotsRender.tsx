@@ -4,7 +4,7 @@ import { $Screenshots, screenshotsSignal } from "../../util/settingSignal.ts";
 
 const handleChange = (event: Event, key: number) => {
   const target = event.target as HTMLInputElement;
-  screenshotsSignal.value.screenshots[key] = target.value;
+  screenshotsSignal.value[key] = target.value;
   updateResource(key, target.value);
 };
 
@@ -19,7 +19,7 @@ export default function ScreenshotsRender(
   { screenshots }: { screenshots: $Screenshots },
 ) {
   const localScreenshots = useSignal(screenshots);
-  const imgs = localScreenshots.value.screenshots;
+  const imgs = localScreenshots.value;
   return (
     <div class=" mt-6">
       <p class="font-bold">应用商城截屏文件路径</p>

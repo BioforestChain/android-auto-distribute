@@ -13,6 +13,14 @@ export const handler = {
   },
 };
 
+export const getMetadata = async (key: keyof $AppMetadata) => {
+  const entry = await kv.get<string>([METADATA, key]);
+  if (!entry.value) {
+    throw new Error(`You have to set it up ${key}`);
+  }
+  return entry.value;
+};
+
 export const getAllMetadata = async () => {
   const result: $AppMetadata = {
     icp: "",

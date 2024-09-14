@@ -13,19 +13,19 @@ export const handler = {
   },
 };
 
+export const getScreenshot = async (index: number) => {
+  const entry = await kv.get<string>([SCREENSHOTS, index]);
+  if (!entry.value) {
+    throw new Error(`No screenshots with index ${index} were found`);
+  }
+  return entry.value;
+};
+
 export const getAllScreenshot = async () => {
-  const result: $Screenshots = {
-    screenshots: [
-      "./private/image/1.png",
-      "./private/image/2.png",
-      "./private/image/3.png",
-      "./private/image/4.png",
-    ],
-  };
+  const result: $Screenshots = [];
   const entries = kv.list<string>({ prefix: [SCREENSHOTS] });
   for await (const entry of entries) {
-    const key = entry.key[1];
-    result.screenshots[Number(key)] = entry.value as string;
+    result.push(entry.value as string);
   }
   return result;
 };

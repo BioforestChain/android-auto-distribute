@@ -13,34 +13,38 @@ export default function HandleRender(
 ) {
   // 开始发布
   const fetchPublish = () => {
-    const socket = new WebSocket(
-      `ws://localhost:8000/api/platforms/${self}/update`,
-    );
-    socket.onopen = () => {
-      // 更新信号的整个值
-      publishing.value = true;
-      socket.addEventListener("message", (event) => {
-        // 解析数据，处理进度条
-        const data: $SocketMesage = JSON.parse(event.data);
-        const index = data.index;
-        if (index !== undefined) {
-          const old = setps.value;
-          // 如果报错将进度条变成红色
-          if (data.error) {
-            old[index].error = true;
+    try {
+      const socket = new WebSocket(
+        `ws://localhost:8000/api/platforms/${self}/update`,
+      );
+      socket.onopen = () => {
+        // 更新信号的整个值
+        publishing.value = true;
+        socket.addEventListener("message", (event) => {
+          // 解析数据，处理进度条
+          const data: $SocketMesage = JSON.parse(event.data);
+          const index = data.index;
+          if (index !== undefined) {
+            const old = setps.value;
+            // 如果报错将进度条变成红色
+            if (data.error) {
+              old[index].error = true;
+            }
+            // 更新进度条
+            old[index].active = true;
+            // 重新赋值才能更新
+            setps.value = old;
           }
-          // 更新进度条
-          old[index].active = true;
-          // 重新赋值才能更新
-          setps.value = old;
-        }
 
-        messages.value = [...messages.value, data.message];
-      });
-      socket.addEventListener("close", () => {
-        publishing.value = false;
-      });
-    };
+          messages.value = [...messages.value, data.message];
+        });
+        socket.addEventListener("close", () => {
+          publishing.value = false;
+        });
+      };
+    } catch (e) {
+      console.error(e);
+    }
   };
   const isPublishing = publishing.value;
 

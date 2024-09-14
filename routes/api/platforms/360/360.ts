@@ -8,12 +8,10 @@ import {
   delay,
   postInputFile,
 } from "../../helper/puppeteer.ts";
-import {
-  APP_METADATA,
-  RESOURCES,
-  SCREENSHOTS,
-  UpdateHandle,
-} from "../../setting/app.ts";
+import { getHandle } from "../../setting/handle/index.tsx";
+import { getAllMetadata } from "../../setting/metadata/index.tsx";
+import { getResource } from "../../setting/resource/index.tsx";
+import { getAllScreenshot } from "../../setting/screenshot/index.tsx";
 
 export const pub_360 = async () => {
   const browserSign = step("正在打开360移动开放平台...");
@@ -22,6 +20,9 @@ export const pub_360 = async () => {
     waitUntil: "networkidle2", // 这个事件在网络连接有 2 个或更少的活动连接时被调度
   });
   browserSign.succeed("打开成功");
+
+  // 请求元数据
+  const metadata = await getAllMetadata();
 
   /// 判断是否登陆过
   if (await fileExists("./routes/api/360/cookies.json")) {
@@ -63,7 +64,7 @@ export const pub_360 = async () => {
 
   /// 获取app的名称，看看跟我们要发布的一不一样
   const appName = await page.$eval("a.operatepanel h4", (el) => el.textContent);
-  if (appName !== APP_METADATA.appName) {
+  if (appName !== metadata.appName) {
     throw new Error(`要发布的app不是同一个:${appName}`);
   }
 
@@ -86,24 +87,24 @@ export const pub_360 = async () => {
   });
 
   /// 更新apk文件
-  if (UpdateHandle.apk) {
+  if (await getHandle("apk")) {
     await updateApk(page);
   }
 
-  if (UpdateHandle.screenshots) {
+  if (await getHandle("screenshots")) {
     await updateScreenshots(page);
   }
 
   const input = clearAndEnter(page);
 
   /// 填入一句话介绍
-  await input("#onewords", APP_METADATA.brief);
+  await input("#onewords", metadata.brief);
   /// 应用简介
-  await input("#brief", APP_METADATA.desc);
+  await input("#brief", metadata.desc);
   /// 版本更新介绍
-  await input("#desc_desc", APP_METADATA.updateDesc);
+  await input("#desc_desc", metadata.updateDesc);
   /// 隐私网址
-  await input("#sensitive_url", APP_METADATA.privacyUrl);
+  await input("#sensitive_url", metadata.privacyUrl);
 
   console.log("请审核无错误后，点击提交。");
 };
@@ -114,7 +115,7 @@ const updateApk = async (page: Page) => {
   const res = await postInputFile(
     page,
     'span#uploadapk_btn input[type="file"]',
-    await readFile(RESOURCES.apk_64),
+    await readFile(await getResource("apk_64")),
   );
   if (!res) {
     sign.fail("上传apk失败！");
@@ -143,7 +144,7 @@ const updateApk = async (page: Page) => {
 const updateScreenshots = async (page: Page) => {
   const sign = step("正在上传截图...").start();
   await Promise.all(
-    SCREENSHOTS.map(async (filePath, index) => {
+    (await getAllScreenshot()).map(async (filePath, index) => {
       const res = await postInputFile(
         page,
         `div#upshot_${index + 1} input[type="file"]`,

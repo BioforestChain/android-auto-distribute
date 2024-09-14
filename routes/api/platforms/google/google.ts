@@ -3,7 +3,8 @@ import { androidpublisher_v3, google } from "npm:googleapis";
 import { step } from "../../../../deps.ts";
 import { $sendCallback } from "../../../../util/publishSignal.ts";
 import { getFileName } from "../../helper/file.ts";
-import { APP_METADATA, RESOURCES } from "../../setting/app.ts";
+import { getAllMetadata, getMetadata } from "../../setting/metadata/index.tsx";
+import { getResource } from "../../setting/resource/index.tsx";
 import type { EditOptions } from "./google.type.ts";
 /** google DOC
  * https://developers.google.com/android-publisher/tracks?hl=zh-cn
@@ -18,11 +19,12 @@ export const pub_google = async (send: $sendCallback) => {
     keyFile: "./private/google/privateKey.json",
     scopes: ["https://www.googleapis.com/auth/androidpublisher"],
   });
-
+  // 请求元数据
+  const metadata = await getAllMetadata();
   const result = await uploadToPlayStore(send, {
     auth: auth,
-    applicationId: APP_METADATA.packageName,
-    name: APP_METADATA.version,
+    applicationId: metadata.packageName,
+    name: metadata.version,
     track: "production", //轨道类型： 正式版	production 开放式测试	beta 内部测试	qa
     // 如果要立即面向用户，传 completed
     status: "completed",
@@ -61,7 +63,7 @@ const getOrCreateEdit = async (options: EditOptions) => {
 
 /**根据ID上传可aab文件 */
 const uploadBundle = async (appEditId: string, options: EditOptions) => {
-  const aabPath = RESOURCES.aab_64;
+  const aabPath = await getResource("aab_64");
   const aabName = getFileName(aabPath);
   const signal = step(`正在上传:${aabName}...`).start();
   const aab = fs.readFileSync(aabPath);
@@ -123,7 +125,7 @@ const addReleaseToTrack = async (
   const releaseNotes: androidpublisher_v3.Schema$LocalizedText[] = [
     {
       language: "zh-CN",
-      text: APP_METADATA.updateDesc,
+      text: await getMetadata("updateDesc"),
     },
   ];
   const res = await androidPublisher.edits.tracks.update({

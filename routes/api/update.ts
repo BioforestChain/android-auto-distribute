@@ -2,7 +2,6 @@ import { pub_360 } from "./platforms/360/360.ts";
 import { pub_ali } from "./platforms/ali/ali.ts";
 import { pub_baidu } from "./platforms/baidu/baidu.ts";
 import { pub_google } from "./platforms/google/google.ts";
-import { APP_METADATA } from "./setting/app.ts";
 
 import { pub_huawei } from "./platforms/huawei/huawei.ts";
 import { pub_oppo } from "./platforms/oppo/oppo.ts";
@@ -10,6 +9,7 @@ import { pub_samsung } from "./platforms/samsung/samsung.ts";
 import { pub_tencent } from "./platforms/tencent/tencent.ts";
 import { pub_vivo } from "./platforms/vivo/vivo.ts";
 import { pub_xiami } from "./platforms/xiaomi/xiaomi.ts";
+import { getMetadata } from "./setting/metadata/index.tsx";
 
 /// 🌸更新apk到各大应用商城 deno task pub
 
@@ -27,7 +27,7 @@ const pubFunctions = {
   // 添加其他平台和对应的发布函数
 };
 
-const doUpdate = (args = Deno.args) => {
+const doUpdate = async (args = Deno.args) => {
   const targets = args.length === 0
     ? [
       "xiaomi",
@@ -45,7 +45,7 @@ const doUpdate = (args = Deno.args) => {
 
   for (const target of targets) {
     console.log(
-      `%cStart publishing v${APP_METADATA.version} to  %c${target}:`,
+      `%cStart publishing v${await getMetadata("version")} to  %c${target}:`,
       "color: blue",
       "color: cyan",
     );

@@ -26,9 +26,7 @@ export const resourcesSignal = signal<$Resources>({
     "/Volumes/developer/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", // 本地chrome 浏览器地址
 });
 
-export const screenshotsSignal = signal<$Screenshots>({
-  screenshots: [],
-});
+export const screenshotsSignal = signal<$Screenshots>([]);
 
 export const handleStateSignal = signal<$UpdateHandle>({
   apk: true,
@@ -59,9 +57,7 @@ export interface $Resources {
   chromiumPath: string;
 }
 
-export interface $Screenshots {
-  screenshots: string[];
-}
+export type $Screenshots = string[];
 
 // 定义 UpdateHandle 接口
 export interface $UpdateHandle {

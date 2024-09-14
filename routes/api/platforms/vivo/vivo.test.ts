@@ -2,7 +2,7 @@ import { vivo } from "../../../../env.ts";
 import { digestFileAlgorithm } from "../../helper/crypto.ts";
 import { readFile } from "../../helper/file.ts";
 import { HMAC } from "../../helper/HMAC.ts";
-import { APP_METADATA, RESOURCES } from "../../setting/app.ts";
+import { APP_METADATA } from "../../setting/app.ts";
 import { uploadApk, vivoFetch } from "./vivo.ts";
 import { MethodType } from "./vivo.type.ts";
 import { app_state } from "./vivo_state.ts";
@@ -15,7 +15,9 @@ Deno.test("vivo 查询详细信息", async () => {
 });
 
 Deno.test("vivo 上传APK文件", async () => {
-  const fileMd5 = await digestFileAlgorithm(await readFile(RESOURCES.apk_64));
+  const fileMd5 = await digestFileAlgorithm(
+    await readFile(await getResource("apk_64")),
+  );
   // 获取上传到apk信息
   const apkInfo = await uploadApk(fileMd5);
   console.log(apkInfo);

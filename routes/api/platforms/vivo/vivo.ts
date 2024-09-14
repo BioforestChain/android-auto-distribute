@@ -3,12 +3,10 @@ import { vivo } from "../../../../env.ts";
 import { $sendCallback } from "../../../../util/publishSignal.ts";
 import { HMAC } from "../../helper/HMAC.ts";
 import { digestFileAlgorithm } from "../../helper/crypto.ts";
-import {
-  APP_METADATA,
-  RESOURCES,
-  SCREENSHOTS,
-  UpdateHandle,
-} from "../../setting/app.ts";
+import { getAllHandle } from "../../setting/handle/index.tsx";
+import { getAllMetadata, getMetadata } from "../../setting/metadata/index.tsx";
+import { getResource } from "../../setting/resource/index.tsx";
+import { getAllScreenshot } from "../../setting/screenshot/index.tsx";
 import { readFile } from "./../../helper/file.ts";
 import {
   $CommonParams,
@@ -50,8 +48,13 @@ const commonParameters: $CommonParams = {
  * 🌈主入口发布app
  */
 export const pub_vivo = async (send: $sendCallback) => {
+  // 请求元数据
+  const metadata = await getAllMetadata();
+
   send("正在给APK签名...");
-  const fileMd5 = await digestFileAlgorithm(await readFile(RESOURCES.apk_64));
+  const fileMd5 = await digestFileAlgorithm(
+    await readFile(await getResource("apk_64")),
+  );
   send("签名成功！");
   // 获取app信息
   send("获取app信息...");
@@ -61,17 +64,17 @@ export const pub_vivo = async (send: $sendCallback) => {
   const apkInfo = await uploadApk(fileMd5);
   // 构建上传参数
   const updateParams: $UpdateAppParams = {
-    packageName: APP_METADATA.packageName,
+    packageName: metadata.packageName,
     versionCode: apkInfo.versionCode,
     onlineType: info.onlineType,
     fileMd5: fileMd5,
     apk: apkInfo.serialnumber, // 上传api拿到一个流水号
-    updateDesc: JSON.stringify(APP_METADATA.updateDesc),
-    detailDesc: JSON.stringify(APP_METADATA.desc),
-    simpleDesc: APP_METADATA.brief,
+    updateDesc: JSON.stringify(metadata.updateDesc),
+    detailDesc: JSON.stringify(metadata.desc),
+    simpleDesc: metadata.brief,
   };
   send("上传成功！");
-  const handle = UpdateHandle;
+  const handle = await getAllHandle();
   // 是否要更新icon
   if (handle.icon) {
     // 这样传递的意思是这句消息不会往下推进度
@@ -96,7 +99,7 @@ export const pub_vivo = async (send: $sendCallback) => {
 /**工具函数：获取app信息 */
 export const getAppMessage = async () => {
   const response = await vivoFetch(MethodType.detail, {
-    packageName: APP_METADATA.packageName,
+    packageName: await getMetadata("packageName"),
   });
   const message: $DetailResponse = await response.json();
   const data = message.data;
@@ -113,7 +116,7 @@ export const uploadApk = async (fileMd5: string) => {
   return warpUpload(
     "uploading APK...",
     MethodType.uploadApp,
-    await readFile(RESOURCES.apk_64),
+    await readFile(await getResource("apk_64")),
     {
       fileMd5: fileMd5,
     },
@@ -125,14 +128,15 @@ export const uploadIcon = async () => {
   return warpUpload(
     "ploading icon...",
     MethodType.uploadIcon,
-    await readFile(RESOURCES.icon),
+    await readFile(await getResource("icon")),
   );
 };
 
 /**工具函数：上传截屏页面 */
 export const uploadScreenshot = async () => {
   let serialnumbers = "";
-  for (const path of SCREENSHOTS) {
+  const data = await getAllScreenshot();
+  for (const path of data) {
     const screenshot = await readFile(path);
     const serialnumber = (
       await warpUpload(
@@ -158,7 +162,7 @@ const warpUpload = async (
   const response = await vivoFetch(
     methodType,
     {
-      packageName: APP_METADATA.packageName,
+      packageName: await getMetadata("packageName"),
       ...params,
     },
     file,

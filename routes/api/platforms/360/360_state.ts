@@ -1,8 +1,8 @@
 import { $AppState } from "../../../../util/stateSignal.ts";
-import { APP_METADATA } from "../../setting/app.ts";
+import { getMetadata } from "../../setting/metadata/index.tsx";
 
 export const app_state = async () => {
-  const appName = APP_METADATA.appName;
+  const appName = await getMetadata("appName");
   const state: $AppState = {
     platform: "360",
     onlineVersion: "",

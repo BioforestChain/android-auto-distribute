@@ -13,6 +13,14 @@ export const handler = {
   },
 };
 
+export const getResource = async (key: keyof $Resources) => {
+  const entry = await kv.get<string>([RESOURCES, key]);
+  if (!entry.value) {
+    throw new Error(`You have to set it up ${key}`);
+  }
+  return entry.value;
+};
+
 export const getAllResource = async () => {
   const result: $Resources = {
     chromiumPath:

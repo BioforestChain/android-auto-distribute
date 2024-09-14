@@ -4,12 +4,10 @@ import { $sendCallback } from "../../../../util/publishSignal.ts";
 import { decoder, encoder } from "../../helper/crypto.ts";
 import { readFile } from "../../helper/file.ts";
 import { RSASSA } from "../../helper/RSASSA-PKCS1-v1_5.ts";
-import {
-  APP_METADATA,
-  RESOURCES,
-  SCREENSHOTS,
-  UpdateHandle,
-} from "../../setting/app.ts";
+import { getAllHandle } from "../../setting/handle/index.tsx";
+import { getMetadata } from "../../setting/metadata/index.tsx";
+import { getResource } from "../../setting/resource/index.tsx";
+import { getAllScreenshot } from "../../setting/screenshot/index.tsx";
 import {
   $AccessTokenSuccessResult,
   $AppContent,
@@ -118,12 +116,13 @@ const getAppContent = async () => {
     "GET",
   );
   const contentList: $AppContent[] = await res.json();
+  const appName = await getMetadata("appName");
   const appContent = contentList.find(
-    (v) => v.contentName === APP_METADATA.appName,
+    (v) => v.contentName === appName,
   );
   if (appContent === undefined) {
     throw new Error(
-      `not found app ${APP_METADATA.appName} in ${
+      `not found app ${appName} in ${
         JSON.stringify(
           contentList,
         )
@@ -174,16 +173,17 @@ const updateAppInfo = async (send: $sendCallback) => {
   const { appInfo, binaryList, screenshots } = await generateParams(
     send,
   );
+
   // 构建上传需要的数据
   const updateParams = {
-    packageName: APP_METADATA.packageName,
+    packageName: await getMetadata("packageName"),
     contentId: appInfo.contentId,
     appTitle: appInfo.appTitle,
     defaultLanguageCode: appInfo.defaultLanguageCode,
     paid: appInfo.paid,
     publicationType: appInfo.publicationType,
     binaryList: binaryList,
-    newFeature: APP_METADATA.updateDesc,
+    newFeature: await getMetadata("updateDesc"),
     screenshots: screenshots,
     addLanguage: null,
     sellCountryList: null,
@@ -212,7 +212,7 @@ const updateAppInfo = async (send: $sendCallback) => {
 
 /**构建参数 */
 const generateParams = async (send: $sendCallback) => {
-  const handle = UpdateHandle;
+  const handle = await getAllHandle();
   send("正在获取app状态...");
   const appInfo = await fetchAppInfo();
   // 请注意，内容状态为“FOR_SALE”，它将在注册二进制文件后发生变化。
@@ -221,13 +221,13 @@ const generateParams = async (send: $sendCallback) => {
   // 是否针对apk进行更新
   if (handle.apk) {
     send("正在上传APK...");
-    const apk = await uploadFile(await readFile(RESOURCES.apk_64));
+    const apk = await uploadFile(await readFile(await getResource("apk_64")));
     send(`samsung 上传APK成功:${apk.fileName} ${apk.fileSize}`);
     const oldBinaryItem = appInfo.binaryList[appInfo.binaryList.length - 1];
     const binaryItem: $Binaryinfo = {
       ...oldBinaryItem,
       binarySeq: "" + (parseInt(oldBinaryItem.binarySeq) + 1),
-      versionName: APP_METADATA.version,
+      versionName: await getMetadata("version"),
       versionCode: "" + (parseInt(oldBinaryItem.versionCode) + 1),
       fileName: apk.fileName,
       filekey: apk.fileKey,
@@ -244,7 +244,8 @@ const generateParams = async (send: $sendCallback) => {
   if (handle.screenshots) {
     send(`正在准备上传截屏`);
     screenshots = appInfo.screenshots;
-    for (const [index, filePath] of SCREENSHOTS.entries()) {
+    const data = await getAllScreenshot();
+    for (const [index, filePath] of data.entries()) {
       const file = await readFile(filePath);
       const v = screenshots[index];
       send(`正在更新 ${file.name} [${index}]...`);
@@ -282,6 +283,7 @@ const samsungFetch = async (
  * SUSPENDED: 暂停应用程序的分发
  * TERMINATED：让处于暂停状态的app终止
  */
+// deno-lint-ignore no-unused-vars
 const updateAppState = async () => {
   const appInfo = await fetchAppInfo();
   const res = await samsungFetch(

@@ -13,6 +13,14 @@ export const handler = {
   },
 };
 
+export const getHandle = async (key: keyof $UpdateHandle) => {
+  const entry = await kv.get<boolean>([HANDLE, key]);
+  if (entry.value == null) {
+    throw new Error(`You have to set it up ${key}`);
+  }
+  return entry.value;
+};
+
 export const getAllHandle = async () => {
   const result: $UpdateHandle = {
     apk: true,

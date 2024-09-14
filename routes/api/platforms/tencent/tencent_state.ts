@@ -1,8 +1,8 @@
 import { $AppState } from "../../../../util/stateSignal.ts";
-import { APP_METADATA } from "../../setting/app.ts";
+import { getMetadata } from "../../setting/metadata/index.tsx";
 
 export const app_state = async () => {
-  const packageName = APP_METADATA.packageName;
+  const packageName = await getMetadata("packageName");
   const state: $AppState = {
     platform: "tencent",
     onlineVersion: "",

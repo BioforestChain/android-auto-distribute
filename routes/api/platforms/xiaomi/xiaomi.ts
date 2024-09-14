@@ -9,12 +9,10 @@ import {
   encodeHex,
 } from "../../helper/crypto.ts";
 import { readFile } from "../../helper/file.ts";
-import {
-  APP_METADATA,
-  RESOURCES,
-  SCREENSHOTS,
-  UpdateHandle,
-} from "../../setting/app.ts";
+import { getHandle } from "../../setting/handle/index.tsx";
+import { getAllMetadata } from "../../setting/metadata/index.tsx";
+import { getResource } from "../../setting/resource/index.tsx";
+import { getAllScreenshot } from "../../setting/screenshot/index.tsx";
 import { $AppInfo, $PushRequest, $RequestData } from "./xiaomi.type.ts";
 
 // 通过应用包名查询小米应用商店内本账户推送的最新应用详情，用于判断是否需要进行应用推送
@@ -22,31 +20,33 @@ const QUERY_API = "https://api.developer.xiaomi.com/devupload/dev/query";
 // 查询小米应用商店的应用分类，获取到分类后在category填上分类ID
 //curl --location --request POST 'https://api.developer.xiaomi.com/devupload/dev/category'
 
-const appInfo: $AppInfo = {
-  appName: APP_METADATA.appName,
-  packageName: APP_METADATA.packageName,
-  // category: "5 128", // app类别
-  keyWords: APP_METADATA.keyWords,
-  desc: APP_METADATA.desc,
-  brief: APP_METADATA.brief,
-  privacyUrl: APP_METADATA.privacyUrl,
-};
-
-const RequestData: $RequestData = {
-  userName: xiaomi.email,
-  appInfo: appInfo,
-  synchroType: 1, // 更新类型：0=新增，1=更新包，2=内容更新
-};
-
 /**更新小米 */
 export async function pub_xiami(send: $sendCallback) {
+  // 获取app更新信息
+  const metadata = await getAllMetadata();
+  const appInfo: $AppInfo = {
+    appName: metadata.appName,
+    packageName: metadata.packageName,
+    // category: "5 128", // app类别
+    keyWords: metadata.keyWords,
+    desc: metadata.desc,
+    brief: metadata.brief,
+    privacyUrl: metadata.privacyUrl,
+  };
+  const RequestData: $RequestData = {
+    userName: xiaomi.email,
+    appInfo: appInfo,
+    synchroType: 1, // 更新类型：0=新增，1=更新包，2=内容更新
+  };
+
+  const apk_64 = await getResource("apk_64");
   /**发布参数 */
   const pushRequestData: $PushRequest = {
     RequestData: JSON.stringify(RequestData),
-    apk: await readFile(RESOURCES.apk_64),
+    apk: await readFile(apk_64),
   };
-
-  if (UpdateHandle.screenshots) {
+  const needUpdate = await getHandle("screenshots");
+  if (needUpdate) {
     const screenshots = await updateScreenshots(send);
     Object.assign(pushRequestData, screenshots);
   }
@@ -98,9 +98,10 @@ async function digitalSignature(pushRequestData: $PushRequest) {
  * @returns
  */
 export async function queryAppInfo() {
+  const packageName = (await getAllMetadata()).packageName;
   const requestData: $PushRequest = {
     "RequestData": JSON.stringify({
-      "packageName": appInfo.packageName,
+      "packageName": packageName,
       "userName": xiaomi.email,
     }),
   };
@@ -156,13 +157,14 @@ export const encryptContent = async (
 const updateScreenshots = async (
   send: $sendCallback,
 ) => {
+  const data = await getAllScreenshot();
   send(`正在获取截屏数据。`, false, false);
   const screenshots = {} as { [key: `screenshot_${number}`]: File | undefined };
-  for (let i = 0; i < SCREENSHOTS.length; i++) {
-    if (SCREENSHOTS[i]) {
-      screenshots[`screenshot_${i + 1}`] = await readFile(SCREENSHOTS[i]);
+  for (let i = 0; i < data.length; i++) {
+    if (data[i]) {
+      screenshots[`screenshot_${i + 1}`] = await readFile(data[i]);
     }
   }
-  send(`获取完成，共${SCREENSHOTS.length}张。`, false, false);
+  send(`获取完成，共${data.length}张。`, false, false);
   return screenshots;
 };

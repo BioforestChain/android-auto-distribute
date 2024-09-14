@@ -3,7 +3,8 @@ import { $sendCallback } from "../../../../util/publishSignal.ts";
 import { decoder, digestFileAlgorithm, encoder } from "../../helper/crypto.ts";
 import { formatDateToLocalString } from "../../helper/date.ts";
 import { getFileName, readFile } from "../../helper/file.ts";
-import { APP_METADATA, RESOURCES } from "../../setting/app.ts";
+import { getMetadata } from "../../setting/metadata/index.tsx";
+import { getResource } from "../../setting/resource/index.tsx";
 import {
   AccessTokenSuccessResult,
   AppIdSuccessResult,
@@ -55,7 +56,7 @@ export const submitForReview = async () => {
   const params = new URLSearchParams();
   params.append("appId", appId);
   params.append("releaseTime", formatDateToLocalString(date));
-  params.append("remark", APP_METADATA.updateDesc);
+  params.append("remark", await getMetadata("updateDesc"));
   params.append("releaseType", "1");
 
   const res = await huaweiFetch(
@@ -78,15 +79,17 @@ const fetchAppId = async () => {
     return APP_ID;
   }
   const res = await huaweiFetch(
-    `/api/publish/v2/appid-list?packageName=${APP_METADATA.packageName}`,
+    `/api/publish/v2/appid-list?packageName=${await getMetadata(
+      "packageName",
+    )}`,
   );
 
   if (res.ok) {
     const result: ResponseBaseResult = await res.json();
-
+    const appName = await getMetadata("packageName");
     if (result.ret.code === 0) {
       const appId = (result as AppIdSuccessResult).appids.filter(
-        (v) => v.key === APP_METADATA.appName,
+        (v) => v.key === appName,
       );
 
       if (Array.isArray(appId) && appId.length > 0) {
@@ -102,7 +105,7 @@ const fetchAppId = async () => {
 const getUploadUrl = async () => {
   const appId = await fetchAppId();
   const params = new URLSearchParams();
-  const file = await readFile(RESOURCES.apk_64);
+  const file = await readFile(await getResource("apk_64"));
   params.append("appId", appId);
   params.append("fileName", file.name);
   params.append("contentLength", "" + file.size);
@@ -129,7 +132,7 @@ const uploadApk = async () => {
   const res = await fetch(urlInfo.url, {
     method: urlInfo.method,
     headers: urlInfo.headers,
-    body: await readFile(RESOURCES.apk_64),
+    body: await readFile(await getResource("apk_64")),
   });
 
   if (res.ok) {
@@ -152,7 +155,7 @@ const updateAppInfo = async () => {
       lang: "zh-CN",
       fileType: 5,
       files: {
-        fileName: getFileName(RESOURCES.apk_64),
+        fileName: getFileName(await getResource("apk_64")),
         fileDestUrl: objectId,
       },
     }),

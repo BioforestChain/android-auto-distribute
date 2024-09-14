@@ -7,7 +7,9 @@ import {
   createPage,
   postInputFile,
 } from "../../helper/puppeteer.ts";
-import { APP_METADATA, RESOURCES, UpdateHandle } from "../../setting/app.ts";
+import { getHandle } from "../../setting/handle/index.tsx";
+import { getMetadata } from "../../setting/metadata/index.tsx";
+import { getResource } from "../../setting/resource/index.tsx";
 import { readFile } from "./../../helper/file.ts";
 
 export const pub_tencent = async () => {
@@ -66,20 +68,21 @@ export const pub_tencent = async () => {
   const input = clearAndEnter(page);
   const updateDoec = ".container.ant-input";
   await page.waitForSelector(updateDoec);
-  await input(updateDoec, APP_METADATA.updateDesc);
+  await input(updateDoec, await getMetadata("updateDesc"));
 
   /// 判断是否要上传apk包
-  if (UpdateHandle.apk) {
+  if (await getHandle("apk")) {
+    const apk_32 = await getResource("aab_32");
     /// 看看是否要上传32位安装包
-    if (RESOURCES.apk_32) {
-      await updateApk(page, 0, await readFile(RESOURCES.apk_32));
+    if (apk_32) {
+      await updateApk(page, 0, await readFile(apk_32));
     }
 
     /// 上传64位安装包
-    await updateApk(page, 1, await readFile(RESOURCES.apk_64));
+    await updateApk(page, 1, await readFile(await getResource("apk_64")));
 
     /// 不需要上传32位的，帮用户关闭32位上传
-    if (!RESOURCES.apk_32) {
+    if (!apk_32) {
       const dUpload = await page.waitForXPath("//span[text()='不上传']");
       console.log("dUpload=>", dUpload);
       if (dUpload) await dUpload.click();
@@ -113,16 +116,17 @@ const updateApk = async (page: Page, index: number, file: File) => {
 
 /**定位到要发布的app */
 const positioningApp = async (page: Page) => {
-  const sign = step(`正在定位：${APP_METADATA.appName}...`);
+  const appName = await getMetadata("appName");
+  const sign = step(`正在定位：${appName}...`);
   /// 定位到要发布的app
   const appCard = await page.waitForSelector(
     ".app-card.ant-card.ant-card-bordered.ant-card-hoverable",
   );
   if (!appCard) {
-    return sign.fail(`not found ${APP_METADATA.appName}`);
+    return sign.fail(`not found ${appName}`);
   }
   /// 看看app的名称对不对
-  const targetSpan = await appCard.$(`span[title="${APP_METADATA.appName}"]`);
+  const targetSpan = await appCard.$(`span[title="${appName}"]`);
   if (targetSpan) {
     const [updateBtn] = await appCard.$x('.//span[text()="申请更新"]');
     /// 点击跳转

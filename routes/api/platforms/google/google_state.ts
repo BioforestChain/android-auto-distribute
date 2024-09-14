@@ -1,6 +1,6 @@
 import { androidpublisher_v3, google } from "npm:googleapis";
 import { $AppState } from "../../../../util/stateSignal.ts";
-import { APP_METADATA } from "../../setting/app.ts";
+import { getMetadata } from "../../setting/metadata/index.tsx";
 
 export const app_state = async () => {
   const androidPublisher: androidpublisher_v3.Androidpublisher = google
@@ -16,11 +16,12 @@ export const app_state = async () => {
     onlineVersion: "",
     issues: ``,
   };
+  const packageName = await getMetadata("packageName");
   try {
     //  获取编辑id
     const insertResult = await androidPublisher.edits.insert({
       auth: auth,
-      packageName: APP_METADATA.packageName,
+      packageName,
     });
     const appEditId = insertResult.data.id;
     if (!appEditId) {
@@ -30,7 +31,7 @@ export const app_state = async () => {
     const res = await androidPublisher.edits.tracks.list({
       auth: auth,
       editId: appEditId,
-      packageName: APP_METADATA.packageName,
+      packageName,
     });
     const tracks = res.data.tracks;
     if (!tracks) {
