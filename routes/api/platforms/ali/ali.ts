@@ -30,7 +30,7 @@ export const pub_ali = async () => {
   // 请求元数据
   const metadata = await getAllMetadata();
 
-  if (await fileExists("./routes/api/ali/cookies.json")) {
+  if (await fileExists("./routes/api/platforms/ali/cookies.json")) {
     await loadLoginInfo(page, "ali"); // 如果登陆过了，直接加载登陆信息
   } else {
     await loginInSave(page); // 没有登陆过，登陆一下

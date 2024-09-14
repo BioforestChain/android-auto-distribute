@@ -25,7 +25,7 @@ export const pub_360 = async () => {
   const metadata = await getAllMetadata();
 
   /// 判断是否登陆过
-  if (await fileExists("./routes/api/360/cookies.json")) {
+  if (await fileExists("./routes/api/platforms/360/cookies.json")) {
     // 如果登陆过了加载登陆信息
     await loadLoginInfo(page, "360");
   } else {

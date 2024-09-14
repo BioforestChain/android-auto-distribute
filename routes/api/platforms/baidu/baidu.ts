@@ -1,5 +1,5 @@
 import { Page, step } from "../../../../deps.ts";
-import { baidu } from "../../../../env.ts";
+import { baidu, licenseNum } from "../../../../env.ts";
 import { loadLoginInfo, saveLoginInfo } from "../../helper/cookie.ts";
 import { fileExists, readFile } from "../../helper/file.ts";
 import {
@@ -26,7 +26,7 @@ export const pub_baidu = async () => {
   const metadata = await getAllMetadata();
 
   /// 判断是否登陆过
-  if (await fileExists("./routes/api/baidu/cookies.json")) {
+  if (await fileExists("./routes/api/platforms/baidu/cookies.json")) {
     // 如果登陆过了加载登陆信息
     await loadLoginInfo(page, "baidu");
   } else {
@@ -82,6 +82,8 @@ export const pub_baidu = async () => {
   await input("#appIntroduce", metadata.desc);
   await input("#updateInfo", metadata.updateDesc);
   await input("#privateUrl", metadata.privacyUrl);
+  console.log("licenseNum", licenseNum);
+  await input("#licenseNum", licenseNum);
 
   console.log("请审核无错误后，点击提交。");
 };

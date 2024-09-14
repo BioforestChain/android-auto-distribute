@@ -44,7 +44,7 @@ export const fetchAppInfo = async () => {
   if (result.ret.code === 0) {
     return (result as AppInfoSuccessResult).appInfo;
   } else {
-    throw Error(`e:${await res.text()}`);
+    throw Error(`e:${JSON.stringify(result)}`);
   }
 };
 
@@ -64,13 +64,11 @@ export const submitForReview = async () => {
     "POST",
   );
 
-  if (res.ok) {
-    const result: ResponseBaseResult = await res.json();
-    if (result.ret.code === 0) {
-      return "提交成功";
-    }
+  const result: ResponseBaseResult = await res.json();
+  if (result.ret.code === 0) {
+    return "提交成功";
   }
-  throw new Error(`e:${await res.text()}`);
+  throw new Error(`e:${JSON.stringify(result)}`);
 };
 
 /**工具方法：获取AppId */
@@ -84,21 +82,19 @@ const fetchAppId = async () => {
     )}`,
   );
 
-  if (res.ok) {
-    const result: ResponseBaseResult = await res.json();
-    const appName = await getMetadata("packageName");
-    if (result.ret.code === 0) {
-      const appId = (result as AppIdSuccessResult).appids.filter(
-        (v) => v.key === appName,
-      );
+  const result: ResponseBaseResult = await res.json();
+  const appName = await getMetadata("appName");
+  if (result.ret.code === 0) {
+    const appId = (result as AppIdSuccessResult).appids.filter(
+      (v) => v.key === appName,
+    );
 
-      if (Array.isArray(appId) && appId.length > 0) {
-        APP_ID = appId[0].value;
-        return APP_ID;
-      }
+    if (Array.isArray(appId) && appId.length > 0) {
+      APP_ID = appId[0].value;
+      return APP_ID;
     }
   }
-  throw new Error(`e:${await res.text()}`);
+  throw new Error(`e:${JSON.stringify(result)}`);
 };
 
 // 第三步：上传应用
@@ -115,14 +111,12 @@ const getUploadUrl = async () => {
     `/api/publish/v2/upload-url/for-obs?${params.toString()}`,
   );
 
-  if (res.ok) {
-    const result: ResponseBaseResult = await res.json();
-    if (result.ret.code === 0) {
-      return (result as UploadUrlInfoSuccessResult).urlInfo;
-    }
+  const result: ResponseBaseResult = await res.json();
+  if (result.ret.code === 0) {
+    return (result as UploadUrlInfoSuccessResult).urlInfo;
   }
 
-  throw Error(`e:${await res.text()}`);
+  throw Error(`e:${JSON.stringify(result)}`);
 };
 
 /** 工具方法：上传APK */
@@ -161,14 +155,12 @@ const updateAppInfo = async () => {
     }),
   );
 
-  if (res.ok) {
-    const result: ResponseBaseResult = await res.json();
-    if (result.ret.code === 0) {
-      return (result as UpdateAppInfoSuccessResult).pkgVersion;
-    }
+  const result: ResponseBaseResult = await res.json();
+  if (result.ret.code === 0) {
+    return (result as UpdateAppInfoSuccessResult).pkgVersion;
   }
 
-  throw new Error(`e:${await res.text()}`);
+  throw Error(`e:${JSON.stringify(result)}`);
 };
 
 /**抽离的公共请求方法 */

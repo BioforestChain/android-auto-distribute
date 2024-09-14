@@ -2,6 +2,8 @@ import { load } from "jsr:@std/dotenv";
 
 const env = await load();
 
+export const licenseNum = env["licenseNum"];
+
 export const xiaomi = {
   email: env["xiaomi_email"],
   password: env["xiaomi_password"],

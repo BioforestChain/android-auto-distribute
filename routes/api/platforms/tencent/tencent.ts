@@ -21,7 +21,7 @@ export const pub_tencent = async () => {
   });
   browserSign.succeed("打开成功");
   /// 判断是否登陆过
-  if (await fileExists("./routes/api/tencent/cookies.json")) {
+  if (await fileExists("./routes/api/platforms/tencent/cookies.json")) {
     // 如果登陆过了加载登陆信息
     await loadLoginInfo(page, "tencent");
   } else {
@@ -73,7 +73,7 @@ export const pub_tencent = async () => {
 
   /// 判断是否要上传apk包
   if (await getHandle("apk")) {
-    const apk_32 = await getResource("aab_32");
+    const apk_32 = await getResource("apk_32");
     /// 看看是否要上传32位安装包
     if (apk_32) {
       await updateApk(page, 0, await readFile(apk_32));
