@@ -1,4 +1,4 @@
-import type { Signal } from "@preact/signals";
+import { useSignal } from "@preact/signals";
 import { warpFetch } from "../../routes/api/fetch.ts";
 import { $Screenshots, screenshotsSignal } from "../../util/settingSignal.ts";
 
@@ -16,9 +16,10 @@ const updateResource = async (key: number, value: string) => {
 };
 
 export default function ScreenshotsRender(
-  props: { screenshotsSignal: Signal<$Screenshots> },
+  { screenshots }: { screenshots: $Screenshots },
 ) {
-  const screenshots = props.screenshotsSignal.value.screenshots;
+  const localScreenshots = useSignal(screenshots);
+  const imgs = localScreenshots.value.screenshots;
   return (
     <div class=" mt-6">
       <p class="font-bold">应用商城截屏文件路径</p>
@@ -29,7 +30,7 @@ export default function ScreenshotsRender(
         <input
           type="text"
           className="file-input file-input-bordered w-full"
-          value={screenshots.at(0)}
+          value={imgs.at(0)}
           onChange={(event) => handleChange(event, 0)}
         />
       </label>
@@ -40,7 +41,7 @@ export default function ScreenshotsRender(
         <input
           type="text"
           className="file-input file-input-bordered w-full "
-          value={screenshots.at(1)}
+          value={imgs.at(1)}
           onChange={(event) => handleChange(event, 1)}
         />
       </label>
@@ -51,7 +52,7 @@ export default function ScreenshotsRender(
         <input
           type="text"
           className="file-input file-input-bordered w-full "
-          value={screenshots.at(2)}
+          value={imgs.at(2)}
           onChange={(event) => handleChange(event, 2)}
         />
       </label>
@@ -62,7 +63,7 @@ export default function ScreenshotsRender(
         <input
           type="text"
           className="file-input file-input-bordered w-full "
-          value={screenshots.at(3)}
+          value={imgs.at(3)}
           onChange={(event) => handleChange(event, 3)}
         />
       </label>
@@ -73,7 +74,7 @@ export default function ScreenshotsRender(
         <input
           type="text"
           className="file-input file-input-bordered w-full "
-          value={screenshots.at(4)}
+          value={imgs.at(4)}
           onChange={(event) => handleChange(event, 4)}
         />
       </label>

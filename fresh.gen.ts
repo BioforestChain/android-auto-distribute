@@ -73,7 +73,6 @@ import * as $partials_key from "./routes/partials/key.tsx";
 import * as $partials_oppo from "./routes/partials/oppo.tsx";
 import * as $partials_samsung from "./routes/partials/samsung.tsx";
 import * as $partials_semi from "./routes/partials/semi.tsx";
-import * as $partials_setting from "./routes/partials/setting.tsx";
 import * as $partials_state from "./routes/partials/state.tsx";
 import * as $partials_vivo from "./routes/partials/vivo.tsx";
 import * as $partials_xiaomi from "./routes/partials/xiaomi.tsx";
@@ -174,7 +173,6 @@ const manifest = {
     "./routes/partials/oppo.tsx": $partials_oppo,
     "./routes/partials/samsung.tsx": $partials_samsung,
     "./routes/partials/semi.tsx": $partials_semi,
-    "./routes/partials/setting.tsx": $partials_setting,
     "./routes/partials/state.tsx": $partials_state,
     "./routes/partials/vivo.tsx": $partials_vivo,
     "./routes/partials/xiaomi.tsx": $partials_xiaomi,

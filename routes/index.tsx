@@ -1,48 +1,46 @@
-import { Partial } from "$fresh/runtime.ts";
-import { defineRoute } from "$fresh/server.ts";
-import Setting from "./partials/setting.tsx";
-import State from "./partials/state.tsx";
+import { Handlers, PageProps } from "$fresh/server.ts";
+import ApkRender from "../islands/setting/ApkRender.tsx";
+import HandleRender from "../islands/setting/HandleRender.tsx";
+import InfoRender from "../islands/setting/InfoRender.tsx";
+import ScreenshotsRender from "../islands/setting/ScreenshotsRender.tsx";
+import TextRender from "../islands/setting/TextRender.tsx";
+import {
+  $AppMetadata,
+  $Resources,
+  $Screenshots,
+  $UpdateHandle,
+} from "../util/settingSignal.ts";
+import { loadData } from "./api/fetch.ts";
 
-const loadContent = (type: string) => {
-  switch (type) {
-    case PartialsTypes.setting:
-      return <Setting />;
-    case PartialsTypes.state:
-      return <State />;
-  }
-  return <Setting />;
+export interface $SettingData {
+  appMetadata: $AppMetadata;
+  handleState: $UpdateHandle;
+  resources: $Resources;
+  screenshots: $Screenshots;
+}
+
+export const handler: Handlers<$SettingData> = {
+  async GET(_req, ctx) {
+    /** 初始化数据 */
+    const settingData = await loadData<$SettingData>(`/api/setting`);
+    return ctx.render(settingData);
+  },
 };
 
-//  const Metadata = createContext<$AppMetadata>({
-//   icp: "",
-//   appName: "",
-//   version: "",
-//   packageName: "",
-//   keyWords: "",
-//   privacyUrl: "",
-//   updateDesc: "",
-//   brief: "",
-//   desc: "",
-// });
-
-export default defineRoute((_req, ctx) => {
-  const content = loadContent(ctx.params.id);
+export default function Setting({ data }: PageProps<$SettingData>) {
+  const { appMetadata, handleState, resources, screenshots } = data;
   return (
-    // <Metadata.Provider value={}>
-    <Partial name="content">
-      {content}
-    </Partial>
-    // </ Metadata.Provider>
+    <div class="flex flex-col">
+      <div class="flex flex-row">
+        <InfoRender metadata={appMetadata} />
+        <TextRender metadata={appMetadata} />
+        <div class="flex flex-col m-3 justify-items-center basis-1/3">
+          <HandleRender handleState={handleState} />
+          <ScreenshotsRender screenshots={screenshots} />
+        </div>
+      </div>
+      <ApkRender resources={resources} />
+      {/* <SubmitRender /> */}
+    </div>
   );
-});
-
-// 内容组件类型
-export enum PartialsTypes {
-  setting = "setting",
-  state = "state",
-  xiaomi = "xiaomi",
-  huawei = "huawei",
-  oppo = "oppo",
-  vivo = "vivo",
-  samsung = "samsung",
 }

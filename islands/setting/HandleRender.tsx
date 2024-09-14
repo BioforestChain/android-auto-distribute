@@ -1,4 +1,4 @@
-import { Signal } from "@preact/signals";
+import { useSignal } from "@preact/signals";
 import { warpFetch } from "../../routes/api/fetch.ts";
 import { $UpdateHandle, handleStateSignal } from "../../util/settingSignal.ts";
 
@@ -18,9 +18,9 @@ const updateHandle = async (key: string, value: boolean) => {
 };
 
 export default function HandleRender(
-  props: { handleStateSignal: Signal<$UpdateHandle> },
+  { handleState }: { handleState: $UpdateHandle },
 ) {
-  const updateHandle = props.handleStateSignal.value;
+  const localHandleState = useSignal(handleState);
   return (
     <div>
       <label className="label cursor-pointer">
@@ -28,7 +28,7 @@ export default function HandleRender(
         <input
           type="checkbox"
           className="toggle"
-          checked={updateHandle.apk}
+          checked={localHandleState.value.apk}
           onChange={(event) => handleCheckboxChange(event, "apk")}
           defaultChecked
         />
@@ -38,7 +38,7 @@ export default function HandleRender(
         <input
           type="checkbox"
           className="toggle"
-          checked={updateHandle.screenshots}
+          checked={localHandleState.value.screenshots}
           onChange={(event) => handleCheckboxChange(event, "screenshots")}
         />
       </label>
@@ -47,7 +47,7 @@ export default function HandleRender(
         <input
           type="checkbox"
           className="toggle"
-          checked={updateHandle.icon}
+          checked={localHandleState.value.icon}
           onChange={(event) => handleCheckboxChange(event, "icon")}
           disabled
         />

@@ -12,8 +12,7 @@ export default function Memu() {
     <ul className="menu bg-base-200 rounded-box w-56 shadow-md">
       <li>
         <a
-          href="/partials/setting"
-          f-partial="/partials/setting"
+          href="/"
           class="aria-[current]:text-green-600"
         >
           <svg

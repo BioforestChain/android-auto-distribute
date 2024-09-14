@@ -4,7 +4,7 @@ import HandleRender from "../../islands/publish/HandleRender.tsx";
 import MessageRender from "../../islands/publish/messageRender.tsx";
 import { samsungSignal } from "../../util/publishSignal.ts";
 import { $UpdateHandle, handleStateSignal } from "../../util/settingSignal.ts";
-import { loadData } from "./setting.tsx";
+import { loadData } from "../api/fetch.ts";
 
 // 动态添加进度条关键节点
 const createSetps = (apk: boolean, screenshots: boolean) => {

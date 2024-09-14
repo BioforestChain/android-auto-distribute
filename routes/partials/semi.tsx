@@ -1,8 +1,8 @@
 import { Handlers } from "$fresh/server.ts";
 import PublishButtonRender from "../../islands/semi/PublishButton.tsx";
 import ToastMessage from "../../islands/semi/toast.tsx";
-import { loadData } from "../../routes/partials/setting.tsx";
 import { $Resources, resourcesSignal } from "../../util/settingSignal.ts";
+import { loadData } from "../api/fetch.ts";
 
 export const handler: Handlers<$Resources> = {
   async GET(_req, ctx) {

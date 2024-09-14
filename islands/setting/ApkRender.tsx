@@ -1,4 +1,4 @@
-import type { Signal } from "@preact/signals";
+import { useSignal } from "@preact/signals";
 import { warpFetch } from "../../routes/api/fetch.ts";
 import { $Resources, resourcesSignal } from "../../util/settingSignal.ts";
 // 处理文件选择
@@ -16,9 +16,9 @@ export const updateResource = async (key: string, value: string) => {
 };
 
 export default function ApkRender(
-  props: { resourcesSignal: Signal<$Resources> },
+  { resources }: { resources: $Resources },
 ) {
-  const resources = props.resourcesSignal.value;
+  const localResources = useSignal(resources);
   return (
     <div>
       <div class="flex flex-row">
@@ -29,7 +29,7 @@ export default function ApkRender(
           <input
             type="text"
             className="file-input file-input-bordered w-full"
-            value={resources.apk_64}
+            value={localResources.value.apk_64}
             onChange={(event) => handleFileChange(event, "apk_64")}
           />
           <div className="label">
@@ -40,7 +40,7 @@ export default function ApkRender(
             type="text"
             className="file-input file-input-bordered "
             accept=".apk"
-            value={resources.apk_32}
+            value={localResources.value.apk_32}
             onChange={(event) => handleFileChange(event, "apk_32")}
           />
         </label>
@@ -52,7 +52,7 @@ export default function ApkRender(
             type="text"
             className="file-input file-input-bordered "
             accept=".aab"
-            value={resources.aab_64}
+            value={localResources.value.aab_64}
             onChange={(event) => handleFileChange(event, "aab_64")}
           />
           <div className="label">
@@ -63,7 +63,7 @@ export default function ApkRender(
             type="text"
             className="file-input file-input-bordered "
             accept=".aab"
-            value={resources.aab_32}
+            value={localResources.value.aab_32}
             onChange={(event) => handleFileChange(event, "aab_32")}
           />
         </label>
@@ -79,7 +79,7 @@ export default function ApkRender(
           <input
             type="text"
             className="file-input file-input-bordered"
-            value={resources.chromiumPath}
+            value={localResources.value.chromiumPath}
             onChange={(event) => handleFileChange(event, "chromiumPath")}
           />
         </label>

@@ -1,11 +1,11 @@
-import type { Signal } from "@preact/signals";
+import { useSignal } from "@preact/signals";
 import { $AppMetadata } from "../../util/settingSignal.ts";
 import { handleTextChange } from "./InfoRender.tsx";
 
 export default function TextRender(
-  props: { signalMetadata: Signal<$AppMetadata> },
+  { metadata }: { metadata: $AppMetadata },
 ) {
-  const metadata = props.signalMetadata.value;
+  const localMetadata = useSignal(metadata);
   return (
     <div class="flex flex-col m-3 justify-items-center basis-1/3">
       <label className="form-control">
@@ -14,7 +14,7 @@ export default function TextRender(
         </div>
         <textarea
           className="textarea textarea-bordered textarea-md max-w-full min-h-32"
-          value={metadata.updateDesc}
+          value={localMetadata.value.updateDesc}
           onChange={(event) => handleTextChange(event, "updateDesc")}
           placeholder="填入每次更新的情况"
         >
@@ -26,7 +26,7 @@ export default function TextRender(
         </div>
         <textarea
           placeholder="应用介绍"
-          value={metadata.desc}
+          value={localMetadata.value.desc}
           onChange={(event) => handleTextChange(event, "desc")}
           className="textarea textarea-bordered textarea-md max-w-full min-h-52"
         >

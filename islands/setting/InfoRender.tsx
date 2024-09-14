@@ -1,4 +1,4 @@
-import type { Signal } from "@preact/signals";
+import { useSignal } from "@preact/signals";
 import { warpFetch } from "../../routes/api/fetch.ts";
 import { $AppMetadata, appMetadataSignal } from "../../util/settingSignal.ts";
 
@@ -18,9 +18,9 @@ const updateMetadata = async (key: string, value: string) => {
 };
 
 export default function InfoRender(
-  props: { signalMetadata: Signal<$AppMetadata> },
+  { metadata }: { metadata: $AppMetadata },
 ) {
-  const metadata = props.signalMetadata.value;
+  const localMetadata = useSignal(metadata);
   return (
     <label className="form-control w-full max-w-xs justify-items-center m-3 basis-1/3">
       <div className="label">
@@ -29,7 +29,7 @@ export default function InfoRender(
       <input
         type="text"
         placeholder="应用名称"
-        value={metadata.appName}
+        value={localMetadata.value.appName}
         onChange={(event) => handleTextChange(event, "appName")}
         className="input input-bordered w-full max-w-xs"
       />
@@ -39,7 +39,7 @@ export default function InfoRender(
       <input
         type="text"
         placeholder="应用版本"
-        value={metadata.version}
+        value={localMetadata.value.version}
         onChange={(event) => handleTextChange(event, "version")}
         className="input input-bordered w-full max-w-xs"
       />
@@ -50,7 +50,7 @@ export default function InfoRender(
       <input
         type="text"
         placeholder="包名"
-        value={metadata.packageName}
+        value={localMetadata.value.packageName}
         onChange={(event) => handleTextChange(event, "packageName")}
         className="input input-bordered w-full max-w-xs"
       />
@@ -61,7 +61,7 @@ export default function InfoRender(
       <input
         type="text"
         placeholder="关键字"
-        value={metadata.keyWords}
+        value={localMetadata.value.keyWords}
         onChange={(event) => handleTextChange(event, "keyWords")}
         className="input input-bordered w-full max-w-xs"
       />
@@ -71,7 +71,7 @@ export default function InfoRender(
       <input
         type="text"
         placeholder="隐私政策地址"
-        value={metadata.privacyUrl}
+        value={localMetadata.value.privacyUrl}
         onChange={(event) => handleTextChange(event, "privacyUrl")}
         className="input input-bordered w-full max-w-xs"
       />
@@ -82,7 +82,7 @@ export default function InfoRender(
       <input
         type="text"
         placeholder="一句话简介"
-        value={metadata.brief}
+        value={localMetadata.value.brief}
         onChange={(event) => handleTextChange(event, "brief")}
         className="input input-bordered w-full max-w-xs"
       />
