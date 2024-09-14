@@ -3,6 +3,7 @@ import { tencent } from "../../../../env.ts";
 import { loadLoginInfo, saveLoginInfo } from "../../helper/cookie.ts";
 import { fileExists } from "../../helper/file.ts";
 import {
+  awaitCheck,
   clearAndEnter,
   createPage,
   postInputFile,
@@ -177,19 +178,4 @@ const loginInSave = async (page: Page) => {
   loginSign.succeed("登陆成功！");
   // 保存登陆信息
   await saveLoginInfo(page, "tencent");
-};
-
-const awaitCheck = async <T>(callFn: () => T | undefined, spacer: number) => {
-  // 创建一个延迟函数，返回一个在 spacer 毫秒后完成的 Promise
-  const wait = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-
-  let result: T | undefined = callFn();
-
-  while (!result) {
-    await wait(spacer);
-    result = callFn();
-  }
-
-  return result;
 };

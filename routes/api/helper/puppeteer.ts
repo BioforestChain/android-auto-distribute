@@ -6,14 +6,14 @@ export function delay(time: number) {
 }
 
 /**创建页面对象 */
-export async function createPage() {
+export async function createPage(headless = false) {
   const browser = await puppeteer.launch({
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
       "--disable-blink-features=AutomationControlled",
     ],
-    headless: false,
+    headless: headless,
     dumpio: true, // 是否将浏览器进程标准输出和标准错误输入到 process.stdout 和 process.stderr 中。默认是 false。
     executablePath: await getResource("chromiumPath"),
     defaultViewport: { width: 1200, height: 1000 },
@@ -153,4 +153,23 @@ export const postInputFile = async (
     file.type,
   );
   return true;
+};
+
+//等待数据获取到
+export const awaitCheck = async <T>(
+  callFn: () => T | undefined,
+  spacer: number,
+) => {
+  // 创建一个延迟函数，返回一个在 spacer 毫秒后完成的 Promise
+  const wait = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  let result: T | undefined = callFn();
+
+  while (!result) {
+    await wait(spacer);
+    result = callFn();
+  }
+
+  return result;
 };
