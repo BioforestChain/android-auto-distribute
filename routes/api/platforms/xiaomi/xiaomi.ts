@@ -10,7 +10,7 @@ import {
 } from "../../helper/crypto.ts";
 import { readFile } from "../../helper/file.ts";
 import { getHandle } from "../../setting/handle/index.tsx";
-import { getAllMetadata } from "../../setting/metadata/index.tsx";
+import { getAllMetadata, getMetadata } from "../../setting/metadata/index.tsx";
 import { getResource } from "../../setting/resource/index.tsx";
 import { getAllScreenshot } from "../../setting/screenshot/index.tsx";
 import { $AppInfo, $PushRequest, $RequestData } from "./xiaomi.type.ts";
@@ -98,7 +98,7 @@ async function digitalSignature(pushRequestData: $PushRequest) {
  * @returns
  */
 export async function queryAppInfo() {
-  const packageName = (await getAllMetadata()).packageName;
+  const packageName = await getMetadata("packageName");
   const requestData: $PushRequest = {
     "RequestData": JSON.stringify({
       "packageName": packageName,

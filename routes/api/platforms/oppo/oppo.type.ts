@@ -58,6 +58,7 @@ export type $ImportantParams = {
   business_mobile: string; // 商务联系人电话
   age_level: number; // APP年龄分级，示例：3
   adaptive_equipment: number; // 平板适配，4-手机，5-平板，6-手机和平板
+  audit_status_name?: ""; // 审核状态描述
 };
 
 export interface AppInfoSuccessResult extends ResponseBaseResult {
