@@ -32,7 +32,7 @@ export default function Setting({ data }: PageProps<$SettingData>) {
   return (
     <div class="flex flex-row">
       <div class="flex flex-col">
-        <div class="flex">
+        <div class="flex basis-2/3">
           <InfoRender metadata={appMetadata} />
           <TextRender metadata={appMetadata} />
         </div>

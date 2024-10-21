@@ -54,7 +54,7 @@ export interface $Resources {
   aab_64: string;
   aab_32: string;
   icon: string;
-  chromiumPath: string;
+  chromiumPath?: string;
 }
 
 export type $Screenshots = string[];

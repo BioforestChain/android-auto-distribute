@@ -90,21 +90,6 @@ export default function ApkRender(
           />
         </label>
       </div>
-      <div class="flex flex-row">
-        <label className="form-control ml-3 w-full">
-          <div className="label truncate">
-            <span className="label-text font-bold  max-w-3xl">
-              当前Google浏览器位置：{localResources.value.chromiumPath}
-            </span>
-          </div>
-          <input
-            type="file"
-            className="file-input file-input-bordered"
-            value={localResources.value.chromiumPath}
-            onChange={(event) => handleFileChange(event, "chromiumPath")}
-          />
-        </label>
-      </div>
     </div>
   );
 }

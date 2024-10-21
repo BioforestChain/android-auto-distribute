@@ -4,12 +4,11 @@ import {
   type Page,
   puppeteer,
 } from "../../../deps.ts";
-import { getResource } from "../setting/resource/index.tsx";
 // 等待函数
 export function delay(time: number) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
-
+const chromiumPath = "";
 /**创建页面对象 */
 export async function createPage(headless = false) {
   const browser = await puppeteer.launch({
@@ -20,7 +19,7 @@ export async function createPage(headless = false) {
     ],
     headless: headless,
     dumpio: true, // 是否将浏览器进程标准输出和标准错误输入到 process.stdout 和 process.stderr 中。默认是 false。
-    executablePath: await getResource("chromiumPath"),
+    executablePath: chromiumPath,
     defaultViewport: { width: 1200, height: 1000 },
   });
   const page = await browser.newPage();

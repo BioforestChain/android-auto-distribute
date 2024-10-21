@@ -1,3 +1,4 @@
+/// 自动化发布页面
 import { Handlers } from "$fresh/server.ts";
 import PublishButtonRender from "../../islands/semi/PublishButton.tsx";
 import ToastMessage from "../../islands/semi/toast.tsx";
@@ -16,7 +17,7 @@ export const handler: Handlers<$Resources> = {
 export default function StatePage() {
   return (
     <>
-      <ToastMessage chromiumPath={resourcesSignal.value.chromiumPath} />
+      <ToastMessage resources={resourcesSignal.value} />
       <div class="flex flex-col">
         <PublishButtonRender />
       </div>

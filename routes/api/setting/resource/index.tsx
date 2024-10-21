@@ -23,8 +23,6 @@ export const getResource = async (key: keyof $Resources) => {
 
 export const getAllResource = async () => {
   const result: $Resources = {
-    chromiumPath:
-      "/Volumes/developer/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     apk_64: "",
     apk_32: "",
     aab_64: "",
