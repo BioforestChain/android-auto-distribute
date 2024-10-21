@@ -22,7 +22,7 @@ export default function InfoRender(
 ) {
   const localMetadata = useSignal(metadata);
   return (
-    <label className="form-control w-full max-w-xs justify-items-center m-3 basis-1/3">
+    <label className="form-control w-full max-w-xs justify-items-center m-3 basis-1/2">
       <div className="label">
         <span className="label-text font-bold">应用名称</span>
       </div>

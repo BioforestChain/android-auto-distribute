@@ -30,17 +30,18 @@ export const handler: Handlers<$SettingData> = {
 export default function Setting({ data }: PageProps<$SettingData>) {
   const { appMetadata, handleState, resources, screenshots } = data;
   return (
-    <div class="flex flex-col">
-      <div class="flex flex-row">
-        <InfoRender metadata={appMetadata} />
-        <TextRender metadata={appMetadata} />
-        <div class="flex flex-col m-3 justify-items-center basis-1/3">
-          <HandleRender handleState={handleState} />
-          <ScreenshotsRender screenshots={screenshots} />
+    <div class="flex flex-row">
+      <div class="flex flex-col">
+        <div class="flex">
+          <InfoRender metadata={appMetadata} />
+          <TextRender metadata={appMetadata} />
         </div>
+        <ApkRender resources={resources} />
       </div>
-      <ApkRender resources={resources} />
-      {/* <SubmitRender /> */}
+      <div class="flex flex-col m-3 justify-items-center basis-1/3">
+        <HandleRender handleState={handleState} />
+        <ScreenshotsRender screenshots={screenshots} />
+      </div>
     </div>
   );
 }

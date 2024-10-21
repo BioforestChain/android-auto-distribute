@@ -1,4 +1,4 @@
-import { Page, step } from "../../../../deps.ts";
+import { type Page, step } from "../../../../deps.ts";
 import { key360 } from "../../../../env.ts";
 import { loadLoginInfo, saveLoginInfo } from "../../helper/cookie.ts";
 import { fileExists, readFile } from "../../helper/file.ts";

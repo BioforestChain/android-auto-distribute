@@ -1,4 +1,9 @@
-import { ElementHandle, Frame, Page, puppeteer } from "../../../deps.ts";
+import {
+  type ElementHandle,
+  type Frame,
+  type Page,
+  puppeteer,
+} from "../../../deps.ts";
 import { getResource } from "../setting/resource/index.tsx";
 // 等待函数
 export function delay(time: number) {

@@ -7,7 +7,7 @@ export default function TextRender(
 ) {
   const localMetadata = useSignal(metadata);
   return (
-    <div class="flex flex-col m-3 justify-items-center basis-1/3">
+    <div class="flex flex-col m-3 justify-items-center basis-1/2">
       <label className="form-control">
         <div className="label">
           <span className="label-text font-bold">更新说明</span>

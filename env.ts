@@ -1,4 +1,8 @@
 import { load } from "jsr:@std/dotenv";
+import { join } from "jsr:@std/path";
+
+// 文件存储位置，根据需要修改 记得 ignore
+export const UPLOAD_DIR = join(Deno.cwd(), "RESOURCES");
 
 const env = await load();
 

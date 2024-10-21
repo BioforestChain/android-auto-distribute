@@ -1,4 +1,5 @@
 import { FreshContext } from "$fresh/server.ts";
+import { saveFile } from "../../helper/file.ts";
 import { kv, SCREENSHOTS } from "../index.tsx";
 
 /**
@@ -7,10 +8,10 @@ import { kv, SCREENSHOTS } from "../index.tsx";
 
 export const handler = {
   async PATCH(req: Request, { params }: FreshContext) {
-    const data = await req.text();
-    const ok = await kv.atomic().set([SCREENSHOTS, params.key], data) // number
+    const filePath = await saveFile(req);
+    const ok = await kv.atomic().set([SCREENSHOTS, params.key], filePath) // number
       .commit();
     if (!ok) throw new Error("Something went wrong.");
-    return new Response(JSON.stringify(data));
+    return new Response(JSON.stringify({ path: filePath }), { status: 200 });
   },
 };

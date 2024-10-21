@@ -1,9 +1,5 @@
-import puppeteer from "https://deno.land/x/puppeteer@16.2.0/mod.ts";
-export type {
-  ElementHandle,
-  Frame,
-  Page,
-} from "https://deno.land/x/puppeteer@16.2.0/mod.ts";
+import puppeteer from "npm:puppeteer@23.6.0";
 export { step } from "jsr:@sylc/step-spinner";
+export type { ElementHandle, Frame, Page } from "npm:puppeteer@23.6.0";
 
 export { puppeteer };
