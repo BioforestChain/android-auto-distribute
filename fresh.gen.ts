@@ -87,7 +87,7 @@ import * as $setting_TextRender from "./islands/setting/TextRender.tsx";
 import * as $setting_submitRender from "./islands/setting/submitRender.tsx";
 import * as $state_List from "./islands/state/List.tsx";
 import * as $state_ReloadButton from "./islands/state/ReloadButton.tsx";
-import { type Manifest } from "$fresh/server.ts";
+import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
   routes: {

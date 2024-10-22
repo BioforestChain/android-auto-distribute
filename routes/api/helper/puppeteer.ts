@@ -4,13 +4,14 @@ import {
   type Page,
   puppeteer,
 } from "../../../deps.ts";
+import { resourcesSignal } from "../../../util/settingSignal.ts";
 // 等待函数
 export function delay(time: number) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
-const chromiumPath = "";
 /**创建页面对象 */
 export async function createPage(headless = false) {
+  const chromiumPath = resourcesSignal.value.chromiumPath;
   const browser = await puppeteer.launch({
     args: [
       "--no-sandbox",

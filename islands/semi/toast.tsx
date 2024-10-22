@@ -15,10 +15,9 @@ export default function ToastMessage(
 ) {
   const localResources = useSignal(resources);
   const isShow = useSignal(false);
-  const chromiumPath = localResources.value.chromiumPath;
   //动态监听
   useEffect(() => {
-    if (!chromiumPath) {
+    if (localResources.value.chromiumPath == "") {
       isShow.value = true;
       const timer = setTimeout(() => {
         isShow.value = false;
@@ -27,7 +26,7 @@ export default function ToastMessage(
       // 清除定时器
       return () => clearTimeout(timer);
     }
-  }, [chromiumPath]);
+  }, [localResources.value.chromiumPath]);
 
   const handleFileChange = (event: Event, key: keyof $Resources) => {
     const target = event.target as HTMLInputElement;

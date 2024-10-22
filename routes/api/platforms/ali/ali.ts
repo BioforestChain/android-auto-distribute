@@ -1,5 +1,5 @@
 import { step } from "jsr:@sylc/step-spinner";
-import { Page } from "../../../../deps.ts";
+import type { Page } from "../../../../deps.ts";
 import { ali } from "../../../../env.ts";
 import { loadLoginInfo, saveLoginInfo } from "../../helper/cookie.ts";
 import { fileExists, readFile } from "../../helper/file.ts";

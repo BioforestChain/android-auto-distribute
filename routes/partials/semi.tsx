@@ -19,7 +19,9 @@ export default function StatePage() {
     <>
       <ToastMessage resources={resourcesSignal.value} />
       <div class="flex flex-col">
-        <PublishButtonRender />
+        <PublishButtonRender
+          chromiumPath={resourcesSignal.value.chromiumPath}
+        />
       </div>
     </>
   );

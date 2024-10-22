@@ -28,6 +28,7 @@ export const getAllResource = async () => {
     aab_64: "",
     aab_32: "",
     icon: "",
+    chromiumPath: await getChromePath(),
   };
   const entries = kv.list<string>({ prefix: [RESOURCES] });
   for await (const entry of entries) {
@@ -36,3 +37,26 @@ export const getAllResource = async () => {
   }
   return result;
 };
+
+// 尝试能否检测到浏览器内核
+export async function getChromePath() {
+  const os = Deno.build.os;
+  let chromiumPath: string = "";
+  try {
+    if (os === "windows") {
+      // Windows 系统的 Chrome 默认安装路径
+      chromiumPath =
+        "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
+    } else if (os === "darwin") {
+      // macOS 系统的 Chrome 默认安装路径
+      chromiumPath =
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+    } else {
+      throw new Error("Unsupported OS");
+    }
+    await Deno.stat(chromiumPath);
+    return chromiumPath;
+  } catch {
+    return "";
+  }
+}

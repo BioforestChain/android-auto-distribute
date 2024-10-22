@@ -22,8 +22,7 @@ export const resourcesSignal = signal<$Resources>({
   aab_64: "",
   aab_32: "",
   icon: "",
-  chromiumPath:
-    "/Volumes/developer/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", // 本地chrome 浏览器地址
+  chromiumPath: "", // 本地chrome 浏览器地址 ///Volumes/developer
 });
 
 export const screenshotsSignal = signal<$Screenshots>([]);
@@ -54,7 +53,7 @@ export interface $Resources {
   aab_64: string;
   aab_32: string;
   icon: string;
-  chromiumPath?: string;
+  chromiumPath: string;
 }
 
 export type $Screenshots = string[];

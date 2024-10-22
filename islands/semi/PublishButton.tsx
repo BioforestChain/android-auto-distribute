@@ -13,13 +13,17 @@ export const startPublish = async (key: string) => {
   await warpFetch(`api/platforms/${key}/start`);
 };
 
-export default function PublishButtonRender() {
+export default function PublishButtonRender(
+  { chromiumPath }: { chromiumPath: string },
+) {
   const isPublishing = useSignal({
     "ali": false,
     "360": false,
     "baidu": false,
     "tencent": false,
   });
+  // 看看chromiumPath是否准备好
+  const isReady = useSignal(chromiumPath);
   const publishApp = async (key: keyof typeof isPublishing.value) => {
     isPublishing.value = {
       ...isPublishing.value,
@@ -39,6 +43,7 @@ export default function PublishButtonRender() {
           <div class="flex justify-center m-3">
             <button
               className="btn sm:w-3/12 w-6/12"
+              disabled={isReady.value == ""}
               onClick={(_event) =>
                 publishApp(key as keyof typeof isPublishing.value)}
             >
