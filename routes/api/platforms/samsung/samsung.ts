@@ -25,8 +25,6 @@ const BASE_URL = "https://devapi.samsungapps.com";
 const not = Math.round(Date.now() / 1000);
 let exp = not + 1200; // 过期时间20分钟// 过期时间20分钟
 let access_token: string | undefined = undefined; // 通过jwt拿到的access_token
-// 创建加密函数
-const rsass = new RSASSA(samsung.private_key_path);
 
 /**🌈发布包 */
 export const pub_samsung = async (send: $sendCallback) => {
@@ -49,6 +47,9 @@ export const pub_samsung = async (send: $sendCallback) => {
 
 // 工具方法：获取jwt
 const getJwt = async () => {
+  // 创建加密函数
+  const rsass = new RSASSA(samsung.private_key_path);
+
   // 构建jwt payload
   const payload = {
     iss: samsung.service_account_id,

@@ -1,4 +1,4 @@
-import { Page, step } from "../../../../deps.ts";
+import { type Page, step } from "../../../../deps.ts";
 import { tencent } from "../../../../env.ts";
 import { loadLoginInfo, saveLoginInfo } from "../../helper/cookie.ts";
 import { fileExists } from "../../helper/file.ts";
@@ -58,8 +58,10 @@ export const pub_tencent = async () => {
   await page.waitForSelector(content);
 
   /// 点击修改
-  const [updateButton] = await page.$x("//span[text()='修改']");
-  await updateButton.click();
+  const updateButton = await page.waitForSelector(
+    "::-p-xpath(//span[text()='修改'])",
+  );
+  await updateButton?.click();
   /// 等待跳转完成
   await page.waitForNavigation({
     waitUntil: "networkidle0",
@@ -84,7 +86,9 @@ export const pub_tencent = async () => {
 
     /// 不需要上传32位的，帮用户关闭32位上传
     if (!apk_32) {
-      const dUpload = await page.waitForXPath("//span[text()='不上传']");
+      const dUpload = await page.waitForSelector(
+        "::-p-xpath(//span[text()='不上传'])",
+      );
       console.log("dUpload=>", dUpload);
       if (dUpload) await dUpload.click();
     }
@@ -129,7 +133,9 @@ const positioningApp = async (page: Page) => {
   /// 看看app的名称对不对
   const targetSpan = await appCard.$(`span[title="${appName}"]`);
   if (targetSpan) {
-    const [updateBtn] = await appCard.$x('.//span[text()="申请更新"]');
+    const updateBtn = await appCard.waitForSelector(
+      '::-p-xpath(.//span[text()="申请更新"])',
+    );
     /// 点击跳转
     updateBtn?.click();
     await page.waitForNavigation({

@@ -1,4 +1,4 @@
-import { Page, step } from "../../../../deps.ts";
+import { ElementHandle, type Page, step } from "../../../../deps.ts";
 import { baidu, licenseNum } from "../../../../env.ts";
 import { loadLoginInfo, saveLoginInfo } from "../../helper/cookie.ts";
 import { fileExists, readFile } from "../../helper/file.ts";
@@ -67,8 +67,10 @@ export const pub_baidu = async () => {
     throw new Error(`要发布的app不是同一个:${appName}`);
   }
   /// 点击更新
-  const [updateButton] = await page.$x("//span[text()='更新']");
-  await updateButton.click();
+  const updateButton = await page.waitForSelector(
+    "::-p-xpath(//span[text()='更新'])",
+  );
+  await updateButton?.click();
 
   await getHandle("apk") && (await updateApk(page));
 
@@ -139,18 +141,20 @@ const updateScreenshots = async (page: Page) => {
   const screenshots = await getAllScreenshot();
   /// 需要先删除screenshots
   for (let i = 0; i < screenshots.length; i++) {
-    const deleteHandle = await page.evaluateHandle(() => {
-      const divs = Array.from(
-        document.querySelectorAll(
-          "div.one-uploader-image-item.one-uploader-image-item-success",
-        ),
-      );
-      if (divs.length > 1) {
-        // 确保有足够的元素进行操作
-        return divs[1]; // 第二个元素，索引为1
-      }
-      return null;
-    });
+    const deleteHandle = await page.evaluateHandle(
+      () => {
+        const divs = Array.from(
+          document.querySelectorAll(
+            "div.one-uploader-image-item.one-uploader-image-item-success",
+          ),
+        );
+        if (divs.length > 1) {
+          // 确保有足够的元素进行操作
+          return divs[1]; // 第二个元素，索引为1
+        }
+        return null;
+      },
+    ) as ElementHandle;
     // 鼠标移到元素上，让删除的svg出现
     deleteHandle.hover();
     const deleteSvgHandle = await page.evaluateHandle((el) => {
@@ -159,7 +163,9 @@ const updateScreenshots = async (page: Page) => {
         return svgs[2]; // 删除图标的索引svg为2
       }
     }, deleteHandle);
-    if (deleteSvgHandle) {
+    if (
+      deleteSvgHandle && deleteSvgHandle instanceof ElementHandle
+    ) {
       await deleteSvgHandle.hover(); // 将鼠标移动到svg元素上
       await deleteSvgHandle.click(); // 点击svg元素
     } else {
@@ -176,7 +182,7 @@ const updateScreenshots = async (page: Page) => {
       ),
     );
     return inputs.length >= 3 ? inputs[2] : null;
-  });
+  }) as ElementHandle<Element>;
   for (let i = 0; i < screenshots.length; i++) {
     const res = await postInputFile(
       page,
