@@ -40,7 +40,7 @@ export const pub_samsung = async (send: $sendCallback) => {
   if (res.ok) {
     send("三星分发成功");
   } else {
-    send("pub_samsung ${res.statusText}", true);
+    send(`pub_samsung ${res.statusText}`, true);
   }
   return res;
 };
