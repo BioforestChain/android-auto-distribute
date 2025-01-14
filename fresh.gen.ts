@@ -15,7 +15,6 @@ import * as $api_helper_date from "./routes/api/helper/date.ts";
 import * as $api_helper_file from "./routes/api/helper/file.ts";
 import * as $api_helper_puppeteer from "./routes/api/helper/puppeteer.ts";
 import * as $api_helper_socket from "./routes/api/helper/socket.ts";
-import * as $api_helper_whichCommond from "./routes/api/helper/whichCommond.ts";
 import * as $api_info from "./routes/api/info.ts";
 import * as $api_platforms_360_360 from "./routes/api/platforms/360/360.ts";
 import * as $api_platforms_360_360_state from "./routes/api/platforms/360/360_state.ts";
@@ -104,7 +103,6 @@ const manifest = {
     "./routes/api/helper/file.ts": $api_helper_file,
     "./routes/api/helper/puppeteer.ts": $api_helper_puppeteer,
     "./routes/api/helper/socket.ts": $api_helper_socket,
-    "./routes/api/helper/whichCommond.ts": $api_helper_whichCommond,
     "./routes/api/info.ts": $api_info,
     "./routes/api/platforms/360/360.ts": $api_platforms_360_360,
     "./routes/api/platforms/360/360_state.ts": $api_platforms_360_360_state,

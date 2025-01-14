@@ -1,5 +1,5 @@
 import { crypto, DigestAlgorithm } from "jsr:@std/crypto";
-import { whichSync } from "./whichCommond.ts";
+import { whichSync } from "jsr:@david/which";
 
 export const encoder = new TextEncoder();
 export const decoder = new TextDecoder("utf-8");
