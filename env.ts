@@ -55,3 +55,8 @@ export const vivo = {
   access_secret: env["vivo_access_secret"],
   access_key: env["vivo_access_key"],
 };
+
+export const honor = {
+  client_id: env["honor_client_id"],
+  client_secret: env["honor_client_secret"],
+}
