@@ -1,6 +1,7 @@
 import { honor } from "../../../../env.ts";
 import type {
   AccessTokenSuccessResult,
+  AppCurrentReleaseResult,
   AppIdSuccessResult,
   AppInfoSuccessResult,
   ResponseBaseResult,
@@ -10,26 +11,27 @@ import { FileType } from "./honor.type.ts";
 import { decoder, digestFileAlgorithm, encoder } from "../../helper/crypto.ts";
 import { getMetadata } from "../../setting/metadata/index.tsx";
 import { getResource } from "../../setting/resource/index.tsx";
-import { getFileName, readFile } from "../../helper/file.ts";
+import { readFile } from "../../helper/file.ts";
+import { $sendCallback } from "../../../../util/publishSignal.ts";
 
 const BASE_URL =
   "https://appmarket-openapi-drcn.cloud.honor.com/openapi/v1/publish";
 let ACCESS_TOKEN: AccessTokenSuccessResult | null = null;
 let APP_ID: number | null = null;
 
-// export const pub_honor = async (send: $sendCallback) => {
-//   send("获取AppId...");
-//   const appId = await fetchAppId();
-//   send(`获取成功：${appId}`);
+export const pub_honor = async (send: $sendCallback) => {
+  send("获取AppId...");
+  const appId = await fetchAppId();
+  send(`获取成功：${appId}`);
 
-//   send("开始更新APK...");
-//   const pkgVersion = await updateAppInfo();
-//   send(`更新APK成功:${pkgVersion.join("|")}`);
+  send("开始更新APK...");
+  await updateFileInfo();
+  send(`更新APK成功`);
 
-//   send(`开始提交审核`);
-//   await submitForReview();
-//   send("提交成功！");
-// };
+  send(`开始提交审核`);
+  await submitForReview();
+  send("提交成功！");
+};
 
 /**获取App信息 */
 export const fetchAppInfo = async () => {
@@ -45,6 +47,40 @@ export const fetchAppInfo = async () => {
   } else {
     throw Error(`e:${JSON.stringify(result)}`);
   }
+};
+
+/** 获取当前release状态 **/
+export const getAppCurrentRelease = async () => {
+  const appId = await fetchAppId();
+  const res = await honorFetch(
+    `/get-app-current-release?appId=${appId}`,
+  );
+
+  const result: ResponseBaseResult = await res.json();
+
+  if (result.code === 0) {
+    return (result as AppCurrentReleaseResult).data;
+  } else {
+    throw Error(`e:${JSON.stringify(result)}`);
+  }
+};
+
+/** 提交审核 */
+export const submitForReview = async () => {
+  const appId = await fetchAppId();
+  const res = await honorFetch(
+    `/submit-audit?appId=${appId}`,
+    "POST",
+    JSON.stringify({
+      releaseType: 1,
+    }),
+  );
+
+  const result: ResponseBaseResult = await res.json();
+  if (result.code === 0) {
+    return "提交成功";
+  }
+  throw new Error(`e:${JSON.stringify(result)}`);
 };
 
 /**工具方法：获取AppId */
@@ -92,6 +128,87 @@ const getUploadUrl = async () => {
   const result: ResponseBaseResult = await res.json();
   if (result.code === 0) {
     return (result as UploadUrlInfoSuccessResult).data;
+  }
+
+  throw Error(`e:${JSON.stringify(result)}`);
+};
+
+/** 工具方法：上传APK */
+const uploadApk = async () => {
+  const appId = await fetchAppId();
+  const urlInfoList = await getUploadUrl();
+
+  if (Array.isArray(urlInfoList) && urlInfoList.length > 0) {
+    const urlInfo = urlInfoList[0];
+    const formData = new FormData();
+    const file = await readFile(await getResource("apk_64"));
+    formData.append("file", file, urlInfo.fileName);
+
+    const res = await fetch(
+      `${BASE_URL}/file-upload?appId=${appId}&objectId=${urlInfo.objectId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      },
+    );
+
+    if (res.ok) {
+      const response = await honorFetch(
+        `/upload-by-url?appId=${appId}`,
+        "POST",
+        JSON.stringify({
+          type: 1,
+          uploadList: [{
+            fileName: urlInfo.fileName,
+            fileType: FileType.APP_APK,
+            fileSize: file.size,
+            fileSha256: await digestFileAlgorithm(file, "SHA-256"),
+            fileUploadUrl: urlInfo.uploadUrl,
+          }],
+          objectList: [{
+            objectId: urlInfo.objectId,
+          }],
+        }),
+      );
+
+      if (response.ok) {
+        return urlInfo.objectId;
+      }
+
+      throw new Error(`e:${await response.text()}`);
+    }
+
+    throw new Error(`e:${await res.text()}`);
+  }
+
+  throw new Error("未获取到上传链接");
+};
+
+/**更新并发布应用 */
+const updateFileInfo = async () => {
+  // 获取appid
+  const appId = await fetchAppId();
+  // 上传apk
+  const objectId = await uploadApk();
+  // 更新apk信息
+  const res = await honorFetch(
+    `/update-file-info?appId=${appId}`,
+    "POST",
+    JSON.stringify({
+      bindingFileList: [{
+        objectId,
+        languageId: "zh-CN",
+        order: 0,
+      }],
+    }),
+  );
+
+  const result: ResponseBaseResult = await res.json();
+  if (result.code === 0) {
+    return "";
   }
 
   throw Error(`e:${JSON.stringify(result)}`);

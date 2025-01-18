@@ -1,5 +1,5 @@
 import { $AppState } from "../../../../util/stateSignal.ts";
-import { fetchAppInfo } from "./honor.ts";
+import { getAppCurrentRelease } from "./honor.ts";
 
 export const app_state = async () => {
   const state: $AppState = {
@@ -7,12 +7,21 @@ export const app_state = async () => {
     onlineVersion: "",
     issues: ``,
   };
-  const response = await fetchAppInfo();
+  const response = await getAppCurrentRelease();
   console.log("response=>", response);
 
-  state.onlineVersion = `${response?.releaseInfo.versionName} (${
-    // releaseState[response.releaseState]
-    ""
-  })`;
+  if (response && response.versionCode && response.auditResult) {
+    state.onlineVersion = `${response.versionName} (${
+      releaseState[response.auditResult]
+    })`;
+  }
   return state;
 };
+
+const releaseState = [
+  "审核中",
+  "审核通过",
+  "审核不通过",
+  "其他非审核状态",
+  "编辑中，未提交审核",
+];

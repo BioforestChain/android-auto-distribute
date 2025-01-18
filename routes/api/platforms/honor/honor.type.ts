@@ -127,3 +127,16 @@ interface FileUploadPath {
 export interface UploadUrlInfoSuccessResult extends ResponseBaseResult {
   data: FileUploadPath[];
 }
+
+interface PubAuditResult {
+  releaseId: string;
+  versionName?: string;
+  versionCode?: number;
+  auditResult: number;
+  auditMessage?: string;
+  auditAttachment?: string[];
+}
+
+export interface AppCurrentReleaseResult extends ResponseBaseResult {
+  data?: PubAuditResult;
+}
