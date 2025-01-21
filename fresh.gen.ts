@@ -29,6 +29,10 @@ import * as $api_platforms_google_path_ from "./routes/api/platforms/google/[pat
 import * as $api_platforms_google_google from "./routes/api/platforms/google/google.ts";
 import * as $api_platforms_google_google_type from "./routes/api/platforms/google/google.type.ts";
 import * as $api_platforms_google_google_state from "./routes/api/platforms/google/google_state.ts";
+import * as $api_platforms_honor_path_ from "./routes/api/platforms/honor/[path].tsx";
+import * as $api_platforms_honor_honor from "./routes/api/platforms/honor/honor.ts";
+import * as $api_platforms_honor_honor_type from "./routes/api/platforms/honor/honor.type.ts";
+import * as $api_platforms_honor_honor_state from "./routes/api/platforms/honor/honor_state.ts";
 import * as $api_platforms_huawei_path_ from "./routes/api/platforms/huawei/[path].tsx";
 import * as $api_platforms_huawei_huawei from "./routes/api/platforms/huawei/huawei.ts";
 import * as $api_platforms_huawei_huawei_type from "./routes/api/platforms/huawei/huawei.type.ts";
@@ -120,6 +124,12 @@ const manifest = {
       $api_platforms_google_google_type,
     "./routes/api/platforms/google/google_state.ts":
       $api_platforms_google_google_state,
+    "./routes/api/platforms/honor/[path].tsx": $api_platforms_honor_path_,
+    "./routes/api/platforms/honor/honor.ts": $api_platforms_honor_honor,
+    "./routes/api/platforms/honor/honor.type.ts":
+      $api_platforms_honor_honor_type,
+    "./routes/api/platforms/honor/honor_state.ts":
+      $api_platforms_honor_honor_state,
     "./routes/api/platforms/huawei/[path].tsx": $api_platforms_huawei_path_,
     "./routes/api/platforms/huawei/huawei.ts": $api_platforms_huawei_huawei,
     "./routes/api/platforms/huawei/huawei.type.ts":
