@@ -33,6 +33,7 @@ export default function StateList() {
                   alt={platform}
                   width="18"
                   height="18"
+                  className="object-contain"
                 />
                 <p class="ml-1">{platform}</p>
               </div>

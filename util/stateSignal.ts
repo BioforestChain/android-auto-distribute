@@ -23,6 +23,11 @@ export const appStateData: $AppStates = {
     issues: "",
     host: "https://dev.vivo.com.cn/apiAccess/detail",
   },
+  "honor": {
+    onlineVersion: "0.000000.0",
+    issues: "",
+    host: "https://developer.honor.com/cn/manageCenter/app/E00006",
+  },
   "samsung": {
     onlineVersion: "0.000000.0",
     issues: "",
