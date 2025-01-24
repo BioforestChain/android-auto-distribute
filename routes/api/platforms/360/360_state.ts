@@ -8,8 +8,9 @@ export const app_state = async () => {
     onlineVersion: "",
     issues: ``,
   };
+  const searchParams = new URLSearchParams({ "q": appName });
   const response = await fetch(
-    `https://openbox.mobilem.360.cn/PcSearch/class?q=${appName}&type=alltop&page=1&ch=200000`,
+    `https://openbox.mobilem.360.cn/PcSearch/class?${searchParams}&type=alltop&page=1&ch=200000`,
   );
   const result = await response.json();
   if (result.code !== 0) {

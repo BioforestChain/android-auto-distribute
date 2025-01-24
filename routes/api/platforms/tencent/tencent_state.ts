@@ -1,3 +1,5 @@
+import { DOMParser } from "jsr:@b-fuze/deno-dom";
+
 import { $AppState } from "../../../../util/stateSignal.ts";
 import { getMetadata } from "../../setting/metadata/index.tsx";
 
@@ -12,23 +14,30 @@ export const app_state = async () => {
     const response = await fetch(
       `https://sj.qq.com/appdetail/${packageName}`,
     );
+
     const htmlString = await response.text();
+    const domParser = new DOMParser();
+    const doc = domParser.parseFromString(htmlString, "text/html");
+    const jsonString = doc.querySelector("#__NEXT_DATA__")?.textContent;
 
-    const regexVersion = /class="AppInfo_detailContent__X5bpu">([^"]+)<\/p>/g;
-    const matchVersion = htmlString.match(regexVersion);
-    if (!matchVersion) {
-      return state;
+    if (typeof jsonString === "string") {
+      const jsonData = JSON.parse(`${jsonString}`);
+      const components = jsonData.props.pageProps.dynamicCardResponse.data
+        .components as { data: { itemData?: { [key: string]: unknown } } }[];
+      for (const component of components) {
+        const itemData = component.data?.itemData;
+        if (itemData && Array.isArray(itemData)) {
+          for (const item of itemData) {
+            if (item["pkg_name"] === packageName) {
+              state.onlineVersion = item["version_name"];
+              return state;
+            }
+          }
+        }
+      }
     }
-    const match = matchVersion.pop() ?? "";
-    const regex = /class="AppInfo_detailContent__X5bpu">([\d.]+)<\/p>/;
-    const version = match.match(regex);
-
-    if (version) {
-      state.onlineVersion = version[1]; // 捕获的版本号值，可能为空
-      state.issues = "";
-    } else {
-      state.issues = "版本查找错误，请提issue.";
-    }
+    state.issues = `未找到包名为：${packageName}的应用。`;
+    return state;
   } catch (e) {
     console.log(e);
     state.issues = JSON.stringify(e);
