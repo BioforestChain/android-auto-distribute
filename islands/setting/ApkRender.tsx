@@ -1,10 +1,15 @@
 import { useSignal } from "@preact/signals";
+import mime from "npm:mime";
 import { warpFetch } from "../../routes/api/fetch.ts";
 import { $Resources } from "../../util/settingSignal.ts";
 
 const updateResource = async (key: string, value: File) => {
   const formData = new FormData();
-  formData.append("file", value);
+  const modifyFile = new File([value], value.name, {
+    type: mime.getType(value.name.substring(value.name.lastIndexOf(".") + 1))!,
+  });
+
+  formData.append("file", modifyFile);
   await warpFetch(`api/setting/resource/${key}`, {
     method: "PATCH",
     body: formData,

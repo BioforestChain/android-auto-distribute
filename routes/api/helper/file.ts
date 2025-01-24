@@ -1,3 +1,4 @@
+import mime from "npm:mime";
 import { UPLOAD_DIR } from "../../../env.ts";
 
 export const readFile = async (filePath: string) => {
@@ -77,7 +78,10 @@ export const saveFile = async (req: Request) => {
   const formData = await req.formData();
   // 获取上传的文件
   const file = formData.get("file") as File | null;
-  if (!file || file.type !== "application/vnd.android.package-archive") {
+  if (
+    !file || (file.type !== mime.getType("apk") &&
+      file.type !== mime.getType("aab"))
+  ) {
     return new Response("Invalid file type. Only APK files are allowed.", {
       status: 400,
     });
