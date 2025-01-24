@@ -27,7 +27,7 @@
     "typography": "npm:@tailwindcss/typography@0.5.13"
   },
   "compilerOptions": {
-    "lib": ["deno.window", "dom", "exnext"],
+    "lib": ["deno.window", "dom", "esnext"],
     "jsx": "react-jsx",
     "jsxImportSource": "preact"
   },

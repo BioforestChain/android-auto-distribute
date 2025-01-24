@@ -1,3 +1,4 @@
+import path from "node:path";
 import { androidpublisher_v3, google } from "npm:googleapis";
 import { $AppState } from "../../../../util/stateSignal.ts";
 import { getMetadata } from "../../setting/metadata/index.tsx";
@@ -6,7 +7,7 @@ export const app_state = async () => {
   const androidPublisher: androidpublisher_v3.Androidpublisher = google
     .androidpublisher("v3");
   const auth = new google.auth.GoogleAuth({
-    keyFile: "./private/google/privateKey.json",
+    keyFile: path.resolve(Deno.cwd(), "./private/google/privateKey.json"),
     scopes: ["https://www.googleapis.com/auth/androidpublisher"],
   });
 
@@ -44,8 +45,10 @@ export const app_state = async () => {
       return state;
     }
     state.onlineVersion = releases.name ?? "";
-  } catch (e) {
-    state.issues = e?.response?.data?.error?.message ?? JSON.stringify(e);
+  } catch (e: any) {
+    state.issues = e instanceof Error
+      ? e.message
+      : e?.response?.data?.error?.message ?? String(e);
   }
   return state;
 };
