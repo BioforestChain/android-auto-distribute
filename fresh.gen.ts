@@ -37,6 +37,10 @@ import * as $api_platforms_huawei_path_ from "./routes/api/platforms/huawei/[pat
 import * as $api_platforms_huawei_huawei from "./routes/api/platforms/huawei/huawei.ts";
 import * as $api_platforms_huawei_huawei_type from "./routes/api/platforms/huawei/huawei.type.ts";
 import * as $api_platforms_huawei_huawei_state from "./routes/api/platforms/huawei/huawei_state.ts";
+import * as $api_platforms_meizu_path_ from "./routes/api/platforms/meizu/[path].tsx";
+import * as $api_platforms_meizu_meizu from "./routes/api/platforms/meizu/meizu.ts";
+import * as $api_platforms_meizu_meizu_type from "./routes/api/platforms/meizu/meizu.type.ts";
+import * as $api_platforms_meizu_meizu_state from "./routes/api/platforms/meizu/meizu_state.ts";
 import * as $api_platforms_oppo_path_ from "./routes/api/platforms/oppo/[path].tsx";
 import * as $api_platforms_oppo_oppo from "./routes/api/platforms/oppo/oppo.ts";
 import * as $api_platforms_oppo_oppo_type from "./routes/api/platforms/oppo/oppo.type.ts";
@@ -136,6 +140,12 @@ const manifest = {
       $api_platforms_huawei_huawei_type,
     "./routes/api/platforms/huawei/huawei_state.ts":
       $api_platforms_huawei_huawei_state,
+    "./routes/api/platforms/meizu/[path].tsx": $api_platforms_meizu_path_,
+    "./routes/api/platforms/meizu/meizu.ts": $api_platforms_meizu_meizu,
+    "./routes/api/platforms/meizu/meizu.type.ts":
+      $api_platforms_meizu_meizu_type,
+    "./routes/api/platforms/meizu/meizu_state.ts":
+      $api_platforms_meizu_meizu_state,
     "./routes/api/platforms/oppo/[path].tsx": $api_platforms_oppo_path_,
     "./routes/api/platforms/oppo/oppo.ts": $api_platforms_oppo_oppo,
     "./routes/api/platforms/oppo/oppo.type.ts": $api_platforms_oppo_oppo_type,

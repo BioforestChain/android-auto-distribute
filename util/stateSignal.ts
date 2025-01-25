@@ -58,6 +58,11 @@ export const appStateData: $AppStates = {
     issues: "",
     host: "https://app.open.qq.com/p/home",
   },
+  "meizu": {
+    onlineVersion: "0.000000.0",
+    issues: "",
+    host: "https://open.flyme.cn/service?type=application",
+  },
 };
 /**在islands 中共享的数据 */
 export const appStates = signal(appStateData);
