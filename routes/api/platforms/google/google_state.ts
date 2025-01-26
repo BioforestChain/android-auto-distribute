@@ -11,7 +11,6 @@ export const app_state = async () => {
     scopes: ["https://www.googleapis.com/auth/androidpublisher"],
   });
 
-  androidPublisher.applications;
   const state: $AppState = {
     platform: "google",
     onlineVersion: "",
