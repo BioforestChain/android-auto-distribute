@@ -6,6 +6,7 @@ import { getFileName } from "../../helper/file.ts";
 import { getAllMetadata, getMetadata } from "../../setting/metadata/index.tsx";
 import { getResource } from "../../setting/resource/index.tsx";
 import type { EditOptions } from "./google.type.ts";
+import { getDefaultConfig } from "../../../../util/keyManager.ts";
 /** google DOC
  * https://developers.google.com/android-publisher/tracks?hl=zh-cn
  * https://github.com/googleapis/google-api-nodejs-client
@@ -15,8 +16,9 @@ const androidPublisher: androidpublisher_v3.Androidpublisher = google
   .androidpublisher("v3");
 
 export const pub_google = async (send: $sendCallback) => {
+  const { google_private_key_path } = await getDefaultConfig()
   const auth = new google.auth.GoogleAuth({
-    keyFile: "./private/google/privateKey.json",
+    keyFile: google_private_key_path,
     scopes: ["https://www.googleapis.com/auth/androidpublisher"],
   });
   // 请求元数据

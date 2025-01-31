@@ -76,7 +76,6 @@ const fetchAppId = async () => {
   if (APP_ID !== null) {
     return APP_ID;
   }
-  const huawei = await getHuaweiConfig();
   const res = await huaweiFetch(
     `/api/publish/v2/appid-list?packageName=${await getMetadata(
       "packageName",

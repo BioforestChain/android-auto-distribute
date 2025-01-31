@@ -7,9 +7,20 @@ import { KEY } from "./key/index.tsx";
 export const handler: Handlers = {
   // 获取默认配置
   GET() {
+    // 获取项目根目录
+    const ROOT_DIR = Deno.cwd();
+    // 密钥文件默认存放目录
+    const KEY_DIR = join(ROOT_DIR, "private");
+    
     const defaultConfig = {
-      UPLOAD_DIR: join(Deno.cwd(), "RESOURCES"),
-      LICENSE_NUM: "", // 使用大写以匹配类型定义
+      // 基础配置
+      UPLOAD_DIR: join(ROOT_DIR, "RESOURCES"),
+      LICENSE_NUM: "",
+      
+      // 密钥文件路径配置
+      google_private_key_path: join(KEY_DIR, "google", "privateKey.json"),
+      xiaomi_public_key_path: join(KEY_DIR, "xiaomi", "dev.api.public.cer"),
+      samsung_private_key_path: join(KEY_DIR, "samsung", "privateKey.txt"),
     };
 
     return new Response(JSON.stringify(defaultConfig), {

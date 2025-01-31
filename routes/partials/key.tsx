@@ -12,7 +12,7 @@ export const handler: Handlers = {
 // 主组件
 export default function KeyConfigPage() {
   return (
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 pb-8">
       <h1 class="text-2xl font-bold mb-6 text-white-800">应用商店密钥配置</h1>
       <KeyConfigForm />
     </div>

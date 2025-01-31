@@ -94,5 +94,8 @@ export const getGoogleConfig = async () => {
 export const getDefaultConfig = async () => {
   const upload_dir = await getKey("UPLOAD_DIR");
   const license_num = await getKey("LICENSE_NUM");
-  return { upload_dir, license_num };
+  const google_private_key_path = await getKey("google_private_key_path");
+  const xiaomi_public_key_path = await getKey("xiaomi_public_key_path");
+  const samsung_private_key_path = await getKey("samsung_private_key_path");
+  return { upload_dir, license_num, google_private_key_path, xiaomi_public_key_path, samsung_private_key_path };
 };
