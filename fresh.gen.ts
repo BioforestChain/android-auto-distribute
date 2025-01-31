@@ -83,6 +83,7 @@ import * as $partials_semi from "./routes/partials/semi.tsx";
 import * as $partials_state from "./routes/partials/state.tsx";
 import * as $partials_vivo from "./routes/partials/vivo.tsx";
 import * as $partials_xiaomi from "./routes/partials/xiaomi.tsx";
+import * as $KeyConfigForm from "./islands/KeyConfigForm.tsx";
 import * as $KeyInput from "./islands/KeyInput.tsx";
 import * as $publish_HandleRender from "./islands/publish/HandleRender.tsx";
 import * as $publish_messageRender from "./islands/publish/messageRender.tsx";
@@ -196,6 +197,7 @@ const manifest = {
     "./routes/partials/xiaomi.tsx": $partials_xiaomi,
   },
   islands: {
+    "./islands/KeyConfigForm.tsx": $KeyConfigForm,
     "./islands/KeyInput.tsx": $KeyInput,
     "./islands/publish/HandleRender.tsx": $publish_HandleRender,
     "./islands/publish/messageRender.tsx": $publish_messageRender,

@@ -2,7 +2,7 @@ import { $AppKey } from "../util/keySignal.ts";
 
 // 密钥输入组件
 export default function KeyInput({ field, value, onSave }: {
-  field: { key: keyof $AppKey; type?: string };
+  field: { key: keyof $AppKey; type?: string, label: string };
   value: string;
   onSave: (key: keyof $AppKey, value: string) => void;
 }) {
