@@ -1,4 +1,3 @@
-import { honor } from "../../../../env.ts";
 import type {
   AccessTokenSuccessResult,
   AppCurrentReleaseResult,
@@ -13,6 +12,7 @@ import { getMetadata } from "../../setting/metadata/index.tsx";
 import { getResource } from "../../setting/resource/index.tsx";
 import { readFile } from "../../helper/file.ts";
 import { $sendCallback } from "../../../../util/publishSignal.ts";
+import { getHonorConfig } from "../../../../util/keyManager.ts";
 
 const BASE_URL =
   "https://appmarket-openapi-drcn.cloud.honor.com/openapi/v1/publish";
@@ -254,15 +254,15 @@ const fetchAccessToken = async () => {
   } finally {
     ACCESS_TOKEN = null;
   }
-
+  const { client_id, client_secret } = await getHonorConfig();
   const res = await fetch("https://iam.developer.honor.com/auth/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({
-      client_id: honor.client_id,
-      client_secret: honor.client_secret,
+      client_id: client_id,
+      client_secret: client_secret,
       grant_type: "client_credentials",
     }),
   });

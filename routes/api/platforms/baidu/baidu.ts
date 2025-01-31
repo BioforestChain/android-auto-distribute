@@ -1,5 +1,5 @@
 import { ElementHandle, type Page, step } from "../../../../deps.ts";
-import { baidu, licenseNum } from "../../../../env.ts";
+import { getBaiduConfig } from "../../../../util/keyManager.ts";
 import { loadLoginInfo, saveLoginInfo } from "../../helper/cookie.ts";
 import { fileExists, readFile } from "../../helper/file.ts";
 import {
@@ -13,6 +13,7 @@ import { getHandle } from "../../setting/handle/index.tsx";
 import { getAllMetadata, getMetadata } from "../../setting/metadata/index.tsx";
 import { getResource } from "../../setting/resource/index.tsx";
 import { getAllScreenshot } from "../../setting/screenshot/index.tsx";
+import { getDefaultConfig } from "../../../../util/keyManager.ts";
 
 export const pub_baidu = async () => {
   const browserSign = step("正在打开百度移动应用平台...");
@@ -84,8 +85,8 @@ export const pub_baidu = async () => {
   await input("#appIntroduce", metadata.desc);
   await input("#updateInfo", metadata.updateDesc);
   await input("#privateUrl", metadata.privacyUrl);
-  console.log("licenseNum", licenseNum);
-  await input("#licenseNum", licenseNum);
+  const { license_num } = await getDefaultConfig();
+  await input("#licenseNum", license_num);
 
   console.log("请审核无错误后，点击提交。");
 };
@@ -209,6 +210,7 @@ const loginInSave = async (page: Page) => {
   });
 
   // 定位密码输入框并输入密码
+  const baidu = await getBaiduConfig();
   await page.type('input[name="userName"]', baidu.email);
   await page.type('input[type="password"][name="password"]', baidu.password);
 

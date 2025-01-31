@@ -1,4 +1,4 @@
-import { huawei } from "../../../../env.ts";
+import { getHuaweiConfig } from "../../../../util/keyManager.ts";
 import { $sendCallback } from "../../../../util/publishSignal.ts";
 import { decoder, digestFileAlgorithm, encoder } from "../../helper/crypto.ts";
 import { formatDateToLocalString } from "../../helper/date.ts";
@@ -76,6 +76,7 @@ const fetchAppId = async () => {
   if (APP_ID !== null) {
     return APP_ID;
   }
+  const huawei = await getHuaweiConfig();
   const res = await huaweiFetch(
     `/api/publish/v2/appid-list?packageName=${await getMetadata(
       "packageName",
@@ -169,6 +170,7 @@ const huaweiFetch = async (
   method: string = "GET",
   data: string | null = null,
 ) => {
+  const huawei = await getHuaweiConfig();
   const access_token = await fetchAccessToken();
   return await fetch(
     `${BASE_URL}${url}`,
@@ -205,6 +207,7 @@ const fetchAccessToken = async () => {
     ACCESS_TOKEN = null;
   }
 
+  const huawei = await getHuaweiConfig();
   const res = await fetch(`${BASE_URL}/api/oauth2/v1/token`, {
     method: "POST",
     headers: {

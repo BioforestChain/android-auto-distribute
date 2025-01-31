@@ -59,9 +59,11 @@ import * as $api_platforms_xiaomi_path_ from "./routes/api/platforms/xiaomi/[pat
 import * as $api_platforms_xiaomi_xiaomi from "./routes/api/platforms/xiaomi/xiaomi.ts";
 import * as $api_platforms_xiaomi_xiaomi_type from "./routes/api/platforms/xiaomi/xiaomi.type.ts";
 import * as $api_platforms_xiaomi_xiaomi_state from "./routes/api/platforms/xiaomi/xiaomi_state.ts";
+import * as $api_setting_default from "./routes/api/setting/default.ts";
 import * as $api_setting_handle_key_ from "./routes/api/setting/handle/[key].tsx";
 import * as $api_setting_handle_index from "./routes/api/setting/handle/index.tsx";
 import * as $api_setting_index from "./routes/api/setting/index.tsx";
+import * as $api_setting_key_index from "./routes/api/setting/key/index.tsx";
 import * as $api_setting_metadata_key_ from "./routes/api/setting/metadata/[key].tsx";
 import * as $api_setting_metadata_index from "./routes/api/setting/metadata/index.tsx";
 import * as $api_setting_resource_key_ from "./routes/api/setting/resource/[key].tsx";
@@ -81,6 +83,7 @@ import * as $partials_semi from "./routes/partials/semi.tsx";
 import * as $partials_state from "./routes/partials/state.tsx";
 import * as $partials_vivo from "./routes/partials/vivo.tsx";
 import * as $partials_xiaomi from "./routes/partials/xiaomi.tsx";
+import * as $KeyInput from "./islands/KeyInput.tsx";
 import * as $publish_HandleRender from "./islands/publish/HandleRender.tsx";
 import * as $publish_messageRender from "./islands/publish/messageRender.tsx";
 import * as $semi_PublishButton from "./islands/semi/PublishButton.tsx";
@@ -167,9 +170,11 @@ const manifest = {
       $api_platforms_xiaomi_xiaomi_type,
     "./routes/api/platforms/xiaomi/xiaomi_state.ts":
       $api_platforms_xiaomi_xiaomi_state,
+    "./routes/api/setting/default.ts": $api_setting_default,
     "./routes/api/setting/handle/[key].tsx": $api_setting_handle_key_,
     "./routes/api/setting/handle/index.tsx": $api_setting_handle_index,
     "./routes/api/setting/index.tsx": $api_setting_index,
+    "./routes/api/setting/key/index.tsx": $api_setting_key_index,
     "./routes/api/setting/metadata/[key].tsx": $api_setting_metadata_key_,
     "./routes/api/setting/metadata/index.tsx": $api_setting_metadata_index,
     "./routes/api/setting/resource/[key].tsx": $api_setting_resource_key_,
@@ -191,6 +196,7 @@ const manifest = {
     "./routes/partials/xiaomi.tsx": $partials_xiaomi,
   },
   islands: {
+    "./islands/KeyInput.tsx": $KeyInput,
     "./islands/publish/HandleRender.tsx": $publish_HandleRender,
     "./islands/publish/messageRender.tsx": $publish_messageRender,
     "./islands/semi/PublishButton.tsx": $semi_PublishButton,

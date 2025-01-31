@@ -1,17 +1,20 @@
 // import { assertEquals } from "https://deno.land/std@0.151.0/testing/asserts.ts";
 // import jsonwebtoken from "npm:jsonwebtoken";
-import { samsung } from "../../../../env.ts";
+import { getSamsungConfig } from "../../../../util/keyManager.ts";
 import { RSASSA } from "../../helper/RSASSA-PKCS1-v1_5.ts";
 import { fetchAppInfo } from "./samsung.ts";
 // import { cerToPemPKS8 } from "../helper/crypto.ts";
 import { app_state } from "./samsung_state.ts";
 
+
 Deno.test("测试使用私钥生成jwt", async () => {
-  const rsass = new RSASSA(samsung.private_key_path);
+const { service_account_id, private_key_path } = await getSamsungConfig();
+
+  const rsass = new RSASSA(private_key_path);
   // 构建jwt payload
   const not = Date.now();
   const payload = {
-    iss: samsung.service_account_id,
+    iss: service_account_id,
     scopes: ["publishing"],
     iat: not,
     exp: not + 1200,

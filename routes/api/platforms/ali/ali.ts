@@ -1,6 +1,6 @@
 import { step } from "jsr:@sylc/step-spinner";
 import type { Page } from "../../../../deps.ts";
-import { ali } from "../../../../env.ts";
+import { getAliConfig } from "../../../../util/keyManager.ts";
 import { loadLoginInfo, saveLoginInfo } from "../../helper/cookie.ts";
 import { fileExists, readFile } from "../../helper/file.ts";
 import {
@@ -160,6 +160,7 @@ const loginInSave = async (page: Page) => {
   const checkbox = await page.waitForSelector(".agreement-widget");
   // 同意协议
   await checkbox?.click();
+  const ali = await getAliConfig();
   // 输入账号密码
   await loginFrame.type("#fm-login-id", ali.email);
   await loginFrame.type("#fm-login-password", ali.password);

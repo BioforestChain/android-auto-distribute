@@ -1,5 +1,5 @@
 import { type Page, step } from "../../../../deps.ts";
-import { tencent } from "../../../../env.ts";
+import { getTencentConfig } from "../../../../util/keyManager.ts";
 import { loadLoginInfo, saveLoginInfo } from "../../helper/cookie.ts";
 import { fileExists } from "../../helper/file.ts";
 import {
@@ -174,6 +174,7 @@ const loginInSave = async (page: Page) => {
   });
 
   // 定位密码输入框并输入密码
+  const tencent = await getTencentConfig();
   await loginFrame.type("input#u", tencent.email);
   await loginFrame.type("input#p", tencent.password);
 

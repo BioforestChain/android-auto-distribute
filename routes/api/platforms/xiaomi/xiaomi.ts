@@ -1,6 +1,6 @@
 import { Buffer } from "node:buffer";
 import nodeCrypto from "node:crypto";
-import { xiaomi } from "../../../../env.ts";
+import { getXiaomiConfig } from "../../../../util/keyManager.ts";
 import { $sendCallback } from "../../../../util/publishSignal.ts";
 import {
   cerToPemX509,
@@ -34,7 +34,7 @@ export async function pub_xiami(send: $sendCallback) {
     privacyUrl: metadata.privacyUrl,
   };
   const RequestData: $RequestData = {
-    userName: xiaomi.email,
+    userName: (await getXiaomiConfig()).email,
     appInfo: appInfo,
     synchroType: 1, // 更新类型：0=新增，1=更新包，2=内容更新
   };
@@ -78,7 +78,7 @@ async function createSig(pushRequestData: $PushRequest) {
   }
   return {
     sig: signalList,
-    password: xiaomi.password,
+    password: (await getXiaomiConfig()).password,
   };
 }
 /**
@@ -89,7 +89,7 @@ async function digitalSignature(pushRequestData: $PushRequest) {
   //将 JSON 字符串编码为二进制数据
   const sig = await encryptContent(
     JSON.stringify(data),
-    xiaomi.public_key_path,
+    (await getXiaomiConfig()).public_key_path,
   );
   return sig;
 }
@@ -102,7 +102,7 @@ export async function queryAppInfo() {
   const requestData: $PushRequest = {
     "RequestData": JSON.stringify({
       "packageName": packageName,
-      "userName": xiaomi.email,
+      "userName": (await getXiaomiConfig()).email,
     }),
   };
   requestData.SIG = await digitalSignature(requestData);

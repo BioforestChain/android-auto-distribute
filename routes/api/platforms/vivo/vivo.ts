@@ -1,5 +1,4 @@
 import { step } from "jsr:@sylc/step-spinner";
-import { vivo } from "../../../../env.ts";
 import { $sendCallback } from "../../../../util/publishSignal.ts";
 import { HMAC } from "../../helper/HMAC.ts";
 import { digestFileAlgorithm } from "../../helper/crypto.ts";
@@ -15,6 +14,7 @@ import {
   $UpdateAppParams,
   MethodType,
 } from "./vivo.type.ts";
+import { getVivoConfig } from "../../../../util/keyManager.ts";
 
 /**
  * VIVO应用商店发布类
@@ -43,7 +43,6 @@ export class VivoPublisher {
 
   constructor() {
     this.#commonParameters = {
-      access_key: vivo.access_key,
       timestamp: Date.now().toString(),
       target_app_key: this.#CONFIG.target_app_key,
       v: this.#CONFIG.v,
@@ -56,8 +55,10 @@ export class VivoPublisher {
    * 初始化HMAC加密实例
    */
   async #initHmac() {
+    const { access_secret,access_key } = await getVivoConfig();
+    this.#commonParameters.access_key = access_key;
     if (!this.#hmacCrypto) {
-      this.#hmacCrypto = new HMAC(await HMAC.importKey(vivo.access_secret));
+      this.#hmacCrypto = new HMAC(await HMAC.importKey(access_secret));
     }
     return this.#hmacCrypto;
   }
@@ -83,7 +84,7 @@ export class VivoPublisher {
     
     // 获取上传到apk信息
     send("开始上传APK...");
-    const apkInfo = await this.#uploadApk(fileMd5);
+    const apkInfo = await this.uploadApk(fileMd5);
     
     // 构建上传参数
     const updateParams: $UpdateAppParams = {
@@ -124,7 +125,7 @@ export class VivoPublisher {
    * 获取应用信息
    */
   async getAppMessage() {
-    const response = await this.#vivoFetch(MethodType.detail, {
+    const response = await this.vivoFetch(MethodType.detail, {
       packageName: await getMetadata("packageName"),
     });
     const message: $DetailResponse = await response.json();
@@ -139,7 +140,7 @@ export class VivoPublisher {
    * 上传APK文件
    * @param fileMd5 文件MD5值
    */
-  async #uploadApk(fileMd5: string) {
+  async uploadApk(fileMd5: string) {
     return this.#warpUpload(
       "uploading APK...",
       MethodType.uploadApp,
@@ -196,7 +197,7 @@ export class VivoPublisher {
     params: object = {},
   ) {
     const signalApkCode = step(signal).start();
-    const response = await this.#vivoFetch(
+    const response = await this.vivoFetch(
       methodType,
       {
         packageName: await getMetadata("packageName"),
@@ -220,7 +221,7 @@ export class VivoPublisher {
    * @param params 请求参数
    * @param file 文件对象
    */
-  async #vivoFetch(
+  async vivoFetch(
     methodType: MethodType,
     params: object,
     file?: File,

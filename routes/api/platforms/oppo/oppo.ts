@@ -1,5 +1,5 @@
 // https://oop-openapi-cn.heytapmobi.com/developer/v1/token
-import { oppo } from "../../../../env.ts";
+import { getOppoConfig } from "../../../../util/keyManager.ts";
 import { $sendCallback } from "../../../../util/publishSignal.ts";
 import { decoder, encoder } from "../../helper/crypto.ts";
 import { formatDate } from "../../helper/date.ts";
@@ -206,7 +206,7 @@ export class OppoPublisher {
     const sortedArray = Object.entries(data).sort();
     const sortedString = sortedArray.map((entry) => entry.join("=")).join("&");
     // 创建签名方式 HMAC-SHA256
-    const hmacCrypto = new HMAC(await HMAC.importKey(oppo.client_secret));
+    const hmacCrypto = new HMAC(await HMAC.importKey((await getOppoConfig()).client_secret));
     return await hmacCrypto.sign(sortedString);
   }
 
@@ -238,7 +238,7 @@ export class OppoPublisher {
     }
 
     const url =
-      `${this.#BASE_URL}/developer/v1/token?client_id=${oppo.client_id}&client_secret=${oppo.client_secret}`;
+      `${this.#BASE_URL}/developer/v1/token?client_id=${(await getOppoConfig()).client_id}&client_secret=${(await getOppoConfig()).client_secret}`;
     const res = await fetch(url);
     const result: AccessTokenSuccessResult = await res.json();
     this.#ACCESS_TOKEN = result;

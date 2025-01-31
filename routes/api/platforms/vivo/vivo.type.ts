@@ -34,7 +34,7 @@ export interface $CommonParams {
    * 申请API传包服务成功后vivo开放平台分配开发者接入的access_key。
    * 具体获取说明
    */
-  access_key: string;
+  access_key?: string;
 
   /**
    * 时间戳（毫秒）示例：1567945333425，允许客户端请求最大时间误差为20分钟。

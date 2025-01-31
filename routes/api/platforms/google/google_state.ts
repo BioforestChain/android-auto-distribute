@@ -44,6 +44,7 @@ export const app_state = async () => {
       return state;
     }
     state.onlineVersion = releases.name ?? "";
+  // deno-lint-ignore no-explicit-any
   } catch (e: any) {
     state.issues = e instanceof Error
       ? e.message

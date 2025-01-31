@@ -1,5 +1,5 @@
 import { type Page, step } from "../../../../deps.ts";
-import { key360 } from "../../../../env.ts";
+import { get360Config } from "../../../../util/keyManager.ts";
 import { loadLoginInfo, saveLoginInfo } from "../../helper/cookie.ts";
 import { fileExists, readFile } from "../../helper/file.ts";
 import {
@@ -172,6 +172,7 @@ const loginInSave = async (page: Page) => {
   });
 
   // 定位密码输入框并输入密码
+  const key360 = await get360Config();
   await page.type('input[name="userName"]', key360.email);
   await page.type('input[type="password"][name="password"]', key360.password);
   /// 点击提交

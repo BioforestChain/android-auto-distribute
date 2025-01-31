@@ -1,4 +1,5 @@
 import { cerToPemX509, encodeHex, encoder, pemToBinary } from "./crypto.ts";
+import { getXiaomiConfig } from '../../../util/keyManager.ts';
 
 export class RSAOPEP {
   // 设置参数
@@ -56,14 +57,14 @@ export class RSAOPEP {
   }
 }
 
-import { xiaomi } from "../../../env.ts";
 
 Deno.test("encryptByPublicKey", async () => {
   const oaep = new RSAOPEP();
   // 读取公钥
+const { public_key_path } = await getXiaomiConfig();
   const encryptedData = await oaep.encryptByPublicKey(
     "Hello, Deno!",
-    xiaomi.public_key_path
+   public_key_path
   );
   console.log("data=>", encryptedData);
 });

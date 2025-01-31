@@ -74,7 +74,7 @@ export const handler = {
       }
       return Response.json(behavior);
     } catch (error) {
-      return new Response(error, {
+      return new Response(String(error), {
         status: 500,
       });
     }

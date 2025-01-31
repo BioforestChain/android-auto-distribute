@@ -81,7 +81,7 @@ const uploadBundle = async (appEditId: string, options: EditOptions) => {
     return bundle.data;
   } catch (e) {
     signal.fail(`上传 ${aabName} 失败: size:${aab.byteLength}`);
-    throw Error(e);
+    throw Error(String(e));
   }
 };
 

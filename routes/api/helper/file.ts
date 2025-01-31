@@ -1,5 +1,5 @@
 import mime from "npm:mime";
-import { UPLOAD_DIR } from "../../../env.ts";
+import { getDefaultConfig } from "../../../util/keyManager.ts";
 
 export const readFile = async (filePath: string) => {
   const fileData = await Deno.readFile(filePath); // 读取文件内容为Uint8Array
@@ -87,8 +87,9 @@ export const saveFile = async (req: Request) => {
     });
   }
   // 生成保存路径到 ./apk 目录
-  await Deno.mkdir(UPLOAD_DIR, { recursive: true }); // 创建目录
-  const filePath = `${UPLOAD_DIR}/${file.name}`;
+  const { upload_dir } = await getDefaultConfig();
+  await Deno.mkdir(upload_dir, { recursive: true }); // 创建目录
+  const filePath = `${upload_dir}/${file.name}`;
 
   // 保存文件
   const fileData = await file.arrayBuffer();

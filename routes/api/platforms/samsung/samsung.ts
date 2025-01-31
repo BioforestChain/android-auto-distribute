@@ -1,5 +1,5 @@
 import { step } from "jsr:@sylc/step-spinner";
-import { samsung } from "../../../../env.ts";
+import { getSamsungConfig } from "../../../../util/keyManager.ts";
 import { $sendCallback } from "../../../../util/publishSignal.ts";
 import { decoder, encoder } from "../../helper/crypto.ts";
 import { readFile } from "../../helper/file.ts";
@@ -48,6 +48,7 @@ export const pub_samsung = async (send: $sendCallback) => {
 // 工具方法：获取jwt
 const getJwt = async () => {
   // 创建加密函数
+  const samsung = await getSamsungConfig();
   const rsass = new RSASSA(samsung.private_key_path);
 
   // 构建jwt payload
@@ -310,6 +311,7 @@ const createUploadSessionId = async () => {
  * samsung 要求每个请求携带access_token
  */
 const generateHeaders = async (isFormData: boolean = false) => {
+  const samsung = await getSamsungConfig();
   const access_token = await fetchAccessToken();
   const baseHeader = {
     Authorization: `Bearer ${access_token}`,

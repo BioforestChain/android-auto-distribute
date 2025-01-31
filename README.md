@@ -8,9 +8,7 @@ android 自动化更新脚本。支持：`华为`，`小米`，`oppo`,`vivo`,`�
 
 半自动化发布需要用户输入手机验证码登陆，运行脚本的时候会打开浏览器。因此需要在配置中心配置 Google 浏览器地址
 
-### 密钥配置
 
-将`.env.example` 重命名成 `.env` 然后填写内部的账号或者私钥。
 
 ## 启动可视化界面发布 🍟
 
@@ -22,6 +20,10 @@ deno task start
   <img src="./static/assets/images/setting.png" alt="setting Preview" width="400" height="300" />
   <img src="./static/assets/images/publish.png" alt="publish Preview" width="400" height="300" />
 </div>
+
+### 密钥配置
+
+您首选需要在密钥配置页面配置您各个平台的密钥，所以密钥都将存储在本地。
 
 ## 各个平台证书相关
 
