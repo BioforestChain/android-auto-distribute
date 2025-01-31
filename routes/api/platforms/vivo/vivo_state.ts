@@ -1,5 +1,5 @@
 import { $AppState } from "../../../../util/stateSignal.ts";
-import { getAppMessage } from "./vivo.ts";
+import { vivoPublisher } from "./vivo.ts";
 
 export const app_state = async () => {
   const state: $AppState = {
@@ -8,7 +8,7 @@ export const app_state = async () => {
     issues: ``,
   };
   try {
-    const info = await getAppMessage();
+    const info = await vivoPublisher.getAppMessage();
 
     console.log("info=>", info);
     state.onlineVersion = info.versionName ?? "";

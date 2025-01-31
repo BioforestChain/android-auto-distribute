@@ -1,5 +1,5 @@
 import { $AppState } from "../../../../util/stateSignal.ts";
-import { queryAppInfo } from "./oppo.ts";
+import { oppoPublisher } from "./oppo.ts";
 
 export const app_state = async () => {
   const state: $AppState = {
@@ -7,7 +7,7 @@ export const app_state = async () => {
     onlineVersion: "",
     issues: ``,
   };
-  const info = await queryAppInfo();
+  const info = await oppoPublisher.queryAppInfo();
   state.onlineVersion = info.version_name;
   if (info.audit_status_name && info.audit_status_name !== "") {
     state.onlineVersion = `${state.onlineVersion} (${info.audit_status_name})`;
