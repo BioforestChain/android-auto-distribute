@@ -40,6 +40,9 @@ importers:
       "@tanstack/react-router":
         specifier: ^1.102.1
         version: 1.102.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      "@tauri-apps/api":
+        specifier: ^2.3.0
+        version: 2.3.0
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1183,6 +1186,10 @@ packages:
     resolution:
       { integrity: sha512-XvX8bfdo4CYiCW+ItVdBfCorh3PwQFqYqd7ll+XKWiWOJpqUGIG7VlziVavARZpUySiY2VBlHadiUYS7jhgjRg== }
     engines: { node: ">=12" }
+
+  "@tauri-apps/api@2.3.0":
+    resolution:
+      { integrity: sha512-33Z+0lX2wgZbx1SPFfqvzI6su63hCBkbzv+5NexeYjIx7WA9htdOKoRR7Dh3dJyltqS5/J8vQFyybiRoaL0hlA== }
 
   "@tauri-apps/cli-darwin-arm64@2.2.7":
     resolution:
@@ -3494,6 +3501,8 @@ snapshots:
   "@tanstack/store@0.7.0": {}
 
   "@tanstack/virtual-file-routes@1.99.0": {}
+
+  "@tauri-apps/api@2.3.0": {}
 
   "@tauri-apps/cli-darwin-arm64@2.2.7":
     optional: true
